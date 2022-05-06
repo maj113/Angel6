@@ -1,6 +1,6 @@
 # Angel6
-Discord bot for my friends server
-the bot still has issues, its hardcoded for the specific server, ytdl playback is flaky with bad internet, code is a mess
+Discord bot for my friends server.
+**the bot still has issues, its hardcoded for the specific server, ytdl playback is flaky with bad internet, code is a mess.**
 
 # TO-DOs:
 -Implement slash commands (wont happen any time soon, bot would need to be completely rewritten).
