@@ -21,9 +21,9 @@ import os
 import re
 from dotenv import load_dotenv
 
-load_dotenv()
-
 TOKEN = os.getenv("DISCORD_TOKEN")
+
+load_dotenv()
 
 # Silence useless bug reports messages
 youtube_dl.utils.bug_reports_message = lambda: ''
@@ -634,7 +634,7 @@ async def ping(ctx):
 async def on_ready():
     print('Logged in as:\n{0.user.name}\n{0.user.id}'.format(bot))
     await bot.change_presence(activity=discord.Game(name="Mutinys Official Bot"))
-    channel = bot.get_channel(966017404511604796)
+    channel = bot.get_channel(965773534876012564)
     #specifies Ascii art location for bootup message
     file = open(r"Ascii1.txt", "rt")
     content = file.read()
@@ -961,4 +961,4 @@ async def rmrole(ctx, user: discord.Member, role: discord.Role):
         await ctx.send(f"{user.name} was removed from role: {role.name}")
 
 
-bot.run()
+bot.run(TOKEN)                                      
