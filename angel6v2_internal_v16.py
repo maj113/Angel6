@@ -651,7 +651,7 @@ async def on_member_join(member):
     mbed = discord.Embed(
         colour = (discord.Colour.blurple()),
         title = 'Glad you could find us!',
-        description =f"yo! im Mutinys Personal Bot, proceed to <#965773524516106310> to talk:)\n Go play minecraft at 51.81.171.166:25607")
+        description =f"yo! im Mutinys Personal Bot, proceed to <#965773524516106310> to talk:)")
     await member.send(embed=mbed)
 
 @bot.event
@@ -802,7 +802,7 @@ async def stats(ctx):
 @bot.command()
 @commands.has_permissions(ban_members =True)
 async def ban(ctx, member : discord.Member, *, reason=None):
-    """bans a user"""
+    """bans the specified user"""
     if  member.top_role >= ctx.author.top_role:
         await ctx.send(f"Yo, you can only bean members lower than yourself lmao ")
         return
