@@ -794,15 +794,15 @@ async def unmute(ctx, member: discord.Member):
     await member.send(f'Unmuted in {ctx.guild.name} welcome back')
 
 meminfo = psutil.Process(os.getpid())
-totmem = psutil.virtual_memory().total / float(1024 ** 2)  
+totmem = psutil.virtual_memory().total / float(2 ** 20)  
 mem = meminfo.memory_info()[0] / float(2 ** 20) 
 ytdlfunc = run("youtube-dl --version", shell=True, capture_output=True).stdout.decode('ascii')
 
 @bot.command() 
 async def stats(ctx):
     """shows bot stats"""
-    bedem = discord.Embed(title = 'System Resource Usage', description = 'See bot host statistics.') 
-    bedem.add_field(name = "Angel$IX version", value = "**v16**", inline = False)
+    bedem = discord.Embed(title = 'System Resource Usage', description = 'See bot host statistics.', color=discord.Color.blurple()) 
+    bedem.add_field(name = "Angel$IX version", value = "**v16.5**", inline = False)
     bedem.add_field(name = 'CPU Usage', value = f'{psutil.cpu_percent()}%', inline = False)
     bedem.add_field(name = 'Total Memory', value = f'{totmem:.0f}MB', inline = False)
     bedem.add_field(name = 'Memory Usage', value = f'{mem:.0f}MB', inline = False)
@@ -851,25 +851,24 @@ async def warn(ctx, member : discord.Member, *, reason=None):
 
 @bot.command()
 async def invites(ctx, user = None):
-    """checks how many inivtes user has sent"""
-    if user == None:
-        totalInvites = 0
-        for i in await ctx.guild.invites():
-            if i.inviter == ctx.author:
-                totalInvites += i.uses
-        await ctx.send(f"You've invited {totalInvites} member{'' if totalInvites == 1 else 's'} to the server!")
-    else:
-        totalInvites = 0
-        for i in await ctx.guild.invites():
-            member = ctx.message.guild.get_member_named(user)
-            if i.inviter == member:
-                totalInvites += i.uses
-        await ctx.send(f"{member} has invited {totalInvites} member{'' if totalInvites == 1 else 's'} to the server!")
+  if user == None:
+    totalInvites = 0
+    for i in await ctx.guild.invites():
+        if i.inviter == ctx.author:
+            totalInvites += i.uses
+    await ctx.send(f"You've invited {totalInvites} member{'' if totalInvites == 1 else 's'} to the server!")
+  else:
+    totalInvites = 0
+    for i in await ctx.guild.invites():
+       member = ctx.message.guild.get_member_named(user)
+       if i.inviter == member:
+         totalInvites += i.uses
+    await ctx.send(f"{member} has invited {totalInvites} member{'' if totalInvites == 1 else 's'} to the server!")
 
 @bot.command()
 async def IQ(ctx):
     """Average IQ of Mutiny"""
-    embed=discord.Embed(title="Average Mutiny IQ", description=f"{random.randint(-10, 130 )}")
+    embed=discord.Embed(title="Average {ctx.guild.name} IQ", description=f"{random.randint(-10, 130 )}")
     await ctx.send(embed=embed)
 
 @bot.command('roll')
