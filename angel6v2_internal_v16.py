@@ -679,6 +679,9 @@ async def av(ctx, *,  avamember : discord.Member=None):
     """grabs users avatar"""
     if avamember is None:
         avamember = ctx.author
+        userAvatarUrl = avamember.avatar.url
+        await ctx.send(userAvatarUrl)
+        await ctx.send("^^")
     else:
         userAvatarUrl = avamember.avatar.url
         await ctx.send(userAvatarUrl)
@@ -690,8 +693,8 @@ async def userinfo(ctx, *, user : discord.Member=None): # b'\xfc'
         user = ctx.author      
     date_format = "%a, %d %b %Y %I:%M %p"
     embed = discord.Embed(color=0xdfa3ff, description=user.mention)
-    embed.set_author(name=str(user), icon_url=user.avatar_url)
-    embed.set_thumbnail(url=user.avatar_url)
+    embed.set_author(name=str(user), icon_url=user.avatar.url)
+    embed.set_thumbnail(url=user.avatar.url)
     embed.add_field(name="Joined", value=user.joined_at.strftime(date_format))
     members = sorted(ctx.guild.members, key=lambda m: m.joined_at)
     embed.add_field(name="Join position", value=str(members.index(user)+1))
