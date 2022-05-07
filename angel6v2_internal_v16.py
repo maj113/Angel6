@@ -413,7 +413,7 @@ class Music(commands.Cog):
         await ctx.voice_state.stop()
         del self.voice_states[ctx.guild.id]
 
-    @commands.command(name='volume')
+    @commands.command(name='volume', aliases=['vol'])
     @commands.is_owner()
     async def _volume(self, ctx: commands.Context, *, volume: int):
         """Sets the volume of the player."""
@@ -662,7 +662,6 @@ async def on_member_remove(member):
     embed.set_footer(text=f"{member.guild}", icon_url=f"{member.guild.icon.url}")
     await channel.send(embed=embed)
 
-
 @bot.command()
 async def users(ctx,):
     """shows total amount of members"""
@@ -832,23 +831,13 @@ async def unban(ctx, id: int) :
     user = await bot.fetch_user(id)
     await ctx.guild.unban(user)
     await ctx.send(f'{user} has been unbanned')
-        
-        
-
-
+                
 @bot.command()
 @commands.has_permissions(ban_members =True)
 async def wipe(ctx, amount=0):
     """wipes x amount of messages"""
     await ctx.channel.purge(limit=amount)
     await ctx.channel.send(f"Cleanup Complete.")
-
-@bot.command()
-#this command does nothing 
-async def crisis(ctx):
-   """Underground Nuclear Code"""
-   embed = discord.Embed(title="Last Resort", description="Failsafe activated. purging.")
-   await ctx.channel.send(embed=embed)
 
 @bot.command()
 @commands.has_permissions(kick_members=True)
@@ -858,8 +847,6 @@ async def warn(ctx, member : discord.Member, *, reason=None):
     embed =discord.Embed(title="Warned", description=f"{member.mention} was warned for {reason}")
     await ctx.channel.send (embed=embed)
     await member.send(embed=embed2)
-
-
 
 @bot.command()
 async def invites(ctx, user = None):
@@ -938,12 +925,12 @@ def parseInput(input):
         diceToRoll = int(split[0])
         sidedDice = int(split[1])
 
-    if diceToRoll > 100:
+    if diceToRoll > 150:
         raise Exception('too many dice')
     
     if sidedDice > 100000000:
         raise Exception('too many sides')
-
+    
     return diceToRoll, sidedDice
 
 def rolladice(sides):
@@ -993,7 +980,7 @@ async def violation(ctx):
 
 @bot.command()
 async def german(ctx):
-    """Random German Gif Fuck you bahzz"""
+    """Random German Gif"""
     await ctx.send("https://giphy.com/gifs/fifa-Vd8wLaK3lNDNMuGaUL \n SHUT THE FUCK UP BAHZZ VIVA LA GERMANY AAJAJJAJAJAJA")
         
 bot.run(TOKEN)                                      
