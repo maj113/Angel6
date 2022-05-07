@@ -943,7 +943,7 @@ async def credit(ctx):
     content = file.read()
     file.close()
     await ctx.send(content)
-    embed=discord.Embed(title="Made by: ! ! Gregg#8032, Maintained by: MayTheChicken#1623", description="ask them anything! 24/7\n Feel free to add them as a friend")
+    embed=discord.Embed(title="Hosted/Made by: ! ! Gregg#8032, Maintained by: MayTheChicken#1623", description="ask them anything! 24/7\n Feel free to add them as a friend")
     await ctx.send(embed=embed)
 
 @bot.command(pass_context=True)
