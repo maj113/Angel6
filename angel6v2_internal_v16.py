@@ -864,11 +864,11 @@ async def invites(ctx, user = None):
        if i.inviter == member:
          totalInvites += i.uses
     await ctx.send(f"{member} has invited {totalInvites} member{'' if totalInvites == 1 else 's'} to the server!")
-
+    
 @bot.command()
 async def IQ(ctx):
     """Average IQ of Mutiny"""
-    embed=discord.Embed(title="Average {ctx.guild.name} IQ", description=f"{random.randint(-10, 130 )}")
+    embed=discord.Embed(title=f"Average {ctx.guild.name} IQ", description=f"{random.randint(-10, 130 )}", color=discord.Color.blurple())
     await ctx.send(embed=embed)
 
 @bot.command('roll')
