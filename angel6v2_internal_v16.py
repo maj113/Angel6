@@ -705,7 +705,6 @@ async def userinfo(ctx, *, user : discord.Member=None): # b'\xfc'
         embed.add_field(name="Roles [{}]".format(len(user.roles)-1), value=role_string, inline=False)
     perm_string = ', '.join([str(p[0]).replace("_", " ").title() for p in user.guild_permissions if p[1]])
     embed.add_field(name="Guild permissions", value=perm_string, inline=False)
-    embed.set_footer(text='ID: ' + str(user.id))
     return await ctx.send(embed=embed)
 
 @bot.command(description="sends our invite or gateways invite lol")
