@@ -699,6 +699,7 @@ async def userinfo(ctx, *, user : discord.Member=None): # b'\xfc'
     members = sorted(ctx.guild.members, key=lambda m: m.joined_at)
     embed.add_field(name="Join position", value=str(members.index(user)+1))
     embed.add_field(name="Registered", value=user.created_at.strftime(date_format))
+    embed.add_field(name="ID", value=user.id, inline=True)
     if len(user.roles) > 1:
         role_string = ' '.join([r.mention for r in user.roles][1:])
         embed.add_field(name="Roles [{}]".format(len(user.roles)-1), value=role_string, inline=False)
