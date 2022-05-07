@@ -21,9 +21,9 @@ import os
 import re
 from dotenv import load_dotenv
 
-TOKEN = os.getenv("DISCORD_TOKEN")
 
 load_dotenv()
+TOKEN = os.getenv("DISCORD_TOKEN")
 
 # Silence useless bug reports messages
 youtube_dl.utils.bug_reports_message = lambda: ''
