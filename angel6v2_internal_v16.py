@@ -802,7 +802,7 @@ ytdlfunc = run("youtube-dl --version", shell=True, capture_output=True).stdout.d
 async def stats(ctx):
     """shows bot stats"""
     bedem = discord.Embed(title = 'System Resource Usage', description = 'See bot host statistics.', color=discord.Color.blurple()) 
-    bedem.add_field(name = "Angel$IX version", value = "**v16.5**", inline = False)
+    bedem.add_field(name = "Angel$IX version", value = "**v16.5/2.3-GH**", inline = False)
     bedem.add_field(name = 'CPU Usage', value = f'{psutil.cpu_percent()}%', inline = False)
     bedem.add_field(name = 'Total Memory', value = f'{totmem:.0f}MB', inline = False)
     bedem.add_field(name = 'Memory Usage', value = f'{mem:.0f}MB', inline = False)
