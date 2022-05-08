@@ -968,10 +968,6 @@ async def femboy(ctx):
     await ctx.send(embed=embed)
     await ctx.send(embed=embed2)
 
-@bot.command(pass_context=True)
-async def gayboy(ctx):
-    """Gay asf dont use"""
-    await ctx.send("https://cdn.discordapp.com/attachments/674384844893192193/782375276629721107/cute_cat.mov")
 
 @bot.command(pass_context=True)
 async def violation(ctx):
