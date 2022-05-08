@@ -20,8 +20,7 @@ from async_timeout import timeout
 import os
 import re
 from dotenv import load_dotenv
-
-#testcomment for servicing 
+ 
 
 load_dotenv()
 TOKEN = os.getenv("DISCORD_TOKEN")
@@ -571,8 +570,8 @@ class Music(commands.Cog):
 
     
     async def _search(self, ctx: commands.Context, *, search: str):
-        """Searches youtube.
-        It returns an imbed of the first 10 results collected from youtube.
+        """Searches YouTube.
+        It returns an embed of the first 10 results collected from YouTube.
         Then the user can choose one of the titles by typing a number
         in chat or they can cancel by typing "cancel" in chat.
         Each title in the list can be clicked as a link.
@@ -634,9 +633,9 @@ async def ping(ctx):
 @bot.event
 async def on_ready():
     print('Logged in as:\n{0.user.name}\n{0.user.id}'.format(bot))
-    await bot.change_presence(activity=discord.Game(name="Mutinys Official Bot"))
+    await bot.change_presence(activity=discord.Game(name="Mutiny's Official Bot"))
     channel = bot.get_channel(965773534876012564)
-    #specifies Ascii art location for bootup message
+    #specifies Ascii art location for boot-up message
     file = open(r"Ascii1.txt", "rt")
     content = file.read()
     file.close()
@@ -652,7 +651,7 @@ async def on_member_join(member):
     mbed = discord.Embed(
         colour = (discord.Colour.blurple()),
         title = 'Glad you could find us!',
-        description =f"yo! im Mutinys Personal Bot, proceed to <#965773524516106310> to talk:)")
+        description =f"yo! im Mutiny's Personal Bot, proceed to <#965773524516106310> to talk:)")
     await member.send(embed=mbed)
 
 @bot.event
@@ -686,7 +685,7 @@ async def av(ctx, *,  avamember : discord.Member=None):
         userAvatarUrl = avamember.avatar.url
         await ctx.send(userAvatarUrl)
         await ctx.send("^^")
-#i dont like the guild permissions part, way too much info, useless
+#i don't like the guild permissions part, way too much info, useless
 @bot.command(description="Gets info about the user")
 async def userinfo(ctx, *, user : discord.Member=None): # b'\xfc'
     if user is None:
@@ -897,7 +896,7 @@ async def roll(ctx,*args):
         try:
             (diceToRoll,numberOfSides)=parseInput(args)
         except:
-            await ctx.send('I didn''t understand your input: `' + args + '`.\n try `~roll help` for supported options')
+            await ctx.send('I didn\'t understand your input: `' + args + '`.\n try `~roll help` for supported options')
             return
     
     await ctx.send('Rolling `' + str(diceToRoll) + '` dice with `' + str(numberOfSides) + '` sides')
@@ -963,7 +962,7 @@ async def rmrole(ctx, user: discord.Member, role: discord.Role):
 @bot.command(pass_context=True, aliases=["fem"])
 async def femboy(ctx):
     """Femboy Wisdom/Tutorial"""
-    embed=discord.Embed(title="Chakal's Widsom On Femboys",description="How can you be a feminine looking boy? Simple. \nGrow your hair out, exercise regularly (I run/jog to remain slim, and I do squats/tap dance to exercise my thighs/butt), trim your facial hair, do whatever you can to help out your skin, and consider taking HRT.\n Learn how to do makeup, it is a fucking amazing tool. Experiment with different outfits, my favorite for andro people is just leggings beneath feminine jean shorts, it is common for females in the UK and looks feminine, but not so feminine that it will look weird in public.\nConsider taking speech therapy, or just watching some videos and working at getting a more feminine voice.\nAt the end of the day, though, you can practically look like a girl, with the most luscious hair, smallest eyebrows, red lips, and longest lashes; you can have the perfect body type, be an hourglass with a big ass, thick thighs/hips and a skinny waist; you can sound like the girliest woman in the world; you can wear booty shorts and a half shirt and look damn good in it; you can be a master at feminine makeup.\nBut it all means nothing if you fail to act feminine. For looks catch the eye, but personality catches the heart.\nThere comes a point when you must ask yourself if you want to be a femboy, or simply be a feminine looking man.\nSo, how can you be a femboy?\nAct feminine. Femboys are made, not born.  -Chakal")
+    embed=discord.Embed(title="Chakal's Wisdom On Femboys",description="How can you be a feminine looking boy? Simple. \nGrow your hair out, exercise regularly (I run/jog to remain slim, and I do squats/tap dance to exercise my thighs/butt), trim your facial hair, do whatever you can to help out your skin, and consider taking HRT.\n Learn how to do makeup, it is a fucking amazing tool. Experiment with different outfits, my favorite for andro people is just leggings beneath feminine jean shorts, it is common for females in the UK and looks feminine, but not so feminine that it will look weird in public.\nConsider taking speech therapy, or just watching some videos and working at getting a more feminine voice.\nAt the end of the day, though, you can practically look like a girl, with the most luscious hair, smallest eyebrows, red lips, and longest lashes; you can have the perfect body type, be an hourglass with a big ass, thick thighs/hips and a skinny waist; you can sound like the girliest woman in the world; you can wear booty shorts and a half shirt and look damn good in it; you can be a master at feminine makeup.\nBut it all means nothing if you fail to act feminine. For looks catch the eye, but personality catches the heart.\nThere comes a point when you must ask yourself if you want to be a femboy, or simply be a feminine looking man.\nSo, how can you be a femboy?\nAct feminine. Femboys are made, not born.  -Chakal")
     embed2=discord.Embed(title="Miro's Wisdom On Femboys",description="Hey, some guys like being cute and pastel, trans guys included, and some transgender people don’t really feel the need to change their bodies either. So that’s an option. Maybe you’re a really feminine guy who’s fine with having a female body.\n Or, maybe you just really like the femboy aesthetic. Or maybe you’re attracted to femboys. Idk, I’m not you. It’s gonna take a little experimentation to find out.\n 1) Get some clothes you feel comfortable in. Try out that femboy look. Do you feel cute? Does it feel right? Whether you are cis or trans, you should be able to wear clothes that make you feel good about yourself. So do that. Whatever the answers are to the other questions, this will almost certainly make you feel a little better.\n 2) Do some googling. Learn about fem trans boys, demiboys, and non-binary people. Read some things from their perspectives. Does any of it resonate with you?\n3) Try some things. It’s normal for us to question our identities and grow and change through the years, and it’s normal to not fully understand yourself right away. If you think you might be trans, maybe try a different name or pronouns. if you don’t have supportive people around willing to help you experiment, then you can introduce yourself the way you want online, with strangers you’ll never have to interact with again. It takes a lot of the pressure off, too, if you’re nervous. Maybe it’ll feel right and you’ll know. Maybe it’ll feel wrong and you’ll realize you’re a girl. Maybe you’ll still be confused and have to try some new things. Have patience, it can take time.\n4) Own it. Whatever your identity is, dress the way you like and be who you are and if anyone gives you shit about it, just show them how high you can kick their balls up their ass in your adorable little pink skirt -Miro.")
     await ctx.send(embed=embed)
     await ctx.send(embed=embed2)
