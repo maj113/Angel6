@@ -673,7 +673,7 @@ async def users(ctx,):
     a=ctx.guild.member_count
     b=discord.Embed(title=f"Total members in {ctx.guild.name}",description=a,color=discord.Color((0xffff00)))
     await ctx.send(embed=b)
-
+#theres probably a better way to check if a user has been mentioned
 @bot.command()
 async def av(ctx, *,  avamember : discord.Member=None):
     """grabs users avatar"""
@@ -686,7 +686,7 @@ async def av(ctx, *,  avamember : discord.Member=None):
         userAvatarUrl = avamember.avatar.url
         await ctx.send(userAvatarUrl)
         await ctx.send("^^")
-
+#i dont like the guild permissions part, way too much info, useless
 @bot.command(description="Gets info about the user")
 async def userinfo(ctx, *, user : discord.Member=None): # b'\xfc'
     if user is None:
@@ -717,7 +717,7 @@ async def serverinfo(ctx):
     id = str(ctx.guild.id)
     region = str(ctx.guild.region)
     memberCount = str(ctx.guild.member_count)
-
+    
     icon = str(ctx.guild.icon.url)
     invite ="none"
     embed = discord.Embed(
@@ -725,7 +725,7 @@ async def serverinfo(ctx):
         description=description,
         color=discord.Color.blurple()
     )
-    embed.set_thumbnail(url=icon)
+    embed.set_thumbnail(url=icon)#this is way too basic should fix
     embed.add_field(name="Owner", value=owner, inline=True)
     embed.add_field(name="Server ID", value=id, inline=True)
     embed.add_field(name="Region", value=region, inline=True)
@@ -792,7 +792,7 @@ async def unmute(ctx, member: discord.Member):
     await member.remove_roles(mutedRole)
     await ctx.send(f"Unmuted {member.mention}")
     await member.send(f'Unmuted in {ctx.guild.name} welcome back')
-
+#im proud of this 
 meminfo = psutil.Process(os.getpid())
 totmem = psutil.virtual_memory().total / float(2 ** 20)  
 mem = meminfo.memory_info()[0] / float(2 ** 20) 
@@ -801,7 +801,7 @@ ytdlfunc = run("youtube-dl --version", shell=True, capture_output=True).stdout.d
 @bot.command(pass_context=True, aliases=['info', 'debug'])
 async def stats(ctx):
     """shows bot stats"""
-    bedem = discord.Embed(title = 'System Resource Usage', description = 'See bot host statistics.', color=discord.Color.blurple()) 
+    bedem = discord.Embed(title = 'System Resource Usage and statistics', description = 'See bot host statistics.', color=discord.Color.blurple()) 
     bedem.add_field(name = "Angel$IX version", value = "**v16.5/2.3-GH**", inline = False)
     bedem.add_field(name = 'CPU Usage', value = f'{psutil.cpu_percent()}%', inline = False)
     bedem.add_field(name = 'Total Memory', value = f'{totmem:.0f}MB', inline = False)
@@ -817,7 +817,7 @@ async def stats(ctx):
 async def ban(ctx, member : discord.Member, *, reason=None):
     """bans the specified user"""
     if  member.top_role >= ctx.author.top_role:
-        await ctx.send(f"Yo, you can only bean members lower than yourself lmao ")
+        await ctx.send(f"You can only ban members lower than yourself")
         return
     else:
         await member.ban(reason=reason)
@@ -977,6 +977,7 @@ async def violation(ctx):
 @bot.command()
 async def german(ctx):
     """Random German Gif"""
+    #why does this exits?
     await ctx.send("https://giphy.com/gifs/fifa-Vd8wLaK3lNDNMuGaUL \n SHUT THE FUCK UP BAHZZ VIVA LA GERMANY AAJAJJAJAJAJA")
         
 bot.run(TOKEN)                                      
