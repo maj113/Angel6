@@ -967,7 +967,14 @@ async def femboy(ctx):
     await ctx.send(embed=embed)
     await ctx.send(embed=embed2)
     
+@bot.command(pass_context=True)
+async def support(ctx):
+    """shows support server link"""
+    embed=discord.Embed(title="Support server",description="Need help with the bot? \nWant to contribute to the bot?")
+    await ctx.send(embed=embed)
+    await ctx.send("https://discord.gg/bBD57gEHAd")
 
+    
 @bot.command(pass_context=True, aliases=["vio"])
 async def violation(ctx):
     """That one there was a violation"""
