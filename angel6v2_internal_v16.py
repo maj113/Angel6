@@ -983,7 +983,7 @@ async def violation(ctx):
 @bot.command()
 async def german(ctx):
     """Random German Gif"""
-    #why does this exits?
+    #why does this exist?
     await ctx.send("https://giphy.com/gifs/fifa-Vd8wLaK3lNDNMuGaUL \n SHUT THE FUCK UP BAHZZ VIVA LA GERMANY AAJAJJAJAJAJA")
         
 bot.run(TOKEN)                                      
