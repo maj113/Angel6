@@ -628,7 +628,7 @@ async def restart(ctx):
 @bot.command()
 async def ping(ctx):
     """shows the ping"""
-    await ctx.send(f'Here {(bot.latency * 1000)} ms')
+    await ctx.send(f'Here {(bot.latency * 1000):.0f} ms')
 
 @bot.event
 async def on_ready():
