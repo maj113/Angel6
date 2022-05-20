@@ -610,7 +610,6 @@ intents = discord.Intents.default()
 intents.members = True
 intents.messages = True
 intents.presences = True
-
 bot = commands.Bot(command_prefix='~', intents=intents)
 status = ['Jamming out to music!', 'Eating!', 'Sleeping!']
 bot.add_cog(Music(bot))
