@@ -261,7 +261,7 @@ class VoiceState:
         self.exists = True
 
         self._loop = False
-        self._volume = 0.5
+        self._volume = 1
         self.skip_votes = set()
 
         self.audio_player = bot.loop.create_task(self.audio_player_task())
@@ -711,15 +711,12 @@ async def userinfo(ctx, *, user : discord.Member=None): # b'\xfc'
 async def serverinfo(ctx):
     """displays server information"""
     name = str(ctx.guild.name)
-    description = "Official Mutiny server"
-    launch = "7/7/21"
+    description = f"Official {ctx.guild.name} server"
     owner = str(ctx.guild.owner)
     id = str(ctx.guild.id)
     region = str(ctx.guild.region)
     memberCount = str(ctx.guild.member_count)
-    
     icon = str(ctx.guild.icon.url)
-    invite ="none"
     embed = discord.Embed(
         title=name + "<3",
         description=description,
@@ -730,10 +727,10 @@ async def serverinfo(ctx):
     embed.add_field(name="Server ID", value=id, inline=True)
     embed.add_field(name="Region", value=region, inline=True)
     embed.add_field(name="Member Count", value=memberCount, inline=True)
-    embed.add_field(name="Invite",value=invite, inline=True)
-    embed.add_field(name="Launch Date", value=launch, inline=True)
+    embed.add_field(name="Created", value=ctx.guild.created_at.strftime(
+            "%B %d, %Y, %I:%M %p"), inline=True)
     await ctx.send(embed=embed)
-
+    
 @bot.command(description="Mutes the specified user.")
 @commands.has_permissions(manage_messages=True)
 async def mute(ctx, member: discord.Member, *, reason=None):
@@ -867,7 +864,7 @@ async def invites(ctx, user = None):
     
 @bot.command()
 async def IQ(ctx):
-    """Average IQ of Mutiny"""
+    """Average server IQ"""
     embed=discord.Embed(title=f"Average {ctx.guild.name} IQ", description=f"{random.randint(-10, 130 )}", color=discord.Color.blurple())
     await ctx.send(embed=embed)
 
