@@ -1067,12 +1067,12 @@ async def support(ctx):
     await ctx.send("https://discord.gg/ctsjpMQXEe \n https://github.com/maj113/Angel6")
 
     
-@bot.command(pass_context=True, aliases=["vio"])
+@bot.command(pass_context=True, aliases=["vio", "violated"])
 async def violation(ctx):
     """That one there was a violation"""
     await ctx.send("https://tenor.com/view/that-one-there-was-a-violation-that1there-was-violation-violation-that-one-there-was-a-violation-personally-i-wouldnt-have-it-that1there-was-a-violation-personally-i-wouldnt-have-it-gif-20040456")
 
-@bot.command()
+@bot.command(pass_context=True)
 async def german(ctx):
     """Random German Gif"""
     #why does this exist?
