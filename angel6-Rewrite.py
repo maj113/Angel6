@@ -638,7 +638,7 @@ async def on_ready():
     await bot.change_presence(activity=discord.Game(name="Mutiny's Official Bot"))
 
     #specifies Ascii art location for boot-up message
-    file = open(r"Ascii1.txt", "rt")
+    file = open(os.path.join(os.path.dirname(__file__), 'Ascii1.txt'), 'rt')
     content = file.read()
     file.close()
     if os.getenv("LOGGING_CHANNEL_ID") == "" :
