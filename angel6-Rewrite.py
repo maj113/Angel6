@@ -761,8 +761,9 @@ async def av(ctx, *,  avamember : discord.Member=None):
         await ctx.send(userAvatarUrl)
         await ctx.send("^^")
 #I don't like the guild permissions part, way too much info, useless
-@bot.command(description="Gets info about the user")
+@bot.command(pass_context=True)
 async def userinfo(ctx, *, user : discord.Member=None): # b'\xfc'
+    """Shows userinfo"""
     if user is None:
         user = ctx.author      
     date_format = "%a, %d %b %Y %I:%M %p"
