@@ -940,6 +940,7 @@ async def warn(ctx, member : discord.Member, *, reason=None):
 
 @bot.command()
 async def invites(ctx, user : discord.Member=None):
+    """Shows how many people someone has invited"""
     if user == None:
         totalInvites = 0
         for i in await ctx.guild.invites():
@@ -948,8 +949,8 @@ async def invites(ctx, user : discord.Member=None):
         await ctx.send(f"You've invited {totalInvites} member{'' if totalInvites == 1 else 's'} to the server!")
     else:
         totalInvites = 0
+        member = user
         for i in await ctx.guild.invites():
-            member = user
             if i.inviter == member:
                 totalInvites += i.uses
         await ctx.send(f"{member} has invited {totalInvites} member{'' if totalInvites == 1 else 's'} to the server!")
