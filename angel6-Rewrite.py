@@ -26,7 +26,7 @@ TOKEN = os.getenv("DISCORD_TOKEN")
 LOG_CHAN_ID = os.getenv("LOGGING_CHANNEL_ID")
 JL_CHAN_ID = os.getenv("JOIN_LEAVE_CHANNEL_ID")
 GEN_CHAN_ID = os.getenv("GENERAL_CHANNEL_ID")
-BotVer = "2.2.1 [RC1]"
+BotVer = "**2.2.1 [RC1]**"
 # Silence useless bug reports messages
 
 youtube_dl.utils.bug_reports_message = lambda: ''
@@ -693,7 +693,7 @@ async def on_ready():
 
     else:
         embed = discord.Embed(title = 'Bot settings', description = 'Current bot settings and status', color=discord.Color.blurple())
-        embed.add_field(name="Angel$IX Version:", value=BotVer, inline=True)
+        embed.add_field(name="**Angel$IX Version:**", value=BotVer, inline=False)
         embed.add_field(name="logging channel", value=LOG_CHAN_ID, inline=False)
         embed.add_field(name="Join leave channel", value=JL_CHAN_ID, inline=False)
         embed.add_field(name="General channel", value=GEN_CHAN_ID, inline=False)
