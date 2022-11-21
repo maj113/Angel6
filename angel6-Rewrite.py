@@ -938,9 +938,8 @@ async def warn(ctx, member : discord.Member, *, reason=None):
         await ctx.channel.send (embed=embed)
         await member.send(embed=embed2)
 
-@bot.command(pass_context=True)
+@bot.command()
 async def invites(ctx, user : discord.Member=None):
-    """Shows users invite count"""
     if user == None:
         totalInvites = 0
         for i in await ctx.guild.invites():
@@ -950,9 +949,9 @@ async def invites(ctx, user : discord.Member=None):
     else:
         totalInvites = 0
         for i in await ctx.guild.invites():
-        member = user
-        if i.inviter == member:
-            totalInvites += i.uses
+            member = user
+            if i.inviter == member:
+                totalInvites += i.uses
         await ctx.send(f"{member} has invited {totalInvites} member{'' if totalInvites == 1 else 's'} to the server!")
     
 @bot.command()
