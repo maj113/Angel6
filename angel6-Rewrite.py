@@ -1,4 +1,4 @@
-from base64 import decode
+
 from encodings import utf_8
 import logging
 import asyncio
