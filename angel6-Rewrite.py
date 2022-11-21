@@ -895,7 +895,12 @@ async def stats(ctx):
 @commands.has_permissions(ban_members =True)
 async def ban(ctx, member : discord.Member, *, reason=None):
     """bans the specified user"""
-    if  member.top_role >= ctx.author.top_role:
+    
+    if member == ctx.author:
+        await ctx.send(f"Can't ban yourself idiot")
+        return
+
+    elif  member.top_role >= ctx.author.top_role:
         await ctx.send(f"You can only ban members lower than yourself")
         return
     else:
@@ -923,10 +928,14 @@ async def wipe(ctx, amount=0):
 @commands.has_permissions(kick_members=True)
 async def warn(ctx, member : discord.Member, *, reason=None):
     """warns a user"""
-    embed2 =discord.Embed(title="Warned🗡️", description=f"You were warned for {reason}")
-    embed =discord.Embed(title="Warned", description=f"{member.mention} was warned for {reason}")
-    await ctx.channel.send (embed=embed)
-    await member.send(embed=embed2)
+    if member == ctx.author:
+        await ctx.send(f"Can't warn yourself idiot")
+        return
+    else:
+        embed2 =discord.Embed(title="Warned🗡️", description=f"You were warned for {reason}")
+        embed =discord.Embed(title="Warned", description=f"{member.mention} was warned for {reason}")
+        await ctx.channel.send (embed=embed)
+        await member.send(embed=embed2)
 
 @bot.command()
 async def invites(ctx, user : discord.Member=None):
