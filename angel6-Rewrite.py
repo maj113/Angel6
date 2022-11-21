@@ -1048,7 +1048,7 @@ async def role(ctx, user: discord.Member, role: discord.Role):
 @bot.command(pass_context=True)
 @commands.has_permissions(ban_members=True)
 async def rmrole(ctx, user: discord.Member, role: discord.Role):
-        """takes  users role away"""
+        """Removes users role away"""
         await user.remove_roles(role)
         await ctx.send(f"{user.name} was removed from role: {role.name}")
 
