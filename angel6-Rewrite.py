@@ -1064,7 +1064,7 @@ async def support(ctx):
     """shows support server link"""
     embed=discord.Embed(title="Support server",description="Need help with the bot? \nWant to contribute to the bot?", color=discord.Color.blurple())
     await ctx.send(embed=embed)
-    await ctx.send("https://discord.gg/bBD57gEHAd \n https://github.com/maj113/Angel6")
+    await ctx.send("https://discord.gg/ctsjpMQXEe \n https://github.com/maj113/Angel6")
 
     
 @bot.command(pass_context=True, aliases=["vio"])
