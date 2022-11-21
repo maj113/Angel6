@@ -18,14 +18,16 @@ import cpuinfo
 import youtube_dl
 from async_timeout import timeout
 import os
-import re
 from dotenv import load_dotenv
  
 
 load_dotenv()
 TOKEN = os.getenv("DISCORD_TOKEN")
-
+LOG_CHAN_ID = os.getenv("LOGGING_CHANNEL_ID")
+JL_CHAN_ID = os.getenv("JOIN_LEAVE_CHANNEL_ID")
+GEN_CHAN_ID = os.getenv("GENERAL_CHANNEL_ID")
 # Silence useless bug reports messages
+
 youtube_dl.utils.bug_reports_message = lambda: ''
 
 logging.basicConfig(level=logging.ERROR)
@@ -38,29 +40,30 @@ class YTDLError(Exception):
 
 class YTDLSource(discord.PCMVolumeTransformer):
     YTDL_OPTIONS = {
-        'format': 'bestaudio',
         'extractaudio': True,
-        'audioformat': 'aac',
+        'format': 'bestaudio',      
+        'audioformat': 'flac',
+        'audioquality': '0', 
         'outtmpl': '%(extractor)s-%(id)s-%(title)s.%(ext)s',
         'restrictfilenames': True,
         'noplaylist': True,
         'nocheckcertificate': True,
         'ignoreerrors': False,
-        'logtostderr': False,
-        'quiet': True,
-        'no_warnings': True,
-        'default_search': 'ytsearch',
+        'logtostderr': True,
+        'quiet': False,
+        'no_warnings': False,
+        'default_search': 'auto',
         'source_address': '0.0.0.0',
     }
 
     FFMPEG_OPTIONS = {
         'before_options': '-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5',
-        'options': '-vn',
+        'options': ' -b:a 960k -vn ',
     }
 
     ytdl = youtube_dl.YoutubeDL(YTDL_OPTIONS)
 
-    def __init__(self, ctx: commands.Context, source: discord.FFmpegPCMAudio, *, data: dict, volume: float = 1):
+    def __init__(self, ctx: commands.Context, source: discord.FFmpegPCMAudio, *, data: dict, volume: float = 0.9):
         super().__init__(source, volume)
 
         self.requester = ctx.author
@@ -122,8 +125,8 @@ class YTDLSource(discord.PCMVolumeTransformer):
                     info = processed_info['entries'].pop(0)
                 except IndexError:
                     raise YTDLError('Couldn\'t retrieve any matches for `{}`'.format(webpage_url))
-        
         return cls(ctx, discord.FFmpegPCMAudio(info['url'], **cls.FFMPEG_OPTIONS), data=info)
+    pass
 
     @classmethod
     async def search_source(cls, ctx: commands.Context, search: str, *, loop: asyncio.BaseEventLoop = None):
@@ -261,7 +264,7 @@ class VoiceState:
         self.exists = True
 
         self._loop = False
-        self._volume = 1.2
+        self._volume = 1
         self.skip_votes = set()
 
         self.audio_player = bot.loop.create_task(self.audio_player_task())
@@ -386,7 +389,6 @@ class Music(commands.Cog):
         ctx.voice_state.voice = await destination.connect()
 
     @commands.command(name='summon')
-    @commands.has_permissions(manage_guild=True)
     async def _summon(self, ctx: commands.Context, *, channel: discord.VoiceChannel = None):
         """Summons the bot to a voice channel.
         If no channel was specified, it joins your channel.
@@ -402,7 +404,7 @@ class Music(commands.Cog):
 
         ctx.voice_state.voice = await destination.connect()
 
-    @commands.command(name='leave', aliases=['disconnect'])
+    @commands.command(name='leave', aliases=['disconnect','quit'])
     @commands.has_permissions(manage_guild=True)
     async def _leave(self, ctx: commands.Context):
         """Clears the queue and leaves the voice channel."""
@@ -472,7 +474,7 @@ class Music(commands.Cog):
             return await ctx.send('Not playing any music right now...')
 
         voter = ctx.message.author
-        if voter == ctx.voice_state.current.requester:
+        if voter == ctx.voice_state.current.requester or ctx.author.guild_permissions.manage_messages:
             await ctx.message.add_reaction('⏭')
             ctx.voice_state.skip()
 
@@ -606,14 +608,12 @@ class Music(commands.Cog):
             if ctx.voice_client.channel != ctx.author.voice.channel:
                 raise commands.CommandError('Bot is already in a voice channel.')
 
-intents = discord.Intents.default()
-intents.members = True
-intents.messages = True
-intents.presences = True
+intents = discord.Intents().all()
+
 bot = commands.Bot(command_prefix='~', intents=intents)
 status = ['Jamming out to music!', 'Eating!', 'Sleeping!']
 bot.add_cog(Music(bot))
-   
+
 def restart_program():
     python = sys.executable
     os.execl(python, python, * sys.argv)
@@ -631,34 +631,106 @@ async def ping(ctx):
     """shows the ping"""
     await ctx.send(f'Here {(bot.latency * 1000):.0f} ms')
 
+
 @bot.event
 async def on_ready():
     print('Logged in as:\n{0.user.name}\n{0.user.id}'.format(bot))
     await bot.change_presence(activity=discord.Game(name="Mutiny's Official Bot"))
-    channel = bot.get_channel(965773534876012564)
+
     #specifies Ascii art location for boot-up message
     file = open(r"Ascii1.txt", "rt")
     content = file.read()
     file.close()
-    await channel.send(content)
+    if os.getenv("LOGGING_CHANNEL_ID") == "" :
+        logginginput = int(input("Input logging channel ID ")).strip()
+        with open(".env", "r") as envfile:
+            content1 = envfile.read()
+            changed = content1.replace("LOGGING_CHANNEL_ID=", ''.join(["LOGGING_CHANNEL_ID=", str(logginginput)]))
+            with open('.env','w') as envfile:
+                envfile.write(changed)
+        restart_program()
+    
+    elif os.getenv("LOGGING_CHANNEL_ID") == None :
+        logginginput = int(input("Input logging channel ID ")).strip()
+        channel = bot.get_channel(logginginput)
+        with open(".env", "a") as envfile:
+            envfile.write(f"\nLOGGING_CHANNEL_ID={logginginput}")
+        restart_program()
+    
+    if os.getenv("JOIN_LEAVE_CHANNEL_ID") == None :
+        logginginput = input("Input join/leave channel ID ").strip()
+        with open(".env", "a") as envfile:
+            envfile.write(f"\nJOIN_LEAVE_CHANNEL_ID={logginginput}")
+        restart_program()
+
+    elif os.getenv("JOIN_LEAVE_CHANNEL_ID") == "" :
+        logginginput = int(input("Input join/leave channel ID ")).strip()
+        channel = bot.get_channel(logginginput)
+        with open(".env", "r") as envfile:
+            content1 = envfile.read()
+            changed = content1.replace("JOIN_LEAVE_CHANNEL_ID=", ''.join(["JOIN_LEAVE_CHANNEL_ID=", str(logginginput)]))
+            with open('.env','w') as envfile:
+                envfile.write(changed)
+        restart_program()
+
+    if os.getenv("GENERAL_CHANNEL_ID") == None :
+        logginginput = input("Input general channel ID ").strip()
+        with open(".env", "a") as envfile:
+            envfile.write(f"\nGENERAL_CHANNEL_ID={logginginput}")
+        restart_program()
+
+    elif os.getenv("GENERAL_CHANNEL_ID") == "" :
+        logginginput = int(input("Input general channel ID ")).strip()
+        channel = bot.get_channel(logginginput)
+        with open(".env", "r") as envfile:
+            content1 = envfile.read()
+            changed = content1.replace("GENERAL_CHANNEL_ID=", ''.join(["GENERAL_CHANNEL_ID=", str(logginginput)]))
+            with open('.env','w') as envfile:
+                envfile.write(changed)
+        restart_program()
+
+
+    else:
+        embed = discord.Embed(title = 'Bot settings', description = 'Current bot settings saved in .env:', color=discord.Color.blurple())
+        embed.add_field(name="logging channel", value=LOG_CHAN_ID, inline=False)
+        embed.add_field(name="Join leave channel", value=JL_CHAN_ID, inline=False)
+        embed.add_field(name="General channel", value=GEN_CHAN_ID, inline=False)
+        embed.add_field(name="Current API latency:", value=f'{(bot.latency * 1000):.0f}ms', inline=False)
+        ID = int(LOG_CHAN_ID)
+        channel = bot.get_channel(ID)
+        await channel.send(content)
+        await channel.send(embed=embed)       
+
 
 @bot.event
 async def on_member_join(member):
-    channel = bot.get_channel(965773521206779955)
-    embed = discord.Embed(colour=16777, description=f"{member.mention} joined, Total Members: {len(list(member.guild.members))}")
+    ID = int(JL_CHAN_ID)
+    channel = bot.get_channel(ID)    
+    embed = discord.Embed(colour=discord.Colour.blurple(), description=f"{member.mention} joined, Total Members: {len(list(member.guild.members))}")
     embed.set_thumbnail(url=f"{member.avatar.url}")
     embed.set_footer(text=f"{member.guild}", icon_url=f"{member.guild.icon.url}")
     await channel.send(embed=embed)
-    mbed = discord.Embed(
+    if os.getenv("GENERAL_CHANNEL_ID") == None or os.getenv("GENERAL_CHANNEL_ID") == "" :
+        mbed = discord.Embed(
         colour = (discord.Colour.blurple()),
         title = 'Glad you could find us!',
-        description =f"yo! im Mutiny's Personal Bot, proceed to <#965773524516106310> to talk:)")
-    await member.send(embed=mbed)
+        description =f"yo! im Dyztopian D3lirium's Personal Bot, proceed to General to talk:)")
+        await member.send(embed=mbed)   
+    
+    else:
+        chanID = int(GEN_CHAN_ID)
+        mbed = discord.Embed(
+            colour = (discord.Colour.blurple()),
+            title = 'Glad you could find us!',
+            
+            description =f"yo! im Dyztopian D3lirium's Personal Bot, proceed to <#{chanID}> to talk:)")
+        await member.send(embed=mbed)
 
 @bot.event
 async def on_member_remove(member):
-    channel = bot.get_channel(965773521206779955)
-    embed = discord.Embed(colour=16777, description=f"{member.mention} Left us, Total Members: {len(list(member.guild.members))}")
+    ID = int(JL_CHAN_ID)
+    channel = bot.get_channel(ID)
+    embed = discord.Embed(colour=discord.Colour.blurple(), description=f"{member.mention} Left us, Total Members: {len(list(member.guild.members))}")
     embed.set_thumbnail(url=f"{member.avatar.url}")
     embed.set_footer(text=f"{member.guild}", icon_url=f"{member.guild.icon.url}")
     await channel.send(embed=embed)
@@ -671,9 +743,9 @@ async def users(ctx,):
     for member in guild.members:
         members+=1
     a=ctx.guild.member_count
-    b=discord.Embed(title=f"Total members in {ctx.guild.name}",description=a,color=discord.Color((0xffff00)))
+    b=discord.Embed(title=f"Total members in {ctx.guild.name}",description=a,color=discord.Color.blurple())
     await ctx.send(embed=b)
-#theres probably a better way to check if a user has been mentioned
+#there's probably a better way to check if a user has been mentioned
 @bot.command()
 async def av(ctx, *,  avamember : discord.Member=None):
     """grabs users avatar"""
@@ -686,7 +758,7 @@ async def av(ctx, *,  avamember : discord.Member=None):
         userAvatarUrl = avamember.avatar.url
         await ctx.send(userAvatarUrl)
         await ctx.send("^^")
-#i don't like the guild permissions part, way too much info, useless
+#I don't like the guild permissions part, way too much info, useless
 @bot.command(description="Gets info about the user")
 async def userinfo(ctx, *, user : discord.Member=None): # b'\xfc'
     if user is None:
@@ -707,14 +779,13 @@ async def userinfo(ctx, *, user : discord.Member=None): # b'\xfc'
     embed.add_field(name="Guild permissions", value=perm_string, inline=False)
     return await ctx.send(embed=embed)
 
-@bot.command(description="sends our invite or gateways invite lol")
+@bot.command(description="Shows server info")
 async def serverinfo(ctx):
     """displays server information"""
     name = str(ctx.guild.name)
     description = f"Official {ctx.guild.name} server"
     owner = str(ctx.guild.owner)
     id = str(ctx.guild.id)
-    region = str(ctx.guild.region)
     memberCount = str(ctx.guild.member_count)
     icon = str(ctx.guild.icon.url)
     embed = discord.Embed(
@@ -725,7 +796,6 @@ async def serverinfo(ctx):
     embed.set_thumbnail(url=icon)#this is way too basic should fix
     embed.add_field(name="Owner", value=owner, inline=True)
     embed.add_field(name="Server ID", value=id, inline=True)
-    embed.add_field(name="Region", value=region, inline=True)
     embed.add_field(name="Member Count", value=memberCount, inline=True)
     embed.add_field(name="Created", value=ctx.guild.created_at.strftime(
             "%B %d, %Y, %I:%M %p"), inline=True)
@@ -738,9 +808,15 @@ async def mute(ctx, member: discord.Member, *, reason=None):
     embed=discord.Embed(title="Muted", description=f"{member.mention} was muted for {reason}")
     guild = ctx.guild
     mutedRole = discord.utils.get(guild.roles, name="Muted")
-    if member.top_role >= ctx.author.top_role:
+    
+    if member == ctx.author:
+        await ctx.send(f"Can't mute yourself idiot")
+        return
+    
+    elif member.top_role >= ctx.author.top_role:
         await ctx.send(f"Nice try, ayo {member.mention}, {ctx.author.mention} just tried muting you")
         return
+
     if not mutedRole:
         mutedRole = await guild.create_role(name="Muted")
 
@@ -755,12 +831,15 @@ async def mute(ctx, member: discord.Member, *, reason=None):
 @commands.has_permissions(kick_members =True)
 async def kick(ctx, member : discord.Member, *, reason=None):
     """kicks a user"""
-    await member.kick(reason=reason)
+    
+    if member == ctx.author:
+            await ctx.send(f"Can't kick yourself idiot")
+            return
 
-    if member.top_role >= ctx.author.top_role:
+    elif member.top_role >= ctx.author.top_role:
         await ctx.send(f"Yo, you can only kick members lower than yourself lmao ")
         return
-    await member.kick()
+    await member.kick(reason=reason)
     embed = discord.Embed(title="kicked", description=f"{member.mention} was kicked out for {reason}")
     await ctx.channel.send(embed=embed)
 
@@ -772,7 +851,7 @@ async def uptime(ctx):
         current_time = time.time()
         difference = int(round(current_time - start_time))
         text = str(datetime.timedelta(seconds=difference))
-        embed = discord.Embed(colour=0xc8dc6c)
+        embed = discord.Embed(colour=discord.Color.blurple())
         embed.add_field(name="Uptime", value=text)
         embed.set_footer(text="Angel$IX")
         try:
@@ -789,6 +868,7 @@ async def unmute(ctx, member: discord.Member):
     await member.remove_roles(mutedRole)
     await ctx.send(f"Unmuted {member.mention}")
     await member.send(f'Unmuted in {ctx.guild.name} welcome back')
+
 #im proud of this 
 meminfo = psutil.Process(os.getpid())
 totmem = psutil.virtual_memory().total / float(2 ** 20)  
@@ -799,7 +879,7 @@ ytdlfunc = run("youtube-dl --version", shell=True, capture_output=True).stdout.d
 async def stats(ctx):
     """shows bot stats"""
     bedem = discord.Embed(title = 'System Resource Usage and statistics', description = 'See bot host statistics.', color=discord.Color.blurple()) 
-    bedem.add_field(name = "Angel$IX version", value = "**v16.5/2.3-GH**", inline = False)
+    bedem.add_field(name = "Angel$IX version", value = "2.2 [Rewrite] [RC1]", inline = False)
     bedem.add_field(name = 'CPU Usage', value = f'{psutil.cpu_percent()}%', inline = False)
     bedem.add_field(name = 'Total Memory', value = f'{totmem:.0f}MB', inline = False)
     bedem.add_field(name = 'Memory Usage', value = f'{mem:.0f}MB', inline = False)
@@ -847,7 +927,7 @@ async def warn(ctx, member : discord.Member, *, reason=None):
     await member.send(embed=embed2)
 
 @bot.command()
-async def invites(ctx, user = None):
+async def invites(ctx, user : discord.Member=None):
   if user == None:
     totalInvites = 0
     for i in await ctx.guild.invites():
@@ -857,15 +937,15 @@ async def invites(ctx, user = None):
   else:
     totalInvites = 0
     for i in await ctx.guild.invites():
-       member = ctx.message.guild.get_member_named(user)
+       member = user
        if i.inviter == member:
-         totalInvites += i.uses
+        totalInvites += i.uses
     await ctx.send(f"{member} has invited {totalInvites} member{'' if totalInvites == 1 else 's'} to the server!")
     
 @bot.command()
 async def IQ(ctx):
     """Average server IQ"""
-    embed=discord.Embed(title=f"Average {ctx.guild.name} IQ", description=f"{random.randint(-10, 130 )}", color=discord.Color.blurple())
+    embed=discord.Embed(title=f"Average {ctx.guild.name} IQ", description=f"{random.randint(-10 , 130 )}", color=discord.Color.blurple())
     await ctx.send(embed=embed)
 
 @bot.command('roll')
@@ -916,9 +996,12 @@ def parseInput(input):
     split=[x for x in split if x]
 
     if len(split) == 1:
+        
         diceToRoll = 1
         sidedDice = int(split[0])
-    elif len(split) == 2:
+    
+    else:
+        
         diceToRoll = int(split[0])
         sidedDice = int(split[1])
 
@@ -933,14 +1016,14 @@ def parseInput(input):
 def rolladice(sides):
     return random.randint(1, sides)
 
-@bot.command(pass_context=True, aliases=['cred'])
+@bot.command(pass_context=True, aliases=['cred','credits','about'])
 async def credit(ctx):
     """Displays who created and maintained the bot"""
     file = open(r"Ascii1.txt", "rt")
     content = file.read()
     file.close()
     await ctx.send(content)
-    embed=discord.Embed(title="Hosted/Made by: ! ! Gregg#8032, Maintained by: MayTheChicken#1623", description="ask them anything! 24/7\n Feel free to add them as a friend")
+    embed=discord.Embed(title="Made by: ! ! Gregg#0001, Maintained by: MayTheChicken#1623", description="ask them anything! 24/7\n Feel free to add them as a friend")
     await ctx.send(embed=embed)
 
 @bot.command(pass_context=True)
