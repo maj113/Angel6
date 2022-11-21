@@ -938,21 +938,22 @@ async def warn(ctx, member : discord.Member, *, reason=None):
         await ctx.channel.send (embed=embed)
         await member.send(embed=embed2)
 
-@bot.command()
+@bot.command(pass_context=True)
 async def invites(ctx, user : discord.Member=None):
-  if user == None:
-    totalInvites = 0
-    for i in await ctx.guild.invites():
-        if i.inviter == ctx.author:
+    """Shows users invite count"""
+    if user == None:
+        totalInvites = 0
+        for i in await ctx.guild.invites():
+            if i.inviter == ctx.author:
+                totalInvites += i.uses
+        await ctx.send(f"You've invited {totalInvites} member{'' if totalInvites == 1 else 's'} to the server!")
+    else:
+        totalInvites = 0
+        for i in await ctx.guild.invites():
+        member = user
+        if i.inviter == member:
             totalInvites += i.uses
-    await ctx.send(f"You've invited {totalInvites} member{'' if totalInvites == 1 else 's'} to the server!")
-  else:
-    totalInvites = 0
-    for i in await ctx.guild.invites():
-       member = user
-       if i.inviter == member:
-        totalInvites += i.uses
-    await ctx.send(f"{member} has invited {totalInvites} member{'' if totalInvites == 1 else 's'} to the server!")
+        await ctx.send(f"{member} has invited {totalInvites} member{'' if totalInvites == 1 else 's'} to the server!")
     
 @bot.command()
 async def IQ(ctx):
