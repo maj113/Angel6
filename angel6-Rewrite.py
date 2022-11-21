@@ -1030,7 +1030,7 @@ def rolladice(sides):
 @bot.command(pass_context=True, aliases=['cred','credits','about'])
 async def credit(ctx):
     """Displays who created and maintained the bot"""
-    file = open(r"Ascii1.txt", "rt")
+    file = open(os.path.join(os.path.dirname(__file__), 'Ascii1.txt'), 'rt')
     content = file.read()
     file.close()
     await ctx.send(content)
