@@ -910,11 +910,16 @@ async def ban(ctx, member : discord.Member, *, reason=None):
 
 @bot.command()
 @commands.has_permissions(ban_members =True)   
-async def unban(ctx, id: int) :
+async def unban(ctx, id: int=0) :
     """unbans a user"""
-    user = await bot.fetch_user(id)
-    await ctx.guild.unban(user)
-    await ctx.reply(f'{user} has been unbanned')
+    if id == 0:
+        await ctx.reply("You need to provide an ID to unban!")
+        return    
+
+    else:
+        user = await bot.fetch_user(id)
+        await ctx.guild.unban(user)
+        await ctx.reply(f'{user} has been unbanned')
                 
 @bot.command()
 @commands.has_permissions(ban_members =True)
