@@ -1029,12 +1029,14 @@ def rolladice(sides):
 
 @bot.command(pass_context=True, aliases=['cred','credits','about'])
 async def credit(ctx):
+    owner = await bot.fetch_user(978854415786184745)
+    maintainer = await bot.fetch_user(347387857574428676)
     """Displays who created and maintained the bot"""
     file = open(os.path.join(os.path.dirname(__file__), 'Ascii1.txt'), 'rt')
     content = file.read()
     file.close()
     await ctx.send(content)
-    embed=discord.Embed(title="Made by: ! ! Gregg#0001, Maintained by: MayTheChicken#1623", description="ask them anything! 24/7\n Feel free to add them as a friend")
+    embed=discord.Embed(title=f"Made by: {owner}, Maintained by: {maintainer}", description="ask them anything! 24/7\n Feel free to add them as a friend")
     await ctx.send(embed=embed)
 
 @bot.command(pass_context=True)
@@ -1078,4 +1080,4 @@ async def german(ctx):
     #why does this exist?
     await ctx.send("https://giphy.com/gifs/fifa-Vd8wLaK3lNDNMuGaUL \n SHUT THE FUCK UP BAHZZ VIVA LA GERMANY AAJAJJAJAJAJA")
       
-bot.run(TOKEN)                                      
+bot.run(TOKEN)                                 
