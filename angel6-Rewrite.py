@@ -26,7 +26,7 @@ TOKEN = os.getenv("DISCORD_TOKEN")
 LOG_CHAN_ID = os.getenv("LOGGING_CHANNEL_ID")
 JL_CHAN_ID = os.getenv("JOIN_LEAVE_CHANNEL_ID")
 GEN_CHAN_ID = os.getenv("GENERAL_CHANNEL_ID")
-BotVer = "**2.2.1 [RC1]**"
+BotVer = "**2.2.1** <https://github.com/maj113/Angel6/releases/tag/2.2.1-Rewrite>"
 # Silence useless bug reports messages
 
 youtube_dl.utils.bug_reports_message = lambda: ''
