@@ -369,7 +369,7 @@ class Music(commands.Cog):
         ctx.voice_state = self.get_voice_state(ctx)
 
     async def cog_command_error(self, ctx: commands.Context, error: commands.CommandError):
-        await ctx.send('An error occurred: {}'.format(str(error)))
+        await ctx.reply('An error occurred: {}'.format(str(error)))
 
     @commands.Cog.listener()
     async def on_message(self, message):
@@ -411,7 +411,7 @@ class Music(commands.Cog):
         """Clears the queue and leaves the voice channel."""
 
         if not ctx.voice_state.voice:
-            return await ctx.send('Not connected to any voice channel.')
+            return await ctx.reply('Not connected to any voice channel.')
 
         await ctx.voice_state.stop()
         del self.voice_states[ctx.guild.id]
@@ -422,19 +422,19 @@ class Music(commands.Cog):
         """Sets the volume of the player."""
 
         if not ctx.voice_state.is_playing:
-            return await ctx.send('Nothing being played at the moment.')
+            return await ctx.reply('Nothing being played at the moment.')
 
         if 0 > volume > 100:
-            return await ctx.send('Volume must be between 0 and 100')
+            return await ctx.reply('Volume must be between 0 and 100')
 
         ctx.voice_state.volume = volume / 100
-        await ctx.send('Volume of the player set to {}%'.format(volume))
+        await ctx.reply('Volume of the player set to {}%'.format(volume))
 
     @commands.command(name='now', aliases=['current', 'playing'])
     async def _now(self, ctx: commands.Context):
         """Displays the currently playing song."""
         embed = ctx.voice_state.current.create_embed()
-        await ctx.send(embed=embed)
+        await ctx.reply(embed=embed)
 
     @commands.command(name='pause', aliases=['pa'])
     @commands.has_permissions(manage_guild=True)
@@ -472,7 +472,7 @@ class Music(commands.Cog):
         """
 
         if not ctx.voice_state.is_playing:
-            return await ctx.send('Not playing any music right now...')
+            return await ctx.reply('Not playing any music right now...')
 
         voter = ctx.message.author
         if voter == ctx.voice_state.current.requester or ctx.author.guild_permissions.manage_messages:
@@ -487,10 +487,10 @@ class Music(commands.Cog):
                 await ctx.message.add_reaction('⏭')
                 ctx.voice_state.skip()
             else:
-                await ctx.send('Skip vote added, currently at **{}/3**'.format(total_votes))
+                await ctx.reply('Skip vote added, currently at **{}/3**'.format(total_votes))
 
         else:
-            await ctx.send('You have already voted to skip this song.')
+            await ctx.reply('You have already voted to skip this song.')
 
     @commands.command(name='queue')
     async def _queue(self, ctx: commands.Context, *, page: int = 1):
@@ -500,7 +500,7 @@ class Music(commands.Cog):
         """
 
         if len(ctx.voice_state.songs) == 0:
-            return await ctx.send('Empty queue.')
+            return await ctx.reply('Empty queue.')
 
         items_per_page = 10
         pages = math.ceil(len(ctx.voice_state.songs) / items_per_page)
@@ -514,14 +514,14 @@ class Music(commands.Cog):
 
         embed = (discord.Embed(description='**{} tracks:**\n\n{}'.format(len(ctx.voice_state.songs), queue))
                  .set_footer(text='Viewing page {}/{}'.format(page, pages)))
-        await ctx.send(embed=embed)
+        await ctx.reply(embed=embed)
 
     @commands.command(name='shuffle')
     async def _shuffle(self, ctx: commands.Context):
         """Shuffles the queue."""
 
         if len(ctx.voice_state.songs) == 0:
-            return await ctx.send('Empty queue.')
+            return await ctx.reply('Empty queue.')
 
         ctx.voice_state.songs.shuffle()
         await ctx.message.add_reaction('✅')
@@ -531,7 +531,7 @@ class Music(commands.Cog):
         """Removes a song from the queue at a given index."""
 
         if len(ctx.voice_state.songs) == 0:
-            return await ctx.send('Empty queue.')
+            return await ctx.reply('Empty queue.')
 
         ctx.voice_state.songs.remove(index - 1)
         await ctx.message.add_reaction('✅')
@@ -543,7 +543,7 @@ class Music(commands.Cog):
         """
 
         if not ctx.voice_state.is_playing:
-            return await ctx.send('Nothing being played at the moment.')
+            return await ctx.reply('Nothing being played at the moment.')
 
         # Inverse boolean value to loop and unloop.
         ctx.voice_state.loop = not ctx.voice_state.loop
@@ -562,14 +562,14 @@ class Music(commands.Cog):
             try:
                 source = await YTDLSource.create_source(ctx, search, loop=self.bot.loop)
             except YTDLError as err:
-                await ctx.send('An error occurred while processing this request: {}'.format(str(err)))
+                await ctx.reply('An error occurred while processing this request: {}'.format(str(err)))
             else:
                 if not ctx.voice_state.voice:
                     await ctx.invoke(self._join)
 
                 song = Song(source)
                 await ctx.voice_state.songs.put(song)
-                await ctx.send('Enqueued {}'.format(str(source)))
+                await ctx.reply('Enqueued {}'.format(str(source)))
 
     
     async def _search(self, ctx: commands.Context, *, search: str):
@@ -583,21 +583,21 @@ class Music(commands.Cog):
             try:
                 source = await YTDLSource.search_source(ctx, search, loop=self.bot.loop, bot=self.bot)
             except YTDLError as err:
-                await ctx.send('An error occurred while processing this request: {}'.format(str(err)))
+                await ctx.reply('An error occurred while processing this request: {}'.format(str(err)))
             else:
                 if source == 'sel_invalid':
-                    await ctx.send('Invalid selection')
+                    await ctx.reply('Invalid selection')
                 elif source == 'cancel':
-                    await ctx.send(':white_check_mark:')
+                    await ctx.reply(':white_check_mark:')
                 elif source == 'timeout':
-                    await ctx.send(':alarm_clock: **Time\'s up bud**')
+                    await ctx.reply(':alarm_clock: **Time\'s up bud**')
                 else:
                     if not ctx.voice_state.voice:
                         await ctx.invoke(self._join)
 
                     song = Song(source)
                     await ctx.voice_state.songs.put(song)
-                    await ctx.send('Enqueued {}'.format(str(source)))
+                    await ctx.reply('Enqueued {}'.format(str(source)))
             
     @_join.before_invoke
     @_play.before_invoke
@@ -622,13 +622,13 @@ def restart_program():
 @commands.has_permissions(kick_members=True)
 async def restart(ctx):
     """restarts the bot"""
-    message = await ctx.send(" Restarting, please allow 5 seconds for this. ")
+    message = await ctx.reply(" Restarting, please allow 5 seconds for this. ")
     restart_program()
 
 @bot.command()
 async def ping(ctx):
     """shows the ping"""
-    await ctx.send(f'Here {(bot.latency * 1000):.0f} ms')
+    await ctx.reply(f'Here {(bot.latency * 1000):.0f} ms')
 
 
 @bot.event
@@ -744,7 +744,7 @@ async def users(ctx,):
         members+=1
     a=ctx.guild.member_count
     b=discord.Embed(title=f"Total members in {ctx.guild.name}",description=a,color=discord.Color.blurple())
-    await ctx.send(embed=b)
+    await ctx.reply(embed=b)
 #there's probably a better way to check if a user has been mentioned
 @bot.command()
 async def av(ctx, *,  avamember : discord.Member=None):
@@ -752,11 +752,11 @@ async def av(ctx, *,  avamember : discord.Member=None):
     if avamember is None:
         avamember = ctx.author
         userAvatarUrl = avamember.avatar.url
-        await ctx.send(userAvatarUrl)
+        await ctx.reply(userAvatarUrl)
         await ctx.send("^^")
     else:
         userAvatarUrl = avamember.avatar.url
-        await ctx.send(userAvatarUrl)
+        await ctx.reply(userAvatarUrl)
         await ctx.send("^^")
 #I don't like the guild permissions part, way too much info, useless
 @bot.command(pass_context=True)
@@ -778,7 +778,7 @@ async def userinfo(ctx, *, user : discord.Member=None): # b'\xfc'
         embed.add_field(name="Roles [{}]".format(len(user.roles)-1), value=role_string, inline=False)
     perm_string = ', '.join([str(p[0]).replace("_", " ").title() for p in user.guild_permissions if p[1]])
     embed.add_field(name="Guild permissions", value=perm_string, inline=False)
-    return await ctx.send(embed=embed)
+    return await ctx.reply(embed=embed)
 
 @bot.command()
 async def serverinfo(ctx):
@@ -800,7 +800,7 @@ async def serverinfo(ctx):
     embed.add_field(name="Member Count", value=memberCount, inline=True)
     embed.add_field(name="Created", value=ctx.guild.created_at.strftime(
             "%B %d, %Y, %I:%M %p"), inline=True)
-    await ctx.send(embed=embed)
+    await ctx.reply(embed=embed)
     
 @bot.command()
 @commands.has_permissions(manage_messages=True)
@@ -811,11 +811,11 @@ async def mute(ctx, member: discord.Member, *, reason=None):
     mutedRole = discord.utils.get(guild.roles, name="Muted")
     
     if member == ctx.author:
-        await ctx.send(f"Can't mute yourself idiot")
+        await ctx.reply(f"Can't mute yourself idiot")
         return
     
     elif member.top_role >= ctx.author.top_role:
-        await ctx.send(f"Nice try, ayo {member.mention}, {ctx.author.mention} just tried muting you")
+        await ctx.reply(f"Nice try, ayo {member.mention}, {ctx.author.mention} just tried muting you")
         return
 
     if not mutedRole:
@@ -825,7 +825,7 @@ async def mute(ctx, member: discord.Member, *, reason=None):
             await channel.set_permissions(mutedRole, speak=False, send_messages=False, read_message_history=True, read_messages=True)
 
     await member.add_roles(mutedRole, reason=reason)
-    await ctx.send(embed=embed)
+    await ctx.reply(embed=embed)
     await member.send(f"You were muted for {reason}")
 
 @bot.command()
@@ -834,11 +834,11 @@ async def kick(ctx, member : discord.Member, *, reason=None):
     """kicks a user"""
     
     if member == ctx.author:
-            await ctx.send(f"Can't kick yourself idiot")
+            await ctx.reply(f"Can't kick yourself idiot")
             return
 
     elif member.top_role >= ctx.author.top_role:
-        await ctx.send(f"Yo, you can only kick members lower than yourself lmao ")
+        await ctx.reply(f"Yo, you can only kick members lower than yourself lmao ")
         return
     await member.kick(reason=reason)
     embed = discord.Embed(title="kicked", description=f"{member.mention} was kicked out for {reason}")
@@ -856,9 +856,9 @@ async def uptime(ctx):
         embed.add_field(name="Uptime", value=text)
         embed.set_footer(text="Angel$IX")
         try:
-            await ctx.send(embed=embed)
+            await ctx.reply(embed=embed)
         except discord.HTTPException:
-            await ctx.send("Current uptime: " + text)
+            await ctx.reply("Current uptime: " + text)
 
 @bot.command()
 @commands.has_permissions(kick_members =True)
@@ -867,7 +867,7 @@ async def unmute(ctx, member: discord.Member):
     mutedRole = discord.utils.get(ctx.guild.roles, name="Muted")
 
     await member.remove_roles(mutedRole)
-    await ctx.send(f"Unmuted {member.mention}")
+    await ctx.reply(f"Unmuted {member.mention}")
     await member.send(f'Unmuted in {ctx.guild.name} welcome back')
 
 #im proud of this 
@@ -888,7 +888,7 @@ async def stats(ctx):
     bedem.add_field(name = 'Discord.py Version', value = d_version, inline = False)
     bedem.add_field(name = 'Python Version', value = sys.version, inline = False)
     bedem.add_field(name = 'YTdl Version', value = ytdlfunc.strip(), inline = False)
-    await ctx.send(embed = bedem)
+    await ctx.reply(embed = bedem)
 
 @bot.command()
 @commands.has_permissions(ban_members =True)
@@ -896,11 +896,11 @@ async def ban(ctx, member : discord.Member, *, reason=None):
     """bans the specified user"""
     
     if member == ctx.author:
-        await ctx.send(f"Can't ban yourself idiot")
+        await ctx.reply(f"Can't ban yourself idiot")
         return
 
     elif  member.top_role >= ctx.author.top_role:
-        await ctx.send(f"You can only ban members lower than yourself")
+        await ctx.reply(f"You can only ban members lower than yourself")
         return
     else:
         await member.ban(reason=reason)
@@ -914,7 +914,7 @@ async def unban(ctx, id: int) :
     """unbans a user"""
     user = await bot.fetch_user(id)
     await ctx.guild.unban(user)
-    await ctx.send(f'{user} has been unbanned')
+    await ctx.reply(f'{user} has been unbanned')
                 
 @bot.command()
 @commands.has_permissions(ban_members =True)
@@ -925,15 +925,22 @@ async def wipe(ctx, amount=0):
 
 @bot.command()
 @commands.has_permissions(kick_members=True)
-async def warn(ctx, member : discord.Member, *, reason=None):
+async def warn(ctx, member : discord.Member=None, *, reason=None):
     """warns a user"""
     if member == ctx.author:
-        await ctx.send(f"Can't warn yourself idiot")
+        await ctx.reply(f"Can't warn yourself idiot")
+        return
+    elif member == None:
+        await ctx.reply("You need to specify who to warn!")
         return
     else:
-        embed2 =discord.Embed(title="Warned🗡️", description=f"You were warned for {reason}")
-        embed =discord.Embed(title="Warned", description=f"{member.mention} was warned for {reason}")
-        await ctx.channel.send (embed=embed)
+        if reason == None:
+            embed2 =discord.Embed(title="Warned🗡️", description=f"You were warned, now behave.")
+            embed =discord.Embed(title="Warned", description=f"{member.mention} was warned")
+        else:
+            embed2 =discord.Embed(title="Warned🗡️", description=f"You were warned | Reason: {reason}")
+            embed =discord.Embed(title="Warned", description=f"{member.mention} was warned | Reason: {reason}")
+        await ctx.reply (embed=embed)
         await member.send(embed=embed2)
 
 @bot.command()
@@ -944,20 +951,20 @@ async def invites(ctx, user : discord.Member=None):
         for i in await ctx.guild.invites():
             if i.inviter == ctx.author:
                 totalInvites += i.uses
-        await ctx.send(f"You've invited {totalInvites} member{'' if totalInvites == 1 else 's'} to the server!")
+        await ctx.reply(f"You've invited {totalInvites} member{'' if totalInvites == 1 else 's'} to the server!")
     else:
         totalInvites = 0
         member = user
         for i in await ctx.guild.invites():
             if i.inviter == member:
                 totalInvites += i.uses
-        await ctx.send(f"{member} has invited {totalInvites} member{'' if totalInvites == 1 else 's'} to the server!")
+        await ctx.reply(f"{member} has invited {totalInvites} member{'' if totalInvites == 1 else 's'} to the server!")
     
 @bot.command()
 async def IQ(ctx):
     """Average server IQ"""
     embed=discord.Embed(title=f"Average {ctx.guild.name} IQ", description=f"{random.randint(-10 , 130 )}", color=discord.Color.blurple())
-    await ctx.send(embed=embed)
+    await ctx.reply(embed=embed)
 
 @bot.command('roll')
 async def roll(ctx,*args):
@@ -972,7 +979,7 @@ async def roll(ctx,*args):
     args=args.replace(' ', '')
 
     if args == 'help':
-        await ctx.send("`~roll` - rolls a 6 sided dice\n"\
+        await ctx.reply("`~roll` - rolls a 6 sided dice\n"\
                         "`~roll 4` - rolls a 4 sided dice\n"\
                         "`~roll 2d6` - rolls two 6-sided dice\n"\
                         )
@@ -985,7 +992,7 @@ async def roll(ctx,*args):
         try:
             (diceToRoll,numberOfSides)=parseInput(args)
         except:
-            await ctx.send('I didn\'t understand your input: `' + args + '`.\n try `~roll help` for supported options')
+            await ctx.reply('I didn\'t understand your input: `' + args + '`.\n try `~roll help` for supported options')
             return
     
     await ctx.send('Rolling `' + str(diceToRoll) + '` dice with `' + str(numberOfSides) + '` sides')
@@ -998,7 +1005,7 @@ async def roll(ctx,*args):
 
     resultString = ',  '.join(results)
     
-    await ctx.send('Results: ' + resultString)
+    await ctx.reply('Results: ' + resultString)
 
 def parseInput(input):
     split=input.split('d')
@@ -1037,21 +1044,21 @@ async def credit(ctx):
     file.close()
     await ctx.send(content)
     embed=discord.Embed(title=f"Made by: {owner}, Maintained by: {maintainer}", description="ask them anything! 24/7\n Feel free to add them as a friend")
-    await ctx.send(embed=embed)
+    await ctx.reply(embed=embed)
 
 @bot.command(pass_context=True)
 @commands.has_permissions(ban_members=True)
 async def role(ctx, user: discord.Member, role: discord.Role):
         """Gives user a role"""
         await user.add_roles(role)
-        await ctx.send(f"{user.name} has been given: {role.name}")
+        await ctx.reply(f"{user.name} has been given: {role.name}")
         
 @bot.command(pass_context=True)
 @commands.has_permissions(ban_members=True)
 async def rmrole(ctx, user: discord.Member, role: discord.Role):
         """Removes users role away"""
         await user.remove_roles(role)
-        await ctx.send(f"{user.name} was removed from role: {role.name}")
+        await ctx.reply(f"{user.name} was removed from role: {role.name}")
 
 @bot.command(pass_context=True, aliases=["fem"])
 async def femboy(ctx):
@@ -1059,25 +1066,25 @@ async def femboy(ctx):
     embed=discord.Embed(title="Chakal's Wisdom On Femboys",description="How can you be a feminine looking boy? Simple. \nGrow your hair out, exercise regularly (I run/jog to remain slim, and I do squats/tap dance to exercise my thighs/butt), trim your facial hair, do whatever you can to help out your skin, and consider taking HRT.\n Learn how to do makeup, it is a fucking amazing tool. Experiment with different outfits, my favorite for andro people is just leggings beneath feminine jean shorts, it is common for females in the UK and looks feminine, but not so feminine that it will look weird in public.\nConsider taking speech therapy, or just watching some videos and working at getting a more feminine voice.\nAt the end of the day, though, you can practically look like a girl, with the most luscious hair, smallest eyebrows, red lips, and longest lashes; you can have the perfect body type, be an hourglass with a big ass, thick thighs/hips and a skinny waist; you can sound like the girliest woman in the world; you can wear booty shorts and a half shirt and look damn good in it; you can be a master at feminine makeup.\nBut it all means nothing if you fail to act feminine. For looks catch the eye, but personality catches the heart.\nThere comes a point when you must ask yourself if you want to be a femboy, or simply be a feminine looking man.\nSo, how can you be a femboy?\nAct feminine. Femboys are made, not born.  -Chakal")
     embed2=discord.Embed(title="Miro's Wisdom On Femboys",description="Hey, some guys like being cute and pastel, trans guys included, and some transgender people don’t really feel the need to change their bodies either. So that’s an option. Maybe you’re a really feminine guy who’s fine with having a female body.\n Or, maybe you just really like the femboy aesthetic. Or maybe you’re attracted to femboys. Idk, I’m not you. It’s gonna take a little experimentation to find out.\n 1) Get some clothes you feel comfortable in. Try out that femboy look. Do you feel cute? Does it feel right? Whether you are cis or trans, you should be able to wear clothes that make you feel good about yourself. So do that. Whatever the answers are to the other questions, this will almost certainly make you feel a little better.\n 2) Do some googling. Learn about fem trans boys, demiboys, and non-binary people. Read some things from their perspectives. Does any of it resonate with you?\n3) Try some things. It’s normal for us to question our identities and grow and change through the years, and it’s normal to not fully understand yourself right away. If you think you might be trans, maybe try a different name or pronouns. if you don’t have supportive people around willing to help you experiment, then you can introduce yourself the way you want online, with strangers you’ll never have to interact with again. It takes a lot of the pressure off, too, if you’re nervous. Maybe it’ll feel right and you’ll know. Maybe it’ll feel wrong and you’ll realize you’re a girl. Maybe you’ll still be confused and have to try some new things. Have patience, it can take time.\n4) Own it. Whatever your identity is, dress the way you like and be who you are and if anyone gives you shit about it, just show them how high you can kick their balls up their ass in your adorable little pink skirt -Miro.")
     await ctx.send(embed=embed)
-    await ctx.send(embed=embed2)
+    await ctx.reply(embed=embed2)
     
 @bot.command(pass_context=True)
 async def support(ctx):
     """shows support server link"""
     embed=discord.Embed(title="Support server",description="Need help with the bot? \nWant to contribute to the bot?", color=discord.Color.blurple())
     await ctx.send(embed=embed)
-    await ctx.send("https://discord.gg/ctsjpMQXEe \n https://github.com/maj113/Angel6")
+    await ctx.reply("https://discord.gg/ctsjpMQXEe \n https://github.com/maj113/Angel6")
 
     
 @bot.command(pass_context=True, aliases=["vio", "violated"])
 async def violation(ctx):
     """That one there was a violation"""
-    await ctx.send("https://tenor.com/view/that-one-there-was-a-violation-that1there-was-violation-violation-that-one-there-was-a-violation-personally-i-wouldnt-have-it-that1there-was-a-violation-personally-i-wouldnt-have-it-gif-20040456")
+    await ctx.reply("https://tenor.com/view/that-one-there-was-a-violation-that1there-was-violation-violation-that-one-there-was-a-violation-personally-i-wouldnt-have-it-that1there-was-a-violation-personally-i-wouldnt-have-it-gif-20040456")
 
 @bot.command(pass_context=True)
 async def german(ctx):
     """Random German Gif"""
     #why does this exist?
-    await ctx.send("https://giphy.com/gifs/fifa-Vd8wLaK3lNDNMuGaUL \n SHUT THE FUCK UP BAHZZ VIVA LA GERMANY AAJAJJAJAJAJA")
+    await ctx.reply("https://giphy.com/gifs/fifa-Vd8wLaK3lNDNMuGaUL \n SHUT THE FUCK UP BAHZZ VIVA LA GERMANY AAJAJJAJAJAJA")
       
 bot.run(TOKEN)                                 
