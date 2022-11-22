@@ -561,8 +561,8 @@ class Music(commands.Cog):
         async with ctx.typing():
             try:
                 source = await YTDLSource.create_source(ctx, search, loop=self.bot.loop)
-            except YTDLError as e:
-                await ctx.send('An error occurred while processing this request: {}'.format(str(e)))
+            except YTDLError as err:
+                await ctx.send('An error occurred while processing this request: {}'.format(str(err)))
             else:
                 if not ctx.voice_state.voice:
                     await ctx.invoke(self._join)
@@ -582,8 +582,8 @@ class Music(commands.Cog):
         async with ctx.typing():
             try:
                 source = await YTDLSource.search_source(ctx, search, loop=self.bot.loop, bot=self.bot)
-            except YTDLError as e:
-                await ctx.send('An error occurred while processing this request: {}'.format(str(e)))
+            except YTDLError as err:
+                await ctx.send('An error occurred while processing this request: {}'.format(str(err)))
             else:
                 if source == 'sel_invalid':
                     await ctx.send('Invalid selection')
