@@ -780,7 +780,7 @@ async def userinfo(ctx, *, user : discord.Member=None): # b'\xfc'
     embed.add_field(name="Guild permissions", value=perm_string, inline=False)
     return await ctx.send(embed=embed)
 
-@bot.command(description="Shows server info")
+@bot.command()
 async def serverinfo(ctx):
     """displays server information"""
     name = str(ctx.guild.name)
@@ -802,7 +802,7 @@ async def serverinfo(ctx):
             "%B %d, %Y, %I:%M %p"), inline=True)
     await ctx.send(embed=embed)
     
-@bot.command(description="Mutes the specified user.")
+@bot.command()
 @commands.has_permissions(manage_messages=True)
 async def mute(ctx, member: discord.Member, *, reason=None):
     """mutes a user"""
