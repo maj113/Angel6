@@ -616,14 +616,12 @@ status = ['Jamming out to music!', 'Eating!', 'Sleeping!']
 bot.add_cog(Music(bot))
 
 def restart_program():
-    python = sys.executable
-    os.execl(python, python, * sys.argv)
+    os.execv(sys.executable, ['python3'] + sys.argv)     
 
 @bot.command()
 @commands.has_permissions(kick_members=True)
 async def restart(ctx):
     """restarts the bot"""
-    await ctx.message.delete()
     message = await ctx.send(" Restarting, please allow 5 seconds for this. ")
     restart_program()
 
