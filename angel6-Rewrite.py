@@ -1057,7 +1057,8 @@ async def credit(ctx):
 async def role(ctx, user: discord.Member, role: discord.Role):
         """Gives user a role"""
         if role >= ctx.author.top_role:
-            await ctx.reply(f"Can't give {role} since its higher than {ctx.author.top_role}")        
+            await ctx.reply(f"Can't give {role} since its higher than {ctx.author.top_role}")
+            return        
         await user.add_roles(role)
         await ctx.reply(f"{user.name} has been given: {role.name}")
         
