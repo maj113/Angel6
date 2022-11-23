@@ -19,7 +19,7 @@ import youtube_dl
 from async_timeout import timeout
 import os
 from dotenv import load_dotenv
- 
+
 
 load_dotenv()
 TOKEN = os.getenv("DISCORD_TOKEN")
@@ -734,6 +734,7 @@ async def on_member_remove(member):
     embed.set_thumbnail(url=f"{member.avatar.url}")
     embed.set_footer(text=f"{member.guild}", icon_url=f"{member.guild.icon.url}")
     await channel.send(embed=embed)
+
 
 @bot.command()
 async def users(ctx,):
