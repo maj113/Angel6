@@ -20,7 +20,6 @@ from async_timeout import timeout
 import os
 from dotenv import load_dotenv
 
-
 load_dotenv()
 TOKEN = os.getenv("DISCORD_TOKEN")
 LOG_CHAN_ID = os.getenv("LOGGING_CHANNEL_ID")
@@ -759,7 +758,7 @@ async def av(ctx, *,  avamember : discord.Member=None):
         userAvatarUrl = avamember.avatar.url
         await ctx.reply(userAvatarUrl)
         await ctx.send("^^")
-#I don't like the guild permissions part, way too much info, useless
+
 @bot.command(pass_context=True)
 async def userinfo(ctx, *, user : discord.Member=None): # b'\xfc'
     """Shows userinfo"""
@@ -777,7 +776,7 @@ async def userinfo(ctx, *, user : discord.Member=None): # b'\xfc'
     if len(user.roles) > 1:
         role_string = ' '.join([r.mention for r in user.roles][1:])
         embed.add_field(name="Roles [{}]".format(len(user.roles)-1), value=role_string, inline=False)
-    perm_string = ', '.join([str(p[0]).replace("_", " ").title() for p in user.guild_permissions if p[1]])
+    perm_string = ', '.join([str(p[0]).replace("_", " ").title() for p in user.guild_permissions if p[1]]) #I don't like the guild permissions part, way too much info, useless
     embed.add_field(name="Guild permissions", value=perm_string, inline=False)
     return await ctx.reply(embed=embed)
 
@@ -903,6 +902,7 @@ async def ban(ctx, member : discord.Member, *, reason=None):
     elif  member.top_role >= ctx.author.top_role:
         await ctx.reply(f"You can only ban members lower than yourself")
         return
+    
     else:
         await member.ban(reason=reason)
         await member.ban()
@@ -1056,6 +1056,8 @@ async def credit(ctx):
 @commands.has_permissions(ban_members=True)
 async def role(ctx, user: discord.Member, role: discord.Role):
         """Gives user a role"""
+        if role >= ctx.author.top_role:
+            await ctx.reply(f"Can't give {role} since its higher than {ctx.author.top_role}")        
         await user.add_roles(role)
         await ctx.reply(f"{user.name} has been given: {role.name}")
         
@@ -1063,10 +1065,11 @@ async def role(ctx, user: discord.Member, role: discord.Role):
 @commands.has_permissions(ban_members=True)
 async def rmrole(ctx, user: discord.Member, role: discord.Role):
         """Removes users role away"""
+
         await user.remove_roles(role)
         await ctx.reply(f"{user.name} was removed from role: {role.name}")
 
-@bot.command(pass_context=True, aliases=["fem"])
+@bot.command(pass_context=True, aliases=["fem"]) # :skull:
 async def femboy(ctx):
     """Femboy Wisdom/Tutorial"""
     embed=discord.Embed(title="Chakal's Wisdom On Femboys",description="How can you be a feminine looking boy? Simple. \nGrow your hair out, exercise regularly (I run/jog to remain slim, and I do squats/tap dance to exercise my thighs/butt), trim your facial hair, do whatever you can to help out your skin, and consider taking HRT.\n Learn how to do makeup, it is a fucking amazing tool. Experiment with different outfits, my favorite for andro people is just leggings beneath feminine jean shorts, it is common for females in the UK and looks feminine, but not so feminine that it will look weird in public.\nConsider taking speech therapy, or just watching some videos and working at getting a more feminine voice.\nAt the end of the day, though, you can practically look like a girl, with the most luscious hair, smallest eyebrows, red lips, and longest lashes; you can have the perfect body type, be an hourglass with a big ass, thick thighs/hips and a skinny waist; you can sound like the girliest woman in the world; you can wear booty shorts and a half shirt and look damn good in it; you can be a master at feminine makeup.\nBut it all means nothing if you fail to act feminine. For looks catch the eye, but personality catches the heart.\nThere comes a point when you must ask yourself if you want to be a femboy, or simply be a feminine looking man.\nSo, how can you be a femboy?\nAct feminine. Femboys are made, not born.  -Chakal")
