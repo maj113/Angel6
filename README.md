@@ -13,15 +13,15 @@ Discord bot for my friends server.
 
 ~~-Fix \~invites command, it shows invites correctly only if used by the message author, if specifying a message.mention it just returns null~~ (*mostly*) Fixed in V2.2 [RC1]
 
-# Planned Changes by 2.2 [RC2]:
+# Planned Changes by 2.2.2:
 -Improve Ytdl sound quality - *some changes for better quality are present in RC1*
 
 -Improve FFMPEG postprocessing and fixing re-encoding
 
--Support for Python 3.11 - most likely not worth it, would probably need a complete rewrite CBA 
+-~~Support for Python 3.11 - most likely not worth it, would probably need a complete rewrite CBA~~ Done, no rewrite needed, **Needs py-cord >= 2.3**
 
 -Fix and optimize first time setup AKA .env file setup
 
 -Add some sort of logging to the bot. currently it just displays Ascii art, configured channels and API latency
 
--Better (Mobile friendly Ascii art)
+-Better (Mobile friendly Ascii art) *We may just use a custom banner/GIF*
