@@ -1066,7 +1066,9 @@ async def role(ctx, user: discord.Member, role: discord.Role):
 @commands.has_permissions(ban_members=True)
 async def rmrole(ctx, user: discord.Member, role: discord.Role):
         """Removes users role away"""
-
+        if role == ctx.author.top_role and user == ctx.author :
+            await ctx.reply(f"Can't remove role \"{role}\" as it's your highest role")
+            return
         await user.remove_roles(role)
         await ctx.reply(f"{user.name} was removed from role: {role.name}")
 
