@@ -42,14 +42,14 @@ class YTDLError(Exception):
 class YTDLSource(discord.PCMVolumeTransformer):
     YTDL_OPTIONS = {
         'extractaudio': True,
-        'format': 'bestaudio',      
+        'format': 'bestaudio/best',      
         'outtmpl': '%(extractor)s-%(id)s-%(title)s.%(ext)s',
         'restrictfilenames': True,
         'noplaylist': False,
         'nocheckcertificate': True,
         'ignoreerrors': False,
-        'logtostderr': True,
-        'quiet': False,
+        'logtostderr': False,
+        'quiet': True,
         'no_warnings': True,
         'default_search': 'auto',
         'source_address': '0.0.0.0',
@@ -611,7 +611,6 @@ intents = discord.Intents().all()
 
 bot = commands.Bot(command_prefix='~', intents=intents)
 status = ['Jamming out to music!', 'Eating!', 'Sleeping!']
-bot.add_cog(Music(bot))
 
 def restart_program():
     os.execv(sys.executable, ['python3'] + sys.argv)     
@@ -1098,4 +1097,10 @@ async def german(ctx):
     #why does this exist?
     await ctx.reply("https://giphy.com/gifs/fifa-Vd8wLaK3lNDNMuGaUL \n SHUT THE FUCK UP BAHZZ VIVA LA GERMANY AAJAJJAJAJAJA")
       
-bot.run(TOKEN)                                 
+async def main():
+    # if you need to, initialize other things, such as aiohttp
+    await bot.add_cog(Music(bot))  # change to whatever you need
+    await bot.start(TOKEN)                                 
+
+if __name__ == '__main__':
+    asyncio.get_event_loop().run_until_complete(main())
