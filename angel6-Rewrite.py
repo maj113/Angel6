@@ -1,12 +1,9 @@
-
-from encodings import utf_8
 import logging
 import traceback
 import asyncio
 from functools import partial
 import psutil
 import itertools
-import math
 import time
 import datetime
 import random
@@ -34,6 +31,7 @@ utils.bug_reports_message = lambda: ''
 
 logging.basicConfig(level=logging.ERROR)
 
+#improved Music Cog thanks to @RoastSea8 and @EvieePy with removed Lyrics functionality and slight code change
 ytdlopts = {
     'format': 'bestaudio/best',
     'outtmpl': 'downloads/%(extractor)s-%(id)s-%(title)s.%(ext)s',
