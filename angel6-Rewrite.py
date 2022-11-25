@@ -15,7 +15,8 @@ import discord
 from discord import __version__ as d_version
 from discord.ext import commands
 import cpuinfo
-import youtube_dl
+import yt_dlp
+from yt_dlp import utils
 from async_timeout import timeout
 import os
 from dotenv import load_dotenv
@@ -28,7 +29,7 @@ GEN_CHAN_ID = os.getenv("GENERAL_CHANNEL_ID")
 BotVer = "**2.2.2** <https://github.com/maj113/Angel6/releases/latest>"
 # Silence useless bug reports messages
 
-youtube_dl.utils.bug_reports_message = lambda: ''
+utils.bug_reports_message = lambda: ''
 
 logging.basicConfig(level=logging.ERROR)
 
@@ -42,28 +43,26 @@ class YTDLSource(discord.PCMVolumeTransformer):
     YTDL_OPTIONS = {
         'extractaudio': True,
         'format': 'bestaudio',      
-        'audioformat': 'flac',
-        'audioquality': '0', 
         'outtmpl': '%(extractor)s-%(id)s-%(title)s.%(ext)s',
         'restrictfilenames': True,
-        'noplaylist': True,
+        'noplaylist': False,
         'nocheckcertificate': True,
         'ignoreerrors': False,
-        'logtostderr': False,
-        'quiet': True,
-        'no_warnings': False,
+        'logtostderr': True,
+        'quiet': False,
+        'no_warnings': True,
         'default_search': 'auto',
         'source_address': '0.0.0.0',
     }
 
     FFMPEG_OPTIONS = {
         'before_options': '-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5',
-        'options': ' -b:a 960k -vn ',
+        'options': '-vn',
     }
 
-    ytdl = youtube_dl.YoutubeDL(YTDL_OPTIONS)
+    ytdl = yt_dlp.YoutubeDL(YTDL_OPTIONS)
 
-    def __init__(self, ctx: commands.Context, source: discord.FFmpegPCMAudio, *, data: dict, volume: float = 0.9):
+    def __init__(self, ctx: commands.Context, source: discord.FFmpegPCMAudio, *, data: dict, volume: float = 1):
         super().__init__(source, volume)
 
         self.requester = ctx.author
