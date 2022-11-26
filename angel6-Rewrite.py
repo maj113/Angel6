@@ -1,22 +1,9 @@
-import logging
-import asyncio
-import functools
-import psutil
-import itertools
-import math
-import time
-import datetime
-import random
+import logging, asyncio, functools, psutil, math, time, datetime, random, sys, discord, cpuinfo, yt_dlp, os
 from subprocess import run
-import sys
-import discord
 from discord import __version__ as d_version
 from discord.ext import commands
-import cpuinfo
-import yt_dlp
 from yt_dlp import utils
 from async_timeout import timeout
-import os
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -523,8 +510,9 @@ class Music(commands.Cog):
 
 intents = discord.Intents().all()
 
-bot = commands.Bot(command_prefix='~', intents=intents)
-status = ['Jamming out to music!', 'Eating!', 'Sleeping!']
+activity = discord.Game(name="Best Bot ever!!!!")
+bot = commands.Bot(command_prefix='~', intents=intents, activity=activity,status_act=discord.Status.do_not_disturb)
+
 
 def restart_program():
     os.execv(sys.executable, ['python3'] + sys.argv)     
@@ -541,12 +529,10 @@ async def ping(ctx):
     """shows the ping"""
     await ctx.reply(f'Here {(bot.latency * 1000):.0f} ms')
 
-
 @bot.event
 async def on_ready():
     print('Logged in as:\n{0.user.name}\n{0.user.id}'.format(bot))
-    await bot.change_presence(activity=discord.Game(name="Mutiny's Official Bot"))
-
+    #await bot.change_presence(activity=discord.Streaming(status=discord.Status.streaming, name=random.choice(status), url="https://github.com/maj113/Angel6"))
     #specifies Ascii art location for boot-up message
     file = open(os.path.join(os.path.dirname(__file__), 'Ascii1.txt'), 'rt')
     content = file.read()
