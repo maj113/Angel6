@@ -32,27 +32,9 @@ utils.bug_reports_message = lambda: ''
 logging.basicConfig(level=logging.INFO)
 
 #improved Music Cog thanks to @RoastSea8 and @EvieePy with removed Lyrics functionality and slight code change
-ytdlopts = {
-    'extractaudio': True,
-    'format': 'bestaudio',
-    'outtmpl': 'downloads/%(extractor)s-%(id)s-%(title)s.%(ext)s',
-    'restrictfilenames': True,
-    'noplaylist': False,
-    'nocheckcertificate': True,
-    'ignoreerrors': False,
-    'logtostderr': False,
-    'quiet': True,
-    'no_warnings': True,
-    'default_search': 'auto',
-    'source_address': '0.0.0.0'  # ipv6 addresses cause issues sometimes
-}
 
-ffmpegopts = {
-    'before_options': '-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5',
-    'options': '-vn -c:a copy'
-}
 
-ytdl = yt_dlp.YoutubeDL(ytdlopts)
+
 
 class YTDLError(Exception):
     pass
@@ -67,7 +49,31 @@ invoke = False
 passed = False
 
 class YTDLSource(discord.PCMVolumeTransformer):
+    
+    ytdlopts = {
+        'extractaudio': True,
+        'format': 'bestaudio/best',      
+        'outtmpl': '%(extractor)s-%(id)s-%(title)s.%(ext)s',
+        'restrictfilenames': True,
+        'noplaylist': True,
+        'nocheckcertificate': True,
+        'ignoreerrors': False,
+        'logtostderr': False,
+        'quiet': True,
+        'no_warnings': True,
+        'default_search': 'auto',
+        'source_address': '0.0.0.0',
+    }
 
+    ffmpegopts = {
+        'before_options': '-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5',
+        'options': '-vn -c:a copy',
+    }
+    
+    ytdl = yt_dlp.YoutubeDL(ytdlopts)
+    invoke = False
+    passed = False
+    
     def __init__(self, source, *, data, requester):
         super().__init__(source)
         self.requester = requester
@@ -92,10 +98,9 @@ class YTDLSource(discord.PCMVolumeTransformer):
         return self.__getattribute__(item)
 
     @classmethod
-    async def create_source(cls, ctx, search: str, *, loop, download=True):
+    async def create_source(cls, ctx, search: str, *, loop, download=False):
         loop = loop or asyncio.get_event_loop()
-
-        to_run = partial(ytdl.extract_info, url=search, download=download)
+        to_run = partial(cls.ytdl.extract_info, url=search, download=download)
         data = await loop.run_in_executor(None, to_run)
 
         if 'entries' in data:
@@ -106,14 +111,14 @@ class YTDLSource(discord.PCMVolumeTransformer):
         await ctx.send(embed=embed)
 
         if download:
-            source = ytdl.prepare_filename(data)
+            source = cls.ytdl.prepare_filename(data)
         else:
             if passed:
                 return {'webpage_url': data['webpage_url'], 'requester': ctx.author, 'title': data['title'], 'duration': data['duration'], 'track': data['track'], 'artist': data['artist']}
             else:
                 return {'webpage_url': data['webpage_url'], 'requester': ctx.author, 'title': data['title'], 'duration': data['duration']}
 
-        return cls(discord.FFmpegPCMAudio(source), data=data, requester=ctx.author)
+        return cls(discord.FFmpegPCMAudio(source), data=data,**cls.ffmpegopts, requester=ctx.author)
 
     @classmethod
     async def regather_stream(cls, data, *, loop):
@@ -122,11 +127,12 @@ class YTDLSource(discord.PCMVolumeTransformer):
         loop = loop or asyncio.get_event_loop()
         requester = data['requester']
 
-        to_run = partial(ytdl.extract_info, url=data['webpage_url'], download=True)
+        to_run = partial(cls.ytdl.extract_info, url=data['webpage_url'], download=False)
         data = await loop.run_in_executor(None, to_run)
 
-        return cls(discord.FFmpegPCMAudio(data['url']), data=data, requester=requester)
+        return cls(discord.FFmpegPCMAudio(data['url'],**cls.ffmpegopts), data=data, requester=requester)
 
+    
 class MusicPlayer:
     """A class which is assigned to each guild using the bot for Music.
     This class implements a queue and loop, which allows for different guilds to listen to different playlists
@@ -160,7 +166,7 @@ class MusicPlayer:
 
             try:
                 # Wait for the next song. If we timeout cancel the player and disconnect...
-                async with timeout(3000):  # 5 minutes...
+                async with timeout(300):  # 5 minutes...
                     source = await self.queue.get()
             except asyncio.TimeoutError:
                 return self.destroy(self._guild)
@@ -308,10 +314,11 @@ class Music(commands.Cog):
 
         # If download is False, source will be a dict which will be used later to regather the stream.
         # If download is True, source will be a discord.FFmpegPCMAudio with a VolumeTransformer.
-        source = await YTDLSource.create_source(ctx, search, loop=self.bot.loop, download=True)
+        source = await YTDLSource.create_source(ctx, search, loop=self.bot.loop, download=False)
 
         await player.queue.put(source)
-    @commands.command(name='search')    
+    
+    #@commands.command(name='search')    
     async def _search(self, ctx: commands.Context, *, search: str):
         """Searches YouTube.
         It returns an embed of the first 10 results collected from YouTube.
