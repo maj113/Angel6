@@ -125,66 +125,6 @@ class YTDLSource(discord.PCMVolumeTransformer):
         return cls(ctx, discord.FFmpegPCMAudio(info['url'], **cls.FFMPEG_OPTIONS), data=info)
     pass
 
-    @classmethod
-    async def search_source(cls, ctx: commands.Context, search: str, *, loop: asyncio.BaseEventLoop = None):
-        channel = ctx.channel
-        loop = loop or asyncio.get_event_loop()
-
-        cls.search_query = '%s%s:%s' % ('ytsearch', 10, ''.join(search))
-
-        partial = functools.partial(cls.ytdl.extract_info, cls.search_query, download=False, process=False)
-        info = await loop.run_in_executor(None, partial)
-
-        cls.search = {}
-        cls.search["title"] = f'Search results for:\n**{search}**'
-        cls.search["type"] = 'rich'
-        cls.search["color"] = 7506394
-        cls.search["author"] = {'name': f'{ctx.author.name}', 'url': f'{ctx.author.avatar_url}', 'icon.url': f'{ctx.author.avatar_url}'}
-        
-        lst = []
-
-        for e in info['entries']:
-        #!!!TEST!!! ˇ LINE BELOW WAS COMMENTED OUT
-            lst.append(f'`{info["entries"].index(e) + 1}.` {e.get("title")} **[{YTDLSource.parse_duration(int(e.get("duration")))}]**\n')
-            VId = e.get('id')
-            VUrl = 'https://www.youtube.com/watch?v=%s' % (VId)
-            lst.append(f'`{info["entries"].index(e) + 1}.` [{e.get("title")}]({VUrl})\n')
-
-        lst.append('\n**Type a number to make a choice, Type `cancel` to exit**')
-        cls.search["description"] = "\n".join(lst)
-
-        em = discord.Embed.from_dict(cls.search)
-        await ctx.send(embed=em, delete_after=45.0)
-
-        def check(msg):
-            return msg.content.isdigit() == True and msg.channel == channel or msg.content == 'cancel' or msg.content == 'Cancel'
-        
-        try:
-            m = await bot.wait_for('message', check=check, timeout=45.0)
-
-        except asyncio.TimeoutError:
-            rtrn = 'timeout'
-
-        else:
-            if m.content.isdigit() == True:
-                sel = int(m.content)
-                if 0 < sel <= 10:
-                    for key, value in info.items():
-                        if key == 'entries':
-                            """data = value[sel - 1]"""
-                            VId = value[sel - 1]['id']
-                            VUrl = 'https://www.youtube.com/watch?v=%s' % (VId)
-                            partial = functools.partial(cls.ytdl.extract_info, VUrl, download=False)
-                            data = await loop.run_in_executor(None, partial)
-                    rtrn = cls(ctx, discord.FFmpegPCMAudio(data['url'], **cls.FFMPEG_OPTIONS), data=data)
-                else:
-                    rtrn = 'sel_invalid'
-            elif m.content == 'cancel':
-                rtrn = 'cancel'
-            else:
-                rtrn = 'sel_invalid'
-        
-        return rtrn
 
     @staticmethod
     def parse_duration(duration: int):
@@ -569,33 +509,7 @@ class Music(commands.Cog):
                 await ctx.voice_state.songs.put(song)
                 await ctx.reply('Enqueued {}'.format(str(source)))
 
-    @commands.command(name="search")
-    async def _search(self, ctx: commands.Context, *, search: str):
-        """Searches YouTube.
-        It returns an embed of the first 10 results collected from YouTube.
-        Then the user can choose one of the titles by typing a number
-        in chat or they can cancel by typing "cancel" in chat.
-        Each title in the list can be clicked as a link.
-        """
-        async with ctx.typing():
-            try:
-                source = await YTDLSource.search_source(ctx, search, loop=self.bot.loop, bot=self.bot)
-            except YTDLError as err:
-                await ctx.reply('An error occurred while processing this request: {}'.format(str(err)))
-            else:
-                if source == 'sel_invalid':
-                    await ctx.reply('Invalid selection')
-                elif source == 'cancel':
-                    await ctx.reply(':white_check_mark:')
-                elif source == 'timeout':
-                    await ctx.reply(':alarm_clock: **Time\'s up bud**')
-                else:
-                    if not ctx.voice_state.voice:
-                        await ctx.invoke(self._join)
 
-                    song = Song(source)
-                    await ctx.voice_state.songs.put(song)
-                    await ctx.reply('Enqueued {}'.format(str(source)))
             
     @_join.before_invoke
     @_play.before_invoke
