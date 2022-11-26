@@ -43,7 +43,7 @@ class YTDLSource(discord.PCMVolumeTransformer):
         'format': 'bestaudio/best',      
         'outtmpl': '%(extractor)s-%(id)s-%(title)s.%(ext)s',
         'restrictfilenames': True,
-        'noplaylist': False,
+        'noplaylist': True,
         'nocheckcertificate': True,
         'ignoreerrors': False,
         'logtostderr': False,
@@ -367,6 +367,7 @@ class Music(commands.Cog):
     async def cog_command_error(self, ctx: commands.Context, error: commands.CommandError):
         await ctx.reply('An error occurred: {}'.format(str(error)))
 
+    
     @commands.Cog.listener()
     async def on_message(self, message):
         if message.author.id != bot.user.id:
@@ -422,9 +423,10 @@ class Music(commands.Cog):
 
         if 0 > volume > 100:
             return await ctx.reply('Volume must be between 0 and 100')
-
-        ctx.voice_state.volume = volume / 100
-        await ctx.reply('Volume of the player set to {}%'.format(volume))
+        else:
+            player = ctx.voice_client
+            player.source.volume = volume / 100
+            await ctx.reply('Volume of the player set to {}%'.format(volume))
 
     @commands.command(name='now', aliases=['current', 'playing'])
     async def _now(self, ctx: commands.Context):
@@ -567,7 +569,7 @@ class Music(commands.Cog):
                 await ctx.voice_state.songs.put(song)
                 await ctx.reply('Enqueued {}'.format(str(source)))
 
-    
+    @commands.command(name="search")
     async def _search(self, ctx: commands.Context, *, search: str):
         """Searches YouTube.
         It returns an embed of the first 10 results collected from YouTube.
@@ -1097,7 +1099,7 @@ async def german(ctx):
       
 async def main():
     # if you need to, initialize other things, such as aiohttp
-    await bot.add_cog(Music(bot))  # change to whatever you need
+    bot.add_cog(Music(bot))  # change to whatever you need
     await bot.start(TOKEN)                                 
 
 if __name__ == '__main__':
