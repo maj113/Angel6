@@ -533,7 +533,7 @@ def restart_program():
 @commands.has_permissions(kick_members=True)
 async def restart(ctx):
     """restarts the bot"""
-    message = await ctx.reply(" Restarting, please allow 5 seconds for this. ")
+    await ctx.reply(" Restarting, please allow 5 seconds for this. ")
     restart_program()
 
 @bot.command()
