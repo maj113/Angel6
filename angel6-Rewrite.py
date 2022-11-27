@@ -633,13 +633,9 @@ async def on_member_remove(member):
     await channel.send(embed=embed)
 
 
-@bot.command()
-async def users(ctx,):
+@bot.command(aliases=["members"])
+async def users(ctx):
     """shows total amount of members"""
-    guild = ctx.guild
-    members = 0
-    for member in guild.members:
-        members+=1
     a=ctx.guild.member_count
     b=discord.Embed(title=f"Total members in {ctx.guild.name}",description=a,color=discord.Color.blurple())
     await ctx.reply(embed=b)
