@@ -716,7 +716,7 @@ async def mute(ctx, member: discord.Member, *, reason=None):
         mutedRole = await guild.create_role(name="Muted")
 
         for channel in guild.channels:
-            await channel.set_permissions(mutedRole, speak=False, send_messages=False, read_message_history=True, read_messages=True)
+            await channel.set_permissions(mutedRole, speak=False, send_messages=False, read_message_history=True, read_messages=True, create_private_threads=False, create_public_threads=False)
 
     await member.add_roles(mutedRole, reason=reason)
     await ctx.reply(embed=embed)
@@ -734,6 +734,7 @@ async def kick(ctx, member : discord.Member, *, reason=None):
     elif member.top_role >= ctx.author.top_role:
         await ctx.reply(f"Yo, you can only kick members lower than yourself lmao ")
         return
+    
     await member.kick(reason=reason)
     embed = discord.Embed(title="kicked", description=f"{member.mention} was kicked out for {reason}")
     await ctx.channel.send(embed=embed)
