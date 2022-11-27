@@ -17,6 +17,14 @@ BotVer = "**2.2.2** <https://github.com/maj113/Angel6/releases/latest>"
 utils.bug_reports_message = lambda: ''
 
 logging.basicConfig(level=logging.ERROR)
+#Enable debug options if launch program "debug" is passed
+DebuggingOpts = {
+    "ytdllogging" : False,
+    "ytdlquiet" : True,
+}
+if sys.argv[-1] == "debug" or sys.argv[-1] == "d":
+    DebuggingOpts["ytdllogging"] = True
+    DebuggingOpts["ytdlquiet"] = False
 
 class VoiceError(Exception):
     pass
@@ -32,9 +40,9 @@ class YTDLSource(discord.PCMVolumeTransformer):
         'restrictfilenames': True,
         'noplaylist': True,
         'nocheckcertificate': True,
-        'ignoreerrors': False,
-        'logtostderr': False,
-        'quiet': True,
+        'ignoreerrors': DebuggingOpts["ytdllogging"],
+        'logtostderr': DebuggingOpts["ytdllogging"],
+        'quiet': DebuggingOpts["ytdlquiet"],
         'no_warnings': True,
         'default_search': 'auto',
         'source_address': '0.0.0.0',
