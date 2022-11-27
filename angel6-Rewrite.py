@@ -1,4 +1,4 @@
-import logging, asyncio, functools, psutil, math, time, datetime, random, sys, discord, cpuinfo, yt_dlp, os
+import logging, asyncio, functools, psutil, math, time, datetime, random, sys, discord, cpuinfo, yt_dlp, os, itertools
 from subprocess import run
 from discord import __version__ as d_version
 from discord.ext import commands
@@ -813,17 +813,16 @@ async def unban(ctx, id: int=0) :
     """unbans a user"""
     if id == 0:
         await ctx.reply("You need to provide an ID to unban!")
-        return    
-
+        return
     else:
         user = await bot.fetch_user(id)
         await ctx.guild.unban(user)
         await ctx.reply(f'{user} has been unbanned')
                 
-@bot.command()
+@bot.command(aliases=["clear"])
 @commands.has_permissions(ban_members =True)
-async def wipe(ctx, amount=0):
-    """wipes x amount of messages"""
+async def wipe(ctx, amount=20):
+    """wipes 20 messages or the number specified"""
     await ctx.channel.purge(limit=amount)
     await ctx.channel.send(f"Cleanup Complete.")
 
