@@ -493,7 +493,7 @@ class Music(commands.Cog):
 
         async with ctx.typing():
             try:
-                source = await YTDLSource.create_source(ctx, search, loop=self.bot.loop)
+                source = await YTDLSource.create_source(ctx, search, loop=bot.loop) #I don't think self is needed here, removed
             except YTDLError as err:
                 await ctx.reply('An error occurred while processing this request: {}'.format(str(err)))
             else:
