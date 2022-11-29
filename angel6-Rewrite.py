@@ -480,8 +480,11 @@ class Music(commands.Cog):
 
         # Inverse boolean value to loop and unloop.
         ctx.voice_state.loop = not ctx.voice_state.loop
-        await ctx.message.add_reaction('✅')
-
+        print(ctx.voice_state.loop)
+        if ctx.voice_state.loop == True:
+            await ctx.message.add_reaction('✅')
+        else:
+           await ctx.message.add_reaction('❎') #when looping disabled
     @commands.command(name='play', aliases=['p'])
     async def _play(self, ctx: commands.Context, *, search: str):
         """Plays a song.
