@@ -16,16 +16,19 @@ BotVer = "**2.2.2** <https://github.com/maj113/Angel6/releases/latest>"
 
 utils.bug_reports_message = lambda: ''
 
-logging.basicConfig(level=logging.ERROR)
-#Enable debug options if launch program "debug" is passed
+
+#Enable debug options if launch argument "debug" is passed
 DebuggingOpts = {
     "ytdllogging" : False,
     "ytdlquiet" : True,
+    "LogLevel" : logging.INFO
 }
 if sys.argv[-1] == "debug" or sys.argv[-1] == "d":
     DebuggingOpts["ytdllogging"] = True
     DebuggingOpts["ytdlquiet"] = False
+    DebuggingOpts["LogLevel"] = logging.DEBUG
 
+logging.basicConfig(level=DebuggingOpts["LogLevel"])
 class VoiceError(Exception):
     pass
 
@@ -211,7 +214,6 @@ class VoiceState:
     @loop.setter
     def loop(self, value: bool):
         self._loop = value
-
     @property
     def volume(self):
         return self._volume
@@ -228,7 +230,6 @@ class VoiceState:
         while True:
             self.next.clear()
             self.now = None
-
             if self.loop == False:
                 # Try to get the next song within 3 minutes.
                 # If no song will be added to the queue in time,
@@ -366,6 +367,9 @@ class Music(commands.Cog):
     @commands.command(name='now', aliases=['current', 'playing'])
     async def _now(self, ctx: commands.Context):
         """Displays the currently playing song."""
+        if ctx.voice_state.current == None:
+            await ctx.reply("Nothing is playing at the moment")
+            return
         embed = ctx.voice_state.current.create_embed()
         await ctx.reply(embed=embed)
 
