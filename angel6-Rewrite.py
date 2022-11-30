@@ -1007,7 +1007,7 @@ async def german(ctx):
     """Random German Gif"""
     #why does this exist?
     await ctx.reply("https://giphy.com/gifs/fifa-Vd8wLaK3lNDNMuGaUL \n SHUT THE FUCK UP BAHZZ VIVA LA GERMANY AAJAJJAJAJAJA")
-      
+
 async def main():
     # if you need to, initialize other things, such as aiohttp
     bot.add_cog(Music(bot))
