@@ -542,7 +542,8 @@ async def restart(ctx):
 @bot.command()
 async def ping(ctx):
     """shows the ping"""
-    await ctx.reply(f'Here {(bot.latency * 1000):.0f} ms')
+    embed = discord.Embed(title="Bot latency:",color=discord.Color.blurple(),description=f"**{(bot.latency * 1000):.0f}ms**")
+    await ctx.reply(embed=embed)
 
 @bot.event
 async def on_ready():
