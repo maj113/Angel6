@@ -432,12 +432,12 @@ class Music(commands.Cog):
     @commands.command(name='queue')
     async def _queue(self, ctx: commands.Context, *, page: int = 1):
 
-        """Shows the player's queue.
+        """Shows the player's queue.embed
         You can optionally specify the page to show. Each page contains 10 elements.
         """
 
         if len(ctx.voice_state.songs) == 0:
-            return await ctx.reply('Empty queue.')
+            return await ctx.reply('Queue is empty!.')
 
         items_per_page = 10
         pages = math.ceil(len(ctx.voice_state.songs) / items_per_page)
@@ -449,8 +449,8 @@ class Music(commands.Cog):
         for i, song in enumerate(ctx.voice_state.songs[start:end], start=start):
             queue += '`{0}.` [**{1.source.title}**]({1.source.url})\n'.format(i + 1,song)
 
-        embed = (discord.Embed(description='**{} tracks:**\n\n{}'.format(len(ctx.voice_state.songs), queue))
-                 .set_footer(text='Viewing page {}/{}'.format(page, pages)))
+        embed = (discord.Embed(description=f'**{len(ctx.voice_state.songs)} tracks:**\n\n{queue}'))
+        embed.set_footer(text=f'Viewing page {page}/{pages}')
         await ctx.reply(embed=embed)
 
     @commands.command(name='shuffle')
@@ -488,7 +488,7 @@ class Music(commands.Cog):
         if ctx.voice_state.loop == True:
             await ctx.message.add_reaction('✅')
         else:
-           await ctx.message.add_reaction('❎') #when looping disabled
+            await ctx.message.add_reaction('❎') #when looping disabled
     @commands.command(name='play', aliases=['p'])
     async def _play(self, ctx: commands.Context, *, search: str):
         """Plays a song.
