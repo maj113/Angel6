@@ -784,7 +784,7 @@ async def unmute(ctx, member: discord.Member):
 meminfo = psutil.Process(os.getpid())
 totmem = psutil.virtual_memory().total / float(2 ** 20)  
 mem = meminfo.memory_info()[0] / float(2 ** 20) 
-ytdlfunc = run("youtube-dl --version", shell=True, capture_output=True).stdout.decode('ascii')
+ytdlfunc = run("yt-dlp --version", shell=True, capture_output=True).stdout.decode('ascii')
 
 @bot.command(pass_context=True, aliases=['info', 'debug'])
 async def stats(ctx):
