@@ -432,7 +432,7 @@ class Music(commands.Cog):
     @commands.command(name='queue')
     async def _queue(self, ctx: commands.Context, *, page: int = 1):
 
-        """Shows the player's queue.embed
+        """Shows the player's queue
         You can optionally specify the page to show. Each page contains 10 elements.
         """
 
