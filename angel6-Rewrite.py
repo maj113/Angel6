@@ -11,7 +11,7 @@ TOKEN = os.getenv("DISCORD_TOKEN")
 LOG_CHAN_ID = os.getenv("LOGGING_CHANNEL_ID")
 JL_CHAN_ID = os.getenv("JOIN_LEAVE_CHANNEL_ID")
 GEN_CHAN_ID = os.getenv("GENERAL_CHANNEL_ID")
-BotVer = "**2.2.2** <https://github.com/maj113/Angel6/releases/latest>"
+BotVer = "**2.2.3** <https://github.com/maj113/Angel6/releases/latest>"
 # Silence useless bug reports messages
 
 utils.bug_reports_message = lambda: ''
@@ -1010,8 +1010,6 @@ async def german(ctx):
       
 async def main():
     # if you need to, initialize other things, such as aiohttp
-    bot.add_cog(Music(bot))  # change to whatever you need
+    bot.add_cog(Music(bot))
     await bot.start(TOKEN)                                 
-
-if __name__ == '__main__':
-    asyncio.get_event_loop().run_until_complete(main())
+asyncio.get_event_loop().run_until_complete(main())
