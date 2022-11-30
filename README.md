@@ -1,7 +1,7 @@
 # Angel6
 Discord bot for my friends server.
 
-**Mostly usable as of >= v2.2.2, Music Cog needs improvment
+**Mostly usable as of >= v2.2.2, Music Cog needs improvment**
 
 # TO-DOs:
 
