@@ -1,4 +1,4 @@
-# Angel6
+# Angel$IX
 Discord bot for my friends server.
 
 **Mostly usable as of >= v2.2.2, Music Cog needs improvment**
