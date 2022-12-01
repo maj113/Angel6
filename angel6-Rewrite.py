@@ -952,6 +952,7 @@ def rolladice(sides):
 
 @bot.command(pass_context=True, aliases=['cred','credits','about'])
 async def credit(ctx):
+    """Shows bot credits"""
     owner = await bot.fetch_user(978854415786184745)
     maintainer = await bot.fetch_user(347387857574428676)
     """Displays who created and maintained the bot"""
@@ -975,7 +976,7 @@ async def role(ctx, user: discord.Member, role: discord.Role):
 @bot.command(pass_context=True)
 @commands.has_permissions(ban_members=True)
 async def rmrole(ctx, user: discord.Member, role: discord.Role):
-        """Removes users role away"""
+        """Removes user's role away"""
         if role == ctx.author.top_role and user == ctx.author :
             await ctx.reply(f"Can't remove role \"{role}\" as it's your highest role")
             return
