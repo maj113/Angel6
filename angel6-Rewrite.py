@@ -822,16 +822,21 @@ async def ban(ctx, member : discord.Member, *, reason=None):
 
 @bot.command()
 @commands.has_permissions(ban_members =True)   
-async def unban(ctx, id: int=0) :
+async def unban(ctx, id = "0") :
     """unbans a user"""
-    if id == 0:
+    if id == "0":
         await ctx.reply("You need to provide an ID to unban!")
-        return
     else:
-        user = await bot.fetch_user(id)
-        await ctx.guild.unban(user)
-        await ctx.reply(f'{user} has been unbanned')
-                
+        try:
+            id = int(id)
+            user = await bot.fetch_user(id)
+            await ctx.guild.unban(user)
+            await ctx.reply(f'{user} has been unbanned')
+        except ValueError:
+            await ctx.reply("ID must be an integer")  
+        except discord.errors.NotFound:
+            await ctx.reply("User not found")        
+
 @bot.command(aliases=["clear"])
 @commands.has_permissions(ban_members =True)
 async def wipe(ctx, amount=20):
