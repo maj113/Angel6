@@ -851,12 +851,10 @@ async def wipe(ctx, amount=20):
 @commands.has_permissions(kick_members=True)
 async def warn(ctx, member : discord.Member=None, *, reason=None):
     """warns a user"""
-    if member == ctx.author:
-        await ctx.reply(f"Can't warn yourself idiot")
-        return
-    elif member == None:
+    if member == None:
         await ctx.reply("You need to specify who to warn!")
-        return
+    elif member == ctx.author:
+        await ctx.reply(f"Can't warn yourself idiot")
     else:
         if reason == None:
             embed2=discord.Embed(title="Warned🗡️", description=f"You were warned, now behave.")
@@ -884,7 +882,7 @@ async def invites(ctx, user : discord.Member=None):
                 totalInvites += i.uses
         await ctx.reply(f"{member} has invited {totalInvites} member{'' if totalInvites == 1 else 's'} to the server!")
     
-@bot.command()
+@bot.command(aliases=["iq"])
 async def IQ(ctx):
     """Average server IQ"""
     embed=discord.Embed(title=f"Average {ctx.guild.name} IQ", description=f"{random.randint(-10 , 130 )}", color=discord.Color.blurple())
