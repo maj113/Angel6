@@ -856,11 +856,11 @@ async def warn(ctx, member : discord.Member=None, *, reason=None):
         return
     else:
         if reason == None:
-            embed2 =discord.Embed(title="Warned🗡️", description=f"You were warned, now behave.")
-            embed =discord.Embed(title="Warned", description=f"{member.mention} was warned")
+            embed2=discord.Embed(title="Warned🗡️", description=f"You were warned, now behave.")
+            embed=discord.Embed(title="Warned", description=f"{member.mention} was warned")
         else:
-            embed2 =discord.Embed(title="Warned🗡️", description=f"You were warned | Reason: {reason}")
-            embed =discord.Embed(title="Warned", description=f"{member.mention} was warned | Reason: {reason}")
+            embed2=discord.Embed(title="Warned🗡️", description=f"You were warned | Reason: {reason}")
+            embed=discord.Embed(title="Warned", description=f"{member.mention} was warned | Reason: {reason}")
         await ctx.reply (embed=embed)
         await member.send(embed=embed2)
 
