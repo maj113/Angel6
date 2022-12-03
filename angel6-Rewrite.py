@@ -817,7 +817,10 @@ async def ban(ctx, member : discord.Member, *, reason=None):
     else:
         await member.ban(reason=reason)
         await member.ban()
-        embed = discord.Embed(title="bye lol", description=f"{member.mention} got banned: {reason} ")
+        if reason = None:
+            embed = discord.Embed(title="bye lol", description=f"{member.mention} got banned ")
+        else:
+            embed = discord.Embed(title="bye lol", description=f"{member.mention} got banned: {reason} ")
         await ctx.channel.send(embed=embed)
 
 @bot.command()
