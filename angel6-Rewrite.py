@@ -804,7 +804,7 @@ async def stats(ctx):
 @bot.command()
 @commands.has_permissions(ban_members =True)
 async def ban(ctx, member : discord.Member, *, reason=None):
-    """bans the specified user"""
+    """Bans the specified user"""
     
     if member == ctx.author:
         await ctx.reply(f"Can't ban yourself idiot")
@@ -816,7 +816,6 @@ async def ban(ctx, member : discord.Member, *, reason=None):
     
     else:
         await member.ban(reason=reason)
-        await member.ban()
         if reason = None:
             embed = discord.Embed(title="bye lol", description=f"{member.mention} got banned ")
         else:
