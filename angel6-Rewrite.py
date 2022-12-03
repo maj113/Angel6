@@ -805,23 +805,24 @@ async def stats(ctx):
 @commands.has_permissions(ban_members =True)
 async def ban(ctx, member : discord.Member, *, reason=None):
     """Bans the specified user"""
-    
-    if member == ctx.author:
-        await ctx.reply(f"Can't ban yourself idiot")
-        return
+    try:
+        if member == ctx.author:
+            await ctx.reply(f"Can't ban yourself idiot")
+            return
 
-    elif  member.top_role >= ctx.author.top_role:
-        await ctx.reply(f"You can only ban members lower than yourself")
-        return
-    
-    else:
-        await member.ban(reason=reason)
-        if reason = None:
-            embed = discord.Embed(title="bye lol", description=f"{member.mention} got banned ")
+        elif  member.top_role >= ctx.author.top_role:
+            await ctx.reply(f"You can only ban members lower than yourself")
+            return
+        
         else:
-            embed = discord.Embed(title="bye lol", description=f"{member.mention} got banned: {reason} ")
-        await ctx.channel.send(embed=embed)
-
+            await member.ban(reason=reason)
+            if reason == None:
+                embed = discord.Embed(title="bye lol", description=f"{member.mention} got banned ")
+            else:
+                embed = discord.Embed(title="bye lol", description=f"{member.mention} got banned: {reason} ")
+            await ctx.channel.send(embed=embed)
+    except discord.errors.Forbidden:
+        await ctx.reply("Can't ban the member, make sure the bot is higher on the role list and that the bot has the necessary permissions ")
 @bot.command()
 @commands.has_permissions(ban_members =True)   
 async def unban(ctx, id = "0") :
