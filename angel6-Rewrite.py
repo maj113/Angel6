@@ -675,7 +675,7 @@ async def userinfo(ctx, *, user : discord.Member=None): # b'\xfc'
     if user is None:
         user = ctx.author      
     date_format = "%a, %d %b %Y %I:%M %p"
-    embed = discord.Embed(color=0xdfa3ff, description=user.mention)
+    embed = discord.Embed(color=discord.Color.blurple(), description=user.mention)
     embed.set_author(name=str(user), icon_url=user.avatar.url)
     embed.set_thumbnail(url=user.avatar.url)
     embed.add_field(name="Joined", value=user.joined_at.strftime(date_format))
