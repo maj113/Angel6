@@ -533,7 +533,7 @@ def restart_program():
     os.execv(sys.executable, ['python3'] + sys.argv)     
 
 @bot.command()
-@commands.has_permissions(kick_members=True)
+@commands.has_permissions(ban_members=True)
 async def restart(ctx):
     """restarts the bot"""
     await ctx.reply(" Restarting, please allow 5 seconds for this. ")
@@ -648,6 +648,11 @@ async def on_member_remove(member):
     embed.set_footer(text=f"{member.guild}", icon_url=f"{member.guild.icon.url}")
     await channel.send(embed=embed)
 
+@bot.event
+async def on_command_error(ctx, exception):
+    # if user tried using an unknown command
+    if type(exception) == discord.ext.commands.errors.MemberNotFound:
+        await ctx.reply("User not found")
 
 @bot.command(aliases=["members"])
 async def users(ctx):
@@ -655,6 +660,7 @@ async def users(ctx):
     a=ctx.guild.member_count
     b=discord.Embed(title=f"Total members in {ctx.guild.name}",description=a,color=discord.Color.blurple())
     await ctx.reply(embed=b)
+
 #there's probably a better way to check if a user has been mentioned
 @bot.command()
 async def av(ctx, *,  avamember : discord.Member=None):
@@ -744,16 +750,13 @@ async def kick(ctx, member : discord.Member, *, reason=None):
     """kicks a user"""
     
     if member == ctx.author:
-            await ctx.reply(f"Can't kick yourself idiot")
-            return
-
+        await ctx.reply(f"Can't kick yourself idiot")
     elif member.top_role >= ctx.author.top_role:
         await ctx.reply(f"Yo, you can only kick members lower than yourself lmao ")
-        return
-    
-    await member.kick(reason=reason)
-    embed = discord.Embed(title="kicked", description=f"{member.mention} was kicked out for {reason}")
-    await ctx.channel.send(embed=embed)
+    else:
+        await member.kick(reason=reason)
+        embed = discord.Embed(title="kicked", description=f"{member.mention} was kicked out for {reason}")
+        await ctx.channel.send(embed=embed)
 
 start_time = time.time()
 
@@ -795,7 +798,7 @@ async def stats(ctx):
     bedem.add_field(name = 'CPU Usage', value = f'{psutil.cpu_percent()}%', inline = False)
     bedem.add_field(name = 'Total Memory', value = f'{totmem:.0f}MB', inline = False)
     bedem.add_field(name = 'Memory Usage', value = f'{mem:.0f}MB', inline = False)
-    bedem.add_field(name = 'CPU name', value = cpuinfo.get_cpu_info()['brand_raw'], inline = False)
+    #bedem.add_field(name = 'CPU name', value = cpuinfo.get_cpu_info()['brand_raw'], inline = False) way too slow
     bedem.add_field(name = 'Discord.py Version', value = d_version, inline = False)
     bedem.add_field(name = 'Python Version', value = sys.version, inline = False)
     bedem.add_field(name = 'YTdl Version', value = ytdlfunc.strip(), inline = False)
