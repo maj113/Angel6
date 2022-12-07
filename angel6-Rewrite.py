@@ -135,13 +135,13 @@ class YTDLSource(discord.PCMVolumeTransformer):
         
         duration_formated = []
         if days > 0:
-            duration_formated.append('{}'.format(days))
+            duration_formated.append(f'{days}')
         if hours > 0:
-            duration_formated.append('{}'.format(hours))
+            duration_formated.append(f'{hours}')
         if minutes > 0:
-            duration_formated.append('{}'.format(minutes))
+            duration_formated.append(f'{minutes}')
         if seconds > 0:
-            duration_formated.append('{}'.format(seconds))
+            duration_formated.append(f'{seconds}')
         
         return ':'.join(duration_formated)
 
