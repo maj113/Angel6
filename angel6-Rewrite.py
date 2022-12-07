@@ -135,15 +135,15 @@ class YTDLSource(discord.PCMVolumeTransformer):
         
         duration_formated = []
         if days > 0:
-            duration_formated.append(f'{days}')
+            duration_formated.append(f'{days}d')
         if hours > 0:
-            duration_formated.append(f'{hours}')
+            duration_formated.append(f'{hours}h')
         if minutes > 0:
-            duration_formated.append(f'{minutes}')
+            duration_formated.append(f'{minutes}m')
         if seconds > 0:
-            duration_formated.append(f'{seconds}')
+            duration_formated.append(f'{seconds}s')
         
-        return ':'.join(duration_formated)
+        return " ".join(duration_formated)
 
 class Song:
     __slots__ = ('source', 'requester')
