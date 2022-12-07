@@ -547,70 +547,73 @@ async def ping(ctx):
 
 @bot.event
 async def on_ready():
-    print('Logged in as:\n{0.user.name}\n{0.user.id}'.format(bot))
+    print(f'Logged in as:\n{bot.user.name}\n{bot.user.id}')
     file = open(os.path.join(os.path.dirname(__file__), 'Ascii1.txt'), 'rt')
     content = file.read()
     file.close()
+    restartbot = False
+
     if os.getenv("LOGGING_CHANNEL_ID") == "" :
-        logginginput = int(input("Input logging channel ID ")).strip()
+        logginginput = int(input("Input logging channel ID ").strip())
         with open(".env", "r") as envfile:
             content1 = envfile.read()
             changed = content1.replace("LOGGING_CHANNEL_ID=", ''.join(["LOGGING_CHANNEL_ID=", str(logginginput)]))
             with open('.env','w') as envfile:
                 envfile.write(changed)
-        restart_program()
+        restartbot = True
     
-    elif os.getenv("LOGGING_CHANNEL_ID") == None :
-        logginginput = int(input("Input logging channel ID ")).strip()
+    if os.getenv("LOGGING_CHANNEL_ID") == None :
+        logginginput = int(input("Input logging channel ID ").strip())
         channel = bot.get_channel(logginginput)
         with open(".env", "a") as envfile:
             envfile.write(f"\nLOGGING_CHANNEL_ID={logginginput}")
-        restart_program()
+        restartbot = True
     
     if os.getenv("JOIN_LEAVE_CHANNEL_ID") == None :
-        logginginput = input("Input join/leave channel ID ").strip()
+        logginginput = int(input("Input join/leave channel ID ").strip())
         with open(".env", "a") as envfile:
             envfile.write(f"\nJOIN_LEAVE_CHANNEL_ID={logginginput}")
-        restart_program()
+        restartbot = True
 
-    elif os.getenv("JOIN_LEAVE_CHANNEL_ID") == "" :
-        logginginput = int(input("Input join/leave channel ID ")).strip()
+    if os.getenv("JOIN_LEAVE_CHANNEL_ID") == "" :
+        logginginput = int(input("Input join/leave channel ID ").strip())
         channel = bot.get_channel(logginginput)
         with open(".env", "r") as envfile:
             content1 = envfile.read()
             changed = content1.replace("JOIN_LEAVE_CHANNEL_ID=", ''.join(["JOIN_LEAVE_CHANNEL_ID=", str(logginginput)]))
             with open('.env','w') as envfile:
                 envfile.write(changed)
-        restart_program()
+        restartbot = True
 
     if os.getenv("GENERAL_CHANNEL_ID") == None :
-        logginginput = input("Input general channel ID ").strip()
+        logginginput = int(input("Input general channel ID ").strip())
         with open(".env", "a") as envfile:
             envfile.write(f"\nGENERAL_CHANNEL_ID={logginginput}")
-        restart_program()
+        restartbot = True
 
-    elif os.getenv("GENERAL_CHANNEL_ID") == "" :
-        logginginput = int(input("Input general channel ID ")).strip()
+    if os.getenv("GENERAL_CHANNEL_ID") == "" :
+        logginginput = int(input("Input general channel ID ").strip())
         channel = bot.get_channel(logginginput)
         with open(".env", "r") as envfile:
             content1 = envfile.read()
             changed = content1.replace("GENERAL_CHANNEL_ID=", ''.join(["GENERAL_CHANNEL_ID=", str(logginginput)]))
             with open('.env','w') as envfile:
                 envfile.write(changed)
+        restartbot = True
+    
+    if restartbot == True:
         restart_program()
-
-
-    else:
-        embed = discord.Embed(title = 'Bot settings', description = 'Current bot settings and status', color=discord.Color.blurple())
-        embed.add_field(name="**Angel$IX Version:**", value=BotVer, inline=False)
-        embed.add_field(name="logging channel", value=LOG_CHAN_ID, inline=False)
-        embed.add_field(name="Join leave channel", value=JL_CHAN_ID, inline=False)
-        embed.add_field(name="General channel", value=GEN_CHAN_ID, inline=False)
-        embed.add_field(name="Current API latency:", value=f'{(bot.latency * 1000):.0f}ms', inline=False)
-        ID = int(LOG_CHAN_ID)
-        channel = bot.get_channel(ID)
-        await channel.send(content)
-        await channel.send(embed=embed)       
+    
+    embed = discord.Embed(title = 'Bot settings', description = 'Current bot settings and status', color=discord.Color.blurple())
+    embed.add_field(name="**Angel$IX Version:**", value=BotVer, inline=False)
+    embed.add_field(name="logging channel", value=LOG_CHAN_ID, inline=False)
+    embed.add_field(name="Join leave channel", value=JL_CHAN_ID, inline=False)
+    embed.add_field(name="General channel", value=GEN_CHAN_ID, inline=False)
+    embed.add_field(name="Current API latency:", value=f'{(bot.latency * 1000):.0f}ms', inline=False)
+    ID = int(LOG_CHAN_ID)
+    channel = bot.get_channel(ID)
+    await channel.send(content)
+    await channel.send(embed=embed)       
 
 
 @bot.event
