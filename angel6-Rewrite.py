@@ -1,4 +1,4 @@
-import logging, asyncio, functools, psutil, math, time, datetime, random, sys, discord, yt_dlp, os, itertools
+import asyncio, psutil, time, datetime, random, sys, discord, os
 from subprocess import run
 from discord import __version__ as d_version
 from discord.ext import commands
