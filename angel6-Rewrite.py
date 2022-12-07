@@ -1,4 +1,4 @@
-import logging, asyncio, functools, psutil, math, time, datetime, random, sys, discord, cpuinfo, yt_dlp, os, itertools
+import logging, asyncio, functools, psutil, math, time, datetime, random, sys, discord, yt_dlp, os, itertools
 from subprocess import run
 from discord import __version__ as d_version
 from discord.ext import commands
@@ -125,7 +125,7 @@ class YTDLSource(discord.PCMVolumeTransformer):
 
 
     @staticmethod
-    def parse_duration(duration: int):
+    def parse_duration(duration):
         if duration > 0:
             minutes, seconds = divmod(duration, 60)
             hours, minutes = divmod(minutes, 60)
@@ -142,11 +142,11 @@ class YTDLSource(discord.PCMVolumeTransformer):
                 duration.append('{}'.format(seconds))
             
             value = ':'.join(duration)
-        
+            return value
         elif duration == 0:
             value = "LIVE"
+            return value
         
-        return value
 
 class Song:
     __slots__ = ('source', 'requester')
@@ -564,39 +564,36 @@ async def on_ready():
     
     if os.getenv("LOGGING_CHANNEL_ID") == None :
         logginginput = int(input("Input logging channel ID ").strip())
-        channel = bot.get_channel(logginginput)
         with open(".env", "a") as envfile:
             envfile.write(f"\nLOGGING_CHANNEL_ID={logginginput}")
         restartbot = True
     
     if os.getenv("JOIN_LEAVE_CHANNEL_ID") == None :
-        logginginput = int(input("Input join/leave channel ID ").strip())
+        joinleaveinput = int(input("Input join/leave channel ID ").strip())
         with open(".env", "a") as envfile:
-            envfile.write(f"\nJOIN_LEAVE_CHANNEL_ID={logginginput}")
+            envfile.write(f"\nJOIN_LEAVE_CHANNEL_ID={joinleaveinput}")
         restartbot = True
 
     if os.getenv("JOIN_LEAVE_CHANNEL_ID") == "" :
-        logginginput = int(input("Input join/leave channel ID ").strip())
-        channel = bot.get_channel(logginginput)
+        joinleaveinput = int(input("Input join/leave channel ID ").strip())
         with open(".env", "r") as envfile:
             content1 = envfile.read()
-            changed = content1.replace("JOIN_LEAVE_CHANNEL_ID=", ''.join(["JOIN_LEAVE_CHANNEL_ID=", str(logginginput)]))
+            changed = content1.replace("JOIN_LEAVE_CHANNEL_ID=", ''.join(["JOIN_LEAVE_CHANNEL_ID=", str(joinleaveinput)]))
             with open('.env','w') as envfile:
                 envfile.write(changed)
         restartbot = True
 
     if os.getenv("GENERAL_CHANNEL_ID") == None :
-        logginginput = int(input("Input general channel ID ").strip())
+        generalinput = int(input("Input general channel ID ").strip())
         with open(".env", "a") as envfile:
-            envfile.write(f"\nGENERAL_CHANNEL_ID={logginginput}")
+            envfile.write(f"\nGENERAL_CHANNEL_ID={generalinput}")
         restartbot = True
 
     if os.getenv("GENERAL_CHANNEL_ID") == "" :
-        logginginput = int(input("Input general channel ID ").strip())
-        channel = bot.get_channel(logginginput)
+        generalinput = int(input("Input general channel ID ").strip())
         with open(".env", "r") as envfile:
             content1 = envfile.read()
-            changed = content1.replace("GENERAL_CHANNEL_ID=", ''.join(["GENERAL_CHANNEL_ID=", str(logginginput)]))
+            changed = content1.replace("GENERAL_CHANNEL_ID=", ''.join(["GENERAL_CHANNEL_ID=", str(generalinput)]))
             with open('.env','w') as envfile:
                 envfile.write(changed)
         restartbot = True
