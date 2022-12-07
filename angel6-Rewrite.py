@@ -548,8 +548,6 @@ async def ping(ctx):
 @bot.event
 async def on_ready():
     print('Logged in as:\n{0.user.name}\n{0.user.id}'.format(bot))
-    #await bot.change_presence(activity=discord.Streaming(status=discord.Status.streaming, name=random.choice(status), url="https://github.com/maj113/Angel6"))
-    #specifies Ascii art location for boot-up message
     file = open(os.path.join(os.path.dirname(__file__), 'Ascii1.txt'), 'rt')
     content = file.read()
     file.close()
@@ -648,12 +646,6 @@ async def on_member_remove(member):
     embed.set_footer(text=f"{member.guild}", icon_url=f"{member.guild.icon.url}")
     await channel.send(embed=embed)
 
-@bot.event
-async def on_command_error(ctx, exception):
-    # if user tried using an unknown command
-    if type(exception) == discord.ext.commands.errors.MemberNotFound:
-        await ctx.reply("User not found")
-
 @bot.command(aliases=["members"])
 async def users(ctx):
     """shows total amount of members"""
@@ -706,7 +698,7 @@ async def serverinfo(ctx):
     memberCount = str(ctx.guild.member_count)
     icon = str(ctx.guild.icon.url)
     embed = discord.Embed(
-        title=name + "<3",
+        title=name + " <3",
         description=description,
         color=discord.Color.blurple()
     )
