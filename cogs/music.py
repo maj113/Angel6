@@ -232,7 +232,7 @@ class VoiceState:
             
             #If the song is looped
             elif self.loop == True:
-                self.now = discord.FFmpegPCMAudio(self.current.source.stream_url, **YTDLSource.FFMPEG_OPTIONS)
+                self.now = await discord.FFmpegOpusAudio.from_probe(self.current.source.stream_url, **YTDLSource.FFMPEG_OPTIONS)
                 self.voice.play(self.now, after=self.play_next_song)
             
             await self.next.wait()
