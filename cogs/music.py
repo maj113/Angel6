@@ -44,7 +44,7 @@ class YTDLSource(discord.PCMVolumeTransformer):
 
     ytdl = yt_dlp.YoutubeDL(YTDL_OPTIONS)
 
-    def __init__(self, ctx: commands.Context, source: discord.FFmpegPCMAudio, *, data: dict, volume: float = 1):
+    def __init__(self, ctx: commands.Context, source: discord.FFmpegOpusAudio, *, data: dict, volume: float = 1):
         super().__init__(source, volume)
 
         self.requester = ctx.author
