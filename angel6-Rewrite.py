@@ -507,10 +507,12 @@ bot.load_extension("cogs.music")
 @commands.has_permissions(ban_members=True)
 async def reload(ctx):
     """Reload Bot cog"""
-    bot.unload_extension("cogs.music")
-    bot.load_extension("cogs.music")
-    await ctx.reply('**`SUCCESS`**')
-
+    try:
+        bot.unload_extension("cogs.music")
+        bot.load_extension("cogs.music")
+        await ctx.reply('Cogs sucessfully reloaded!')
+    except Exception as err:
+        await ctx.reply(err)
     
 async def main():
     await bot.start(TOKEN)                                 
