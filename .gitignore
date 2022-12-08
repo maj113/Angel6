@@ -3,3 +3,5 @@ token.env
 *.vs
 .idea
 ffmpeg-5.0.1
+
+__pycache__/
