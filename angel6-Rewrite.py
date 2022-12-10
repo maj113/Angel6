@@ -16,23 +16,6 @@ BotVer = "**2.2.3** <https://github.com/maj113/Angel6/releases/latest>"
 intents = discord.Intents().all()
 bot = commands.Bot(command_prefix='~', intents=intents,status_act=discord.Status.do_not_disturb)
 
-
-def restart_program():
-    os.execv(sys.executable, ['python3'] + sys.argv)     
-
-@bot.command()
-@commands.has_permissions(ban_members=True)
-async def restart(ctx):
-    """restarts the bot"""
-    await ctx.reply(" Restarting, please allow 5 seconds for this. ")
-    restart_program()
-
-@bot.command()
-async def ping(ctx):
-    """shows the ping"""
-    embed = discord.Embed(title="Bot latency:",color=discord.Color.blurple(),description=f"**{(bot.latency * 1000):.0f}ms**")
-    await ctx.reply(embed=embed)
-
 @bot.event
 async def on_ready():
     print(f'Logged in as:\n{bot.user.name}\n{bot.user.id}')
@@ -100,6 +83,7 @@ async def on_ready():
     await channel.send(content)
     await channel.send(embed=embed)       
 
+bot.load_extension("cogs.music")
 
 @bot.event
 async def on_member_join(member):
@@ -133,6 +117,33 @@ async def on_member_remove(member):
     embed.set_thumbnail(url=f"{member.avatar.url}")
     embed.set_footer(text=f"{member.guild}", icon_url=f"{member.guild.icon.url}")
     await channel.send(embed=embed)
+
+@bot.command()
+@commands.has_permissions(ban_members=True)
+async def reload(ctx):
+    """Reload Bot cog"""
+    try:
+        bot.unload_extension("cogs.music")
+        bot.load_extension("cogs.music")
+        await ctx.reply('Cogs sucessfully reloaded!')
+    except Exception as err:
+        await ctx.reply(err)
+
+def restart_program():
+    os.execv(sys.executable, ['python3'] + sys.argv)     
+
+@bot.command()
+@commands.has_permissions(ban_members=True)
+async def restart(ctx):
+    """restarts the bot"""
+    await ctx.reply(" Restarting, please allow 5 seconds for this. ")
+    restart_program()
+
+@bot.command()
+async def ping(ctx):
+    """shows the ping"""
+    embed = discord.Embed(title="Bot latency:",color=discord.Color.blurple(),description=f"**{(bot.latency * 1000):.0f}ms**")
+    await ctx.reply(embed=embed)
 
 @bot.command(aliases=["members"])
 async def users(ctx):
@@ -197,7 +208,21 @@ async def serverinfo(ctx):
     embed.add_field(name="Created", value=ctx.guild.created_at.strftime(
             "%B %d, %Y, %I:%M %p"), inline=True)
     await ctx.reply(embed=embed)
+
+@bot.command()
+@commands.has_permissions(kick_members =True)
+async def kick(ctx, member : discord.Member, *, reason=None):
+    """kicks a user"""
     
+    if member == ctx.author:
+        await ctx.reply(f"Can't kick yourself idiot")
+    elif member.top_role >= ctx.author.top_role:
+        await ctx.reply(f"Yo, you can only kick members lower than yourself lmao ")
+    else:
+        await member.kick(reason=reason)
+        embed = discord.Embed(title="kicked", description=f"{member.mention} was kicked out for {reason}")
+        await ctx.channel.send(embed=embed)
+
 @bot.command()
 @commands.has_permissions(manage_messages=True)
 async def mute(ctx, member: discord.Member, *, reason=None):
@@ -226,36 +251,6 @@ async def mute(ctx, member: discord.Member, *, reason=None):
 
 @bot.command()
 @commands.has_permissions(kick_members =True)
-async def kick(ctx, member : discord.Member, *, reason=None):
-    """kicks a user"""
-    
-    if member == ctx.author:
-        await ctx.reply(f"Can't kick yourself idiot")
-    elif member.top_role >= ctx.author.top_role:
-        await ctx.reply(f"Yo, you can only kick members lower than yourself lmao ")
-    else:
-        await member.kick(reason=reason)
-        embed = discord.Embed(title="kicked", description=f"{member.mention} was kicked out for {reason}")
-        await ctx.channel.send(embed=embed)
-
-start_time = time.time()
-
-@bot.command(pass_context=True)
-async def uptime(ctx):
-        """shows bot uptime"""
-        current_time = time.time()
-        difference = int(round(current_time - start_time))
-        text = str(datetime.timedelta(seconds=difference))
-        embed = discord.Embed(colour=discord.Color.blurple())
-        embed.add_field(name="Uptime", value=text)
-        embed.set_footer(text="Angel$IX")
-        try:
-            await ctx.reply(embed=embed)
-        except discord.HTTPException:
-            await ctx.reply("Current uptime: " + text)
-
-@bot.command()
-@commands.has_permissions(kick_members =True)
 async def unmute(ctx, member: discord.Member):
     """unmutes a user"""
     mutedRole = discord.utils.get(ctx.guild.roles, name="Muted")
@@ -263,26 +258,6 @@ async def unmute(ctx, member: discord.Member):
     await member.remove_roles(mutedRole)
     await ctx.reply(f"Unmuted {member.mention}")
     await member.send(f'Unmuted in {ctx.guild.name} welcome back')
-
-#im proud of this 
-meminfo = psutil.Process(os.getpid())
-totmem = psutil.virtual_memory().total / float(2 ** 20)  
-mem = meminfo.memory_info()[0] / float(2 ** 20) 
-ytdlfunc = run("yt-dlp --version", shell=True, capture_output=True).stdout.decode('ascii')
-
-@bot.command(pass_context=True, aliases=['info', 'debug'])
-async def stats(ctx):
-    """shows bot stats"""
-    bedem = discord.Embed(title = 'System Resource Usage and statistics', description = 'See bot host statistics.', color=discord.Color.blurple()) 
-    bedem.add_field(name = "Angel$IX version", value =BotVer, inline = False)
-    bedem.add_field(name = 'CPU Usage', value = f'{psutil.cpu_percent()}%', inline = False)
-    bedem.add_field(name = 'Total Memory', value = f'{totmem:.0f}MB', inline = False)
-    bedem.add_field(name = 'Memory Usage', value = f'{mem:.0f}MB', inline = False)
-    #bedem.add_field(name = 'CPU name', value = cpuinfo.get_cpu_info()['brand_raw'], inline = False) way too slow
-    bedem.add_field(name = 'Discord.py Version', value = d_version, inline = False)
-    bedem.add_field(name = 'Python Version', value = sys.version, inline = False)
-    bedem.add_field(name = 'YTdl Version', value = ytdlfunc.strip(), inline = False)
-    await ctx.reply(embed = bedem)
 
 @bot.command()
 @commands.has_permissions(ban_members =True)
@@ -305,7 +280,6 @@ async def ban(ctx, member : discord.Member=None, *, reason=None):
     except discord.errors.Forbidden:
         await ctx.reply("Can't ban the member, make sure the bot is higher on the role list and that the bot has the necessary permissions. ")
 
-
 @bot.command()
 @commands.has_permissions(ban_members =True)   
 async def unban(ctx, id = "0") :
@@ -322,13 +296,6 @@ async def unban(ctx, id = "0") :
             await ctx.reply("ID must be an integer")  
         except discord.errors.NotFound:
             await ctx.reply("User not found")        
-
-@bot.command(aliases=["clear"])
-@commands.has_permissions(ban_members =True)
-async def wipe(ctx, amount=20):
-    """wipes 20 messages or the number specified"""
-    await ctx.channel.purge(limit=amount)
-    await ctx.channel.send(f"Cleanup Complete.")
 
 @bot.command()
 @commands.has_permissions(kick_members=True)
@@ -348,6 +315,48 @@ async def warn(ctx, member : discord.Member=None, *, reason=None):
         await ctx.reply (embed=embed)
         await member.send(embed=embed2)
 
+@bot.command(aliases=["clear"])
+@commands.has_permissions(ban_members =True)
+async def wipe(ctx, amount=20):
+    """wipes 20 messages or the number specified"""
+    await ctx.channel.purge(limit=amount)
+    await ctx.channel.send(f"Cleanup Complete.")
+
+start_time = time.time()
+@bot.command(pass_context=True)
+async def uptime(ctx):
+        """shows bot uptime"""
+        current_time = time.time()
+        difference = int(round(current_time - start_time))
+        text = str(datetime.timedelta(seconds=difference))
+        embed = discord.Embed(colour=discord.Color.blurple())
+        embed.add_field(name="Uptime", value=text)
+        embed.set_footer(text="Angel$IX")
+        try:
+            await ctx.reply(embed=embed)
+        except discord.HTTPException:
+            await ctx.reply("Current uptime: " + text)
+
+#im proud of this 
+meminfo = psutil.Process(os.getpid())
+totmem = psutil.virtual_memory().total / float(2 ** 20)  
+mem = meminfo.memory_info()[0] / float(2 ** 20) 
+ytdlfunc = run("yt-dlp --version", shell=True, capture_output=True).stdout.decode('ascii')
+
+@bot.command(pass_context=True, aliases=['info', 'debug'])
+async def stats(ctx):
+    """shows bot stats"""
+    bedem = discord.Embed(title = 'System Resource Usage and statistics', description = 'See bot host statistics.', color=discord.Color.blurple()) 
+    bedem.add_field(name = "Angel$IX version", value =BotVer, inline = False)
+    bedem.add_field(name = 'CPU Usage', value = f'{psutil.cpu_percent()}%', inline = False)
+    bedem.add_field(name = 'Total Memory', value = f'{totmem:.0f}MB', inline = False)
+    bedem.add_field(name = 'Memory Usage', value = f'{mem:.0f}MB', inline = False)
+    #bedem.add_field(name = 'CPU name', value = cpuinfo.get_cpu_info()['brand_raw'], inline = False) way too slow
+    bedem.add_field(name = 'Discord.py Version', value = d_version, inline = False)
+    bedem.add_field(name = 'Python Version', value = sys.version, inline = False)
+    bedem.add_field(name = 'YTdl Version', value = ytdlfunc.strip(), inline = False)
+    await ctx.reply(embed = bedem)
+
 @bot.command()
 async def invites(ctx, user : discord.Member=None):
     """Shows how many people someone has invited"""
@@ -364,7 +373,7 @@ async def invites(ctx, user : discord.Member=None):
             if i.inviter == member:
                 totalInvites += i.uses
         await ctx.reply(f"{member} has invited {totalInvites} member{'' if totalInvites == 1 else 's'} to the server!")
-    
+
 @bot.command(aliases=["iq"])
 async def IQ(ctx):
     """Average server IQ"""
@@ -461,7 +470,7 @@ async def role(ctx, user: discord.Member, role: discord.Role):
             return        
         await user.add_roles(role)
         await ctx.reply(f"{user.name} has been given: {role.name}")
-        
+
 @bot.command(pass_context=True)
 @commands.has_permissions(ban_members=True)
 async def rmrole(ctx, user: discord.Member, role: discord.Role):
@@ -479,7 +488,7 @@ async def femboy(ctx):
     embed2=discord.Embed(title="Miro's Wisdom On Femboys",description="Hey, some guys like being cute and pastel, trans guys included, and some transgender people don’t really feel the need to change their bodies either. So that’s an option. Maybe you’re a really feminine guy who’s fine with having a female body.\n Or, maybe you just really like the femboy aesthetic. Or maybe you’re attracted to femboys. Idk, I’m not you. It’s gonna take a little experimentation to find out.\n 1) Get some clothes you feel comfortable in. Try out that femboy look. Do you feel cute? Does it feel right? Whether you are cis or trans, you should be able to wear clothes that make you feel good about yourself. So do that. Whatever the answers are to the other questions, this will almost certainly make you feel a little better.\n 2) Do some googling. Learn about fem trans boys, demiboys, and non-binary people. Read some things from their perspectives. Does any of it resonate with you?\n3) Try some things. It’s normal for us to question our identities and grow and change through the years, and it’s normal to not fully understand yourself right away. If you think you might be trans, maybe try a different name or pronouns. if you don’t have supportive people around willing to help you experiment, then you can introduce yourself the way you want online, with strangers you’ll never have to interact with again. It takes a lot of the pressure off, too, if you’re nervous. Maybe it’ll feel right and you’ll know. Maybe it’ll feel wrong and you’ll realize you’re a girl. Maybe you’ll still be confused and have to try some new things. Have patience, it can take time.\n4) Own it. Whatever your identity is, dress the way you like and be who you are and if anyone gives you shit about it, just show them how high you can kick their balls up their ass in your adorable little pink skirt -Miro.")
     await ctx.send(embed=embed)
     await ctx.reply(embed=embed2)
-    
+
 @bot.command(pass_context=True)
 async def support(ctx):
     """shows support server link"""
@@ -487,7 +496,6 @@ async def support(ctx):
     await ctx.send(embed=embed)
     await ctx.reply("https://discord.gg/ctsjpMQXEe \n https://github.com/maj113/Angel6")
 
-    
 @bot.command(pass_context=True, aliases=["vio", "violated"])
 async def violation(ctx):
     """That one there was a violation"""
@@ -498,19 +506,6 @@ async def german(ctx):
     """Random German Gif"""
     #why does this exist?
     await ctx.reply("https://giphy.com/gifs/fifa-Vd8wLaK3lNDNMuGaUL \n SHUT THE FUCK UP BAHZZ VIVA LA GERMANY AAJAJJAJAJAJA")
-
-bot.load_extension("cogs.music")
-
-@bot.command()
-@commands.has_permissions(ban_members=True)
-async def reload(ctx):
-    """Reload Bot cog"""
-    try:
-        bot.unload_extension("cogs.music")
-        bot.load_extension("cogs.music")
-        await ctx.reply('Cogs sucessfully reloaded!')
-    except Exception as err:
-        await ctx.reply(err)
     
 async def main():
     await bot.start(TOKEN)                                 
