@@ -14,9 +14,7 @@ BotVer = "**2.2.3** <https://github.com/maj113/Angel6/releases/latest>"
 
 
 intents = discord.Intents().all()
-
-activity = discord.Game(name="Best Bot ever!!!!")
-bot = commands.Bot(command_prefix='~', intents=intents, activity=activity,status_act=discord.Status.do_not_disturb)
+bot = commands.Bot(command_prefix='~', intents=intents,status_act=discord.Status.do_not_disturb)
 
 
 def restart_program():
