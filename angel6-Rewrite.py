@@ -322,6 +322,26 @@ async def wipe(ctx, amount=20):
     await ctx.channel.purge(limit=amount)
     await ctx.channel.send(f"Cleanup Complete.")
 
+@bot.command(pass_context=True)
+@commands.has_permissions(ban_members=True)
+async def role(ctx, user: discord.Member, role: discord.Role):
+        """Gives user a role"""
+        if role >= ctx.author.top_role:
+            await ctx.reply(f"Can't give {role} since its higher than {ctx.author.top_role}")
+            return        
+        await user.add_roles(role)
+        await ctx.reply(f"{user.name} has been given: {role.name}")
+
+@bot.command(pass_context=True)
+@commands.has_permissions(ban_members=True)
+async def rmrole(ctx, user: discord.Member, role: discord.Role):
+        """Removes user's role away"""
+        if role == ctx.author.top_role and user == ctx.author :
+            await ctx.reply(f"Can't remove role \"{role}\" as it's your highest role")
+            return
+        await user.remove_roles(role)
+        await ctx.reply(f"{user.name} was removed from role: {role.name}")
+
 start_time = time.time()
 @bot.command(pass_context=True)
 async def uptime(ctx):
@@ -460,26 +480,6 @@ async def credit(ctx):
     await ctx.send(content)
     embed=discord.Embed(title=f"Made by: {owner}, Maintained by: {maintainer}", description="ask them anything! 24/7\n Feel free to add them as a friend")
     await ctx.reply(embed=embed)
-
-@bot.command(pass_context=True)
-@commands.has_permissions(ban_members=True)
-async def role(ctx, user: discord.Member, role: discord.Role):
-        """Gives user a role"""
-        if role >= ctx.author.top_role:
-            await ctx.reply(f"Can't give {role} since its higher than {ctx.author.top_role}")
-            return        
-        await user.add_roles(role)
-        await ctx.reply(f"{user.name} has been given: {role.name}")
-
-@bot.command(pass_context=True)
-@commands.has_permissions(ban_members=True)
-async def rmrole(ctx, user: discord.Member, role: discord.Role):
-        """Removes user's role away"""
-        if role == ctx.author.top_role and user == ctx.author :
-            await ctx.reply(f"Can't remove role \"{role}\" as it's your highest role")
-            return
-        await user.remove_roles(role)
-        await ctx.reply(f"{user.name} was removed from role: {role.name}")
 
 @bot.command(pass_context=True, aliases=["fem"]) # :skull:
 async def femboy(ctx):
