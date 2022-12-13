@@ -1,4 +1,5 @@
 *.env
+*.vscode
 *.vs
 *.idea
 *.ffmpeg-5.0.1
