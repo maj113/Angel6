@@ -21,7 +21,7 @@ class VoiceError(Exception):
 class YTDLError(Exception):
     pass
 
-class YTDLSource(discord.PCMVolumeTransformer):
+class YTDLSource(discord.FFmpegOpusAudio):
     YTDL_OPTIONS = {
         'extractaudio': True,
         'format': 'bestaudio/best',      
@@ -45,7 +45,7 @@ class YTDLSource(discord.PCMVolumeTransformer):
     ytdl = yt_dlp.YoutubeDL(YTDL_OPTIONS)
 
     def __init__(self, ctx: commands.Context, source: discord.FFmpegOpusAudio, *, data: dict):
-        super().__init__(source)
+        super().__init__
 
         self.requester = ctx.author
         self.channel = ctx.channel
@@ -106,7 +106,7 @@ class YTDLSource(discord.PCMVolumeTransformer):
                     info = processed_info['entries'].pop(0)
                 except IndexError:
                     raise YTDLError('Couldn\'t retrieve any matches for `{}`'.format(webpage_url))
-        return cls(ctx, discord.FFmpegPCMAudio(info['url'], **cls.FFMPEG_OPTIONS), data=info)
+        return cls(ctx, discord.FFmpegOpusAudio(info['url'], **cls.FFMPEG_OPTIONS), data=info)
     pass
 
 
@@ -180,10 +180,8 @@ class VoiceState:
         self.next = asyncio.Event()
         self.songs = SongQueue()
         self.exists = True
-
         self._loop = False
         self.skip_votes = set()
-
         self.audio_player = bot.loop.create_task(self.audio_player_task())
 
     def __del__(self):
