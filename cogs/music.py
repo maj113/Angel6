@@ -21,7 +21,7 @@ class VoiceError(Exception):
 class YTDLError(Exception):
     pass
 
-class YTDLSource(discord.PCMVolumeTransformer):
+class YTDLSource(discord.FFmpegOpusAudio):
     YTDL_OPTIONS = {
         'extractaudio': True,
         'format': 'bestaudio/best',      
@@ -44,8 +44,8 @@ class YTDLSource(discord.PCMVolumeTransformer):
 
     ytdl = yt_dlp.YoutubeDL(YTDL_OPTIONS)
 
-    def __init__(self, ctx: commands.Context, source: discord.FFmpegOpusAudio, *, data: dict, volume: float = 1):
-        super().__init__(source, volume)
+    def __init__(self, ctx: commands.Context, source: discord.FFmpegOpusAudio, *, data: dict):
+        super().__init__
 
         self.requester = ctx.author
         self.channel = ctx.channel
@@ -106,7 +106,7 @@ class YTDLSource(discord.PCMVolumeTransformer):
                     info = processed_info['entries'].pop(0)
                 except IndexError:
                     raise YTDLError('Couldn\'t retrieve any matches for `{}`'.format(webpage_url))
-        return cls(ctx, discord.FFmpegPCMAudio(info['url'], **cls.FFMPEG_OPTIONS), data=info)
+        return cls(ctx, discord.FFmpegOpusAudio(info['url'], **cls.FFMPEG_OPTIONS), data=info)
     pass
 
 
@@ -180,11 +180,8 @@ class VoiceState:
         self.next = asyncio.Event()
         self.songs = SongQueue()
         self.exists = True
-
         self._loop = False
-        self._volume = 1
         self.skip_votes = set()
-
         self.audio_player = bot.loop.create_task(self.audio_player_task())
 
     def __del__(self):
@@ -197,13 +194,7 @@ class VoiceState:
     @loop.setter
     def loop(self, value: bool):
         self._loop = value
-    @property
-    def volume(self):
-        return self._volume
 
-    @volume.setter
-    def volume(self, value: float):
-        self._volume = value
 
     @property
     def is_playing(self):
@@ -226,8 +217,9 @@ class VoiceState:
                     self.exists = False
                     return
                 
-                self.current.source.volume = self._volume
-                self.voice.play(self.current.source, after=self.play_next_song)
+                self.now = await discord.FFmpegOpusAudio.from_probe(self.current.source.stream_url, **YTDLSource.FFMPEG_OPTIONS)
+                self.voice.play(self.now, after=self.play_next_song)
+                
                 await self.current.source.channel.send(embed=self.current.create_embed())
             
             #If the song is looped
@@ -332,20 +324,6 @@ class Music(commands.Cog):
         await ctx.voice_state.stop()
         del self.voice_states[ctx.guild.id]
 
-    @commands.command(name='volume', aliases=['vol'])
-    @commands.is_owner()
-    async def _volume(self, ctx: commands.Context, *, volume: int):
-        """Sets the volume of the player."""
-
-        if not ctx.voice_state.is_playing:
-            return await ctx.reply('Nothing being played at the moment.')
-
-        if 0 > volume > 100:
-            return await ctx.reply('Volume must be between 0 and 100')
-        else:
-            player = ctx.voice_client
-            player.source.volume = volume / 100
-            await ctx.reply('Volume of the player set to {}%'.format(volume))
 
     @commands.command(name='now', aliases=['current', 'playing'])
     async def _now(self, ctx: commands.Context):
