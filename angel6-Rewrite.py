@@ -9,7 +9,7 @@ TOKEN = os.getenv("DISCORD_TOKEN")
 LOG_CHAN_ID = os.getenv("LOGGING_CHANNEL_ID")
 JL_CHAN_ID = os.getenv("JOIN_LEAVE_CHANNEL_ID")
 GEN_CHAN_ID = os.getenv("GENERAL_CHANNEL_ID")
-BotVer = "**2.2.3** <https://github.com/maj113/Angel6/releases/latest>"
+BotVer = "**2.3-Rewrite** <https://github.com/maj113/Angel6/releases/latest>"
 
 
 
