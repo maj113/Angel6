@@ -97,7 +97,7 @@ async def on_member_join(member):
         mbed = discord.Embed(
         colour = (discord.Colour.blurple()),
         title = 'Glad you could find us!',
-        description =f"yo! im Dyztopian D3lirium's Personal Bot, proceed to General to talk:)")
+        description =f"yo! im Mutiny's Personal Bot, proceed to General to talk:)")
         await member.send(embed=mbed)   
     
     else:
@@ -106,7 +106,7 @@ async def on_member_join(member):
             colour = (discord.Colour.blurple()),
             title = 'Glad you could find us!',
             
-            description =f"yo! im Dyztopian D3lirium's Personal Bot, proceed to <#{chanID}> to talk:)")
+            description =f"yo! im Mutiny's Personal Bot, proceed to <#{chanID}> to talk:)")
         await member.send(embed=mbed)
 
 @bot.event
