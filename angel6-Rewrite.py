@@ -139,13 +139,13 @@ async def restart(ctx):
     await ctx.reply(" Restarting, please allow 5 seconds for this. ")
     restart_program()
 
-@bot.command()
+@bot.command(aliases=['latency'])
 async def ping(ctx):
     """shows the ping"""
     embed = discord.Embed(title="Bot latency:",color=discord.Color.blurple(),description=f"**{(bot.latency * 1000):.0f}ms**")
     await ctx.reply(embed=embed)
 
-@bot.command(aliases=["members"])
+@bot.command(aliases=['members'])
 async def users(ctx):
     """shows total amount of members"""
     a=ctx.guild.member_count
@@ -153,16 +153,16 @@ async def users(ctx):
     await ctx.reply(embed=b)
 
 #there's probably a better way to check if a user has been mentioned
-@bot.command()
-async def av(ctx, *,  avamember : discord.Member=None):
+@bot.command(aliases=['AV','avatar','pfp'])
+async def av(ctx, *,  user : discord.Member=None):
     """grabs users avatar"""
-    if avamember is None:
-        avamember = ctx.author
-        userAvatarUrl = avamember.avatar.url
+    if user is None:
+        user = ctx.author
+        userAvatarUrl = user.avatar.url
         await ctx.reply(userAvatarUrl)
         await ctx.send("^^")
     else:
-        userAvatarUrl = avamember.avatar.url
+        userAvatarUrl = user.avatar.url
         await ctx.reply(userAvatarUrl)
         await ctx.send("^^")
 
@@ -281,7 +281,7 @@ async def ban(ctx, member : discord.Member=None, *, reason=None):
         await ctx.reply("Can't ban the member, make sure the bot is higher on the role list and that the bot has the necessary permissions. ")
 
 @bot.command()
-@commands.has_permissions(ban_members =True)   
+@commands.has_permissions(ban_members=True)   
 async def unban(ctx, id = "0") :
     """unbans a user"""
     if id == "0":
@@ -315,7 +315,7 @@ async def warn(ctx, member : discord.Member=None, *, reason=None):
         await ctx.reply (embed=embed)
         await member.send(embed=embed2)
 
-@bot.command(aliases=["clear"])
+@bot.command(aliases=['clear'])
 @commands.has_permissions(ban_members =True)
 async def wipe(ctx, amount=20):
     """wipes 20 messages or the number specified"""
@@ -388,13 +388,12 @@ async def invites(ctx, user : discord.Member=None):
         await ctx.reply(f"You've invited {totalInvites} member{'' if totalInvites == 1 else 's'} to the server!")
     else:
         totalInvites = 0
-        member = user
         for i in await ctx.guild.invites():
-            if i.inviter == member:
+            if i.inviter == user:
                 totalInvites += i.uses
-        await ctx.reply(f"{member} has invited {totalInvites} member{'' if totalInvites == 1 else 's'} to the server!")
+        await ctx.reply(f"{user} has invited {totalInvites} member{'' if totalInvites == 1 else 's'} to the server!")
 
-@bot.command(aliases=["iq"])
+@bot.command(aliases=['iq'])
 async def IQ(ctx):
     """Average server IQ"""
     embed=discord.Embed(title=f"Average {ctx.guild.name} IQ", description=f"{random.randint(-10 , 130 )}", color=discord.Color.blurple())
@@ -481,7 +480,7 @@ async def credit(ctx):
     embed=discord.Embed(title=f"Made by: {owner}, Maintained by: {maintainer}", description="ask them anything! 24/7\n Feel free to add them as a friend")
     await ctx.reply(embed=embed)
 
-@bot.command(pass_context=True, aliases=["fem"]) # :skull:
+@bot.command(pass_context=True, aliases=['fem']) # :skull:
 async def femboy(ctx):
     """Femboy Wisdom/Tutorial"""
     embed=discord.Embed(title="Chakal's Wisdom On Femboys",description="How can you be a feminine looking boy? Simple. \nGrow your hair out, exercise regularly (I run/jog to remain slim, and I do squats/tap dance to exercise my thighs/butt), trim your facial hair, do whatever you can to help out your skin, and consider taking HRT.\n Learn how to do makeup, it is a fucking amazing tool. Experiment with different outfits, my favorite for andro people is just leggings beneath feminine jean shorts, it is common for females in the UK and looks feminine, but not so feminine that it will look weird in public.\nConsider taking speech therapy, or just watching some videos and working at getting a more feminine voice.\nAt the end of the day, though, you can practically look like a girl, with the most luscious hair, smallest eyebrows, red lips, and longest lashes; you can have the perfect body type, be an hourglass with a big ass, thick thighs/hips and a skinny waist; you can sound like the girliest woman in the world; you can wear booty shorts and a half shirt and look damn good in it; you can be a master at feminine makeup.\nBut it all means nothing if you fail to act feminine. For looks catch the eye, but personality catches the heart.\nThere comes a point when you must ask yourself if you want to be a femboy, or simply be a feminine looking man.\nSo, how can you be a femboy?\nAct feminine. Femboys are made, not born.  -Chakal")
