@@ -105,7 +105,6 @@ async def on_member_join(member):
         mbed = discord.Embed(
             colour = (discord.Colour.blurple()),
             title = 'Glad you could find us!',
-            
             description =f"yo! im Mutiny's Personal Bot, proceed to <#{chanID}> to talk:)")
         await member.send(embed=mbed)
 
@@ -227,7 +226,7 @@ async def kick(ctx, member : discord.Member, *, reason=None):
 @commands.has_permissions(manage_messages=True)
 async def mute(ctx, member: discord.Member, *, reason=None):
     """mutes a user"""
-    embed=discord.Embed(title="Muted", description=f"{member.mention} was muted for {reason}")
+    embed=discord.Embed(title="Muted", description=f"{member.mention} was muted {'for: ' + reason if reason != None else ''}", color=discord.Color.blurple())
     guild = ctx.guild
     mutedRole = discord.utils.get(guild.roles, name="Muted")
     
