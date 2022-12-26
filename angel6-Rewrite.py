@@ -19,13 +19,12 @@ bot = commands.Bot(command_prefix='~', intents=intents,status_act=discord.Status
 @bot.event
 async def on_ready():
     print(f'Logged in as:\n{bot.user.name}\n{bot.user.id}')
-    file = open(os.path.join(os.path.dirname(__file__), 'Ascii1.txt'), 'rt')
-    content = file.read()
-    file.close()
+    with open(os.path.join(os.path.dirname(__file__), 'Ascii1.txt'), 'rt') as file:
+        file.read()
     restartbot = False
 
     if os.getenv("LOGGING_CHANNEL_ID") == "" :
-        logginginput = int(input("Input logging channel ID ").strip())
+        logginginput = int(input("Input logging channel ID "))
         with open(".env", "r") as envfile:
             content1 = envfile.read()
             changed = content1.replace("LOGGING_CHANNEL_ID=", ''.join(["LOGGING_CHANNEL_ID=", str(logginginput)]))
@@ -34,19 +33,19 @@ async def on_ready():
         restartbot = True
     
     if os.getenv("LOGGING_CHANNEL_ID") == None :
-        logginginput = int(input("Input logging channel ID ").strip())
+        logginginput = int(input("Input logging channel ID "))
         with open(".env", "a") as envfile:
             envfile.write(f"\nLOGGING_CHANNEL_ID={logginginput}")
         restartbot = True
     
     if os.getenv("JOIN_LEAVE_CHANNEL_ID") == None :
-        joinleaveinput = int(input("Input join/leave channel ID ").strip())
+        joinleaveinput = int(input("Input join/leave channel ID "))
         with open(".env", "a") as envfile:
             envfile.write(f"\nJOIN_LEAVE_CHANNEL_ID={joinleaveinput}")
         restartbot = True
 
     if os.getenv("JOIN_LEAVE_CHANNEL_ID") == "" :
-        joinleaveinput = int(input("Input join/leave channel ID ").strip())
+        joinleaveinput = int(input("Input join/leave channel ID "))
         with open(".env", "r") as envfile:
             content1 = envfile.read()
             changed = content1.replace("JOIN_LEAVE_CHANNEL_ID=", ''.join(["JOIN_LEAVE_CHANNEL_ID=", str(joinleaveinput)]))
@@ -55,13 +54,13 @@ async def on_ready():
         restartbot = True
 
     if os.getenv("GENERAL_CHANNEL_ID") == None :
-        generalinput = int(input("Input general channel ID ").strip())
+        generalinput = int(input("Input general channel ID "))
         with open(".env", "a") as envfile:
             envfile.write(f"\nGENERAL_CHANNEL_ID={generalinput}")
         restartbot = True
 
     if os.getenv("GENERAL_CHANNEL_ID") == "" :
-        generalinput = int(input("Input general channel ID ").strip())
+        generalinput = int(input("Input general channel ID "))
         with open(".env", "r") as envfile:
             content1 = envfile.read()
             changed = content1.replace("GENERAL_CHANNEL_ID=", ''.join(["GENERAL_CHANNEL_ID=", str(generalinput)]))
@@ -70,6 +69,7 @@ async def on_ready():
         restartbot = True
     
     if restartbot == True:
+        print("Setup complete, Rebooting")
         restart_program()
     
     embed = discord.Embed(title = 'Bot settings', description = 'Current bot settings and status', color=discord.Color.blurple())
@@ -477,20 +477,23 @@ async def credit(ctx):
     content = file.read()
     file.close()
     await ctx.send(content)
-    embed=discord.Embed(title=f"Made by: {owner}, Maintained by: {maintainer}", description="ask them anything! 24/7\n Feel free to add them as a friend")
+    embed=discord.Embed(title=f"Made by: {owner}, Maintained by: {maintainer}", description="ask them anything! 24/7\n Feel free to add them as a friend", color=discord.Color.blurple())
     await ctx.reply(embed=embed)
 
 @bot.command(pass_context=True, aliases=['fem']) # :skull:
 async def femboy(ctx):
     """Femboy Wisdom/Tutorial"""
-    embed=discord.Embed(title="Chakal's Wisdom On Femboys",description="How can you be a feminine looking boy? Simple. \nGrow your hair out, exercise regularly (I run/jog to remain slim, and I do squats/tap dance to exercise my thighs/butt), trim your facial hair, do whatever you can to help out your skin, and consider taking HRT.\n Learn how to do makeup, it is a fucking amazing tool. Experiment with different outfits, my favorite for andro people is just leggings beneath feminine jean shorts, it is common for females in the UK and looks feminine, but not so feminine that it will look weird in public.\nConsider taking speech therapy, or just watching some videos and working at getting a more feminine voice.\nAt the end of the day, though, you can practically look like a girl, with the most luscious hair, smallest eyebrows, red lips, and longest lashes; you can have the perfect body type, be an hourglass with a big ass, thick thighs/hips and a skinny waist; you can sound like the girliest woman in the world; you can wear booty shorts and a half shirt and look damn good in it; you can be a master at feminine makeup.\nBut it all means nothing if you fail to act feminine. For looks catch the eye, but personality catches the heart.\nThere comes a point when you must ask yourself if you want to be a femboy, or simply be a feminine looking man.\nSo, how can you be a femboy?\nAct feminine. Femboys are made, not born.  -Chakal")
-    embed2=discord.Embed(title="Miro's Wisdom On Femboys",description="Hey, some guys like being cute and pastel, trans guys included, and some transgender people don’t really feel the need to change their bodies either. So that’s an option. Maybe you’re a really feminine guy who’s fine with having a female body.\n Or, maybe you just really like the femboy aesthetic. Or maybe you’re attracted to femboys. Idk, I’m not you. It’s gonna take a little experimentation to find out.\n 1) Get some clothes you feel comfortable in. Try out that femboy look. Do you feel cute? Does it feel right? Whether you are cis or trans, you should be able to wear clothes that make you feel good about yourself. So do that. Whatever the answers are to the other questions, this will almost certainly make you feel a little better.\n 2) Do some googling. Learn about fem trans boys, demiboys, and non-binary people. Read some things from their perspectives. Does any of it resonate with you?\n3) Try some things. It’s normal for us to question our identities and grow and change through the years, and it’s normal to not fully understand yourself right away. If you think you might be trans, maybe try a different name or pronouns. if you don’t have supportive people around willing to help you experiment, then you can introduce yourself the way you want online, with strangers you’ll never have to interact with again. It takes a lot of the pressure off, too, if you’re nervous. Maybe it’ll feel right and you’ll know. Maybe it’ll feel wrong and you’ll realize you’re a girl. Maybe you’ll still be confused and have to try some new things. Have patience, it can take time.\n4) Own it. Whatever your identity is, dress the way you like and be who you are and if anyone gives you shit about it, just show them how high you can kick their balls up their ass in your adorable little pink skirt -Miro.")
+    embed=discord.Embed(title="Chakal's Wisdom On Femboys",description="How can you be a feminine looking boy? Simple. \nGrow your hair out, exercise regularly (I run/jog to remain slim, and I do squats/tap dance to exercise my thighs/butt), trim your facial hair, do whatever you can to help out your skin, and consider taking HRT.\n Learn how to do makeup, it is a fucking amazing tool. Experiment with different outfits, my favorite for andro people is just leggings beneath feminine jean shorts, it is common for females in the UK and looks feminine, but not so feminine that it will look weird in public.\nConsider taking speech therapy, or just watching some videos and working at getting a more feminine voice.\nAt the end of the day, though, you can practically look like a girl, with the most luscious hair, smallest eyebrows, red lips, and longest lashes; you can have the perfect body type, be an hourglass with a big ass, thick thighs/hips and a skinny waist; you can sound like the girliest woman in the world; you can wear booty shorts and a half shirt and look damn good in it; you can be a master at feminine makeup.\nBut it all means nothing if you fail to act feminine. For looks catch the eye, but personality catches the heart.\nThere comes a point when you must ask yourself if you want to be a femboy, or simply be a feminine looking man.\nSo, how can you be a femboy?\nAct feminine. Femboys are made, not born.  -Chakal", color=discord.Color.blurple())
+    embed2=discord.Embed(title="Miro's Wisdom On Femboys",description="Hey, some guys like being cute and pastel, trans guys included, and some transgender people don’t really feel the need to change their bodies either. So that’s an option. Maybe you’re a really feminine guy who’s fine with having a female body.\n Or, maybe you just really like the femboy aesthetic. Or maybe you’re attracted to femboys. Idk, I’m not you. It’s gonna take a little experimentation to find out.\n 1) Get some clothes you feel comfortable in. Try out that femboy look. Do you feel cute? Does it feel right? Whether you are cis or trans, you should be able to wear clothes that make you feel good about yourself. So do that. Whatever the answers are to the other questions, this will almost certainly make you feel a little better.\n 2) Do some googling. Learn about fem trans boys, demiboys, and non-binary people. Read some things from their perspectives. Does any of it resonate with you?\n3) Try some things. It’s normal for us to question our identities and grow and change through the years, and it’s normal to not fully understand yourself right away. If you think you might be trans, maybe try a different name or pronouns. if you don’t have supportive people around willing to help you experiment, then you can introduce yourself the way you want online, with strangers you’ll never have to interact with again. It takes a lot of the pressure off, too, if you’re nervous. Maybe it’ll feel right and you’ll know. Maybe it’ll feel wrong and you’ll realize you’re a girl. Maybe you’ll still be confused and have to try some new things. Have patience, it can take time.\n4) Own it. Whatever your identity is, dress the way you like and be who you are and if anyone gives you shit about it, just show them how high you can kick their balls up their ass in your adorable little pink skirt -Miro.", color=discord.Color.blurple())
     await ctx.send(embed=embed)
     await ctx.reply(embed=embed2)
 
-@bot.command(pass_context=True)
-async def support(ctx):
+async def support(ctx, args):
     """shows support server link"""
+    if args == "release" or args == "changelog":
+        await ctx.reply("Latest Bot release: \n https://github.com/maj113/Angel6/releases/latest")
+        return
+    print(args)
     embed=discord.Embed(title="Support server",description="Need help with the bot? \nWant to contribute to the bot?", color=discord.Color.blurple())
     await ctx.send(embed=embed)
     await ctx.reply("https://discord.gg/ctsjpMQXEe \n https://github.com/maj113/Angel6")
@@ -505,7 +508,7 @@ async def german(ctx):
     """Random German Gif"""
     #why does this exist?
     await ctx.reply("https://giphy.com/gifs/fifa-Vd8wLaK3lNDNMuGaUL \n SHUT THE FUCK UP BAHZZ VIVA LA GERMANY AAJAJJAJAJAJA")
-    
+
 async def main():
     await bot.start(TOKEN)                                 
 asyncio.get_event_loop().run_until_complete(main())
