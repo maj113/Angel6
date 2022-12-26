@@ -246,7 +246,7 @@ async def mute(ctx, member: discord.Member, *, reason=None):
 
     await member.add_roles(mutedRole, reason=reason)
     await ctx.reply(embed=embed)
-    await member.send(f"You were muted for {reason}")
+    await member.send(f"You were muted {'for: ' + reason if reason != None else ''}")
 
 @bot.command()
 @commands.has_permissions(kick_members =True)
