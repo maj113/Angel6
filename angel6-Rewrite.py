@@ -20,7 +20,7 @@ bot = commands.Bot(command_prefix='~', intents=intents,status_act=discord.Status
 async def on_ready():
     print(f'Logged in as:\n{bot.user.name}\n{bot.user.id}')
     with open(os.path.join(os.path.dirname(__file__), 'Ascii1.txt'), 'rt') as file:
-        file.read()
+        content = file.read()
     restartbot = False
 
     if os.getenv("LOGGING_CHANNEL_ID") == "" :
