@@ -12,7 +12,6 @@ GEN_CHAN_ID = os.getenv("GENERAL_CHANNEL_ID")
 BotVer = "**2.3-Rewrite** <https://github.com/maj113/Angel6/releases/latest>"
 
 
-
 intents = discord.Intents().all()
 bot = commands.Bot(command_prefix='~', intents=intents,status_act=discord.Status.do_not_disturb)
 
