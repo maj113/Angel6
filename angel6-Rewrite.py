@@ -334,27 +334,27 @@ async def role(ctx, user: discord.Member, role: discord.Role):
 @bot.command(pass_context=True)
 @commands.has_permissions(ban_members=True)
 async def rmrole(ctx, user: discord.Member, role: discord.Role):
-        """Removes user's role away"""
-        if role == ctx.author.top_role and user == ctx.author :
-            await ctx.reply(f"Can't remove role \"{role}\" as it's your highest role")
-            return
-        await user.remove_roles(role)
-        await ctx.reply(f"{user.name} was removed from role: {role.name}")
+    """Removes user's role away"""
+    if role == ctx.author.top_role and user == ctx.author :
+        await ctx.reply(f"Can't remove role \"{role}\" as it's your highest role")
+        return
+    await user.remove_roles(role)
+    await ctx.reply(f"{user.name} was removed from role: {role.name}")
 
 start_time = time.time()
 @bot.command(pass_context=True)
 async def uptime(ctx):
-        """shows bot uptime"""
-        current_time = time.time()
-        difference = int(round(current_time - start_time))
-        text = str(datetime.timedelta(seconds=difference))
-        embed = discord.Embed(colour=discord.Color.blurple())
-        embed.add_field(name="Uptime", value=text)
-        embed.set_footer(text="Angel$IX")
-        try:
-            await ctx.reply(embed=embed)
-        except discord.HTTPException:
-            await ctx.reply("Current uptime: " + text)
+    """shows bot uptime"""
+    current_time = time.time()
+    difference = int(round(current_time - start_time))
+    text = str(datetime.timedelta(seconds=difference))
+    embed = discord.Embed(colour=discord.Color.blurple())
+    embed.add_field(name="Uptime", value=text)
+    embed.set_footer(text="Angel$IX")
+    try:
+        await ctx.reply(embed=embed)
+    except discord.HTTPException:
+        await ctx.reply("Current uptime: " + text)
 
 #im proud of this 
 meminfo = psutil.Process(os.getpid())
