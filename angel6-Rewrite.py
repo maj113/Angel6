@@ -11,7 +11,6 @@ JL_CHAN_ID = os.getenv("JOIN_LEAVE_CHANNEL_ID")
 GEN_CHAN_ID = os.getenv("GENERAL_CHANNEL_ID")
 BotVer = "**2.3-Rewrite** <https://github.com/maj113/Angel6/releases/latest>"
 
-
 intents = discord.Intents().all()
 bot = commands.Bot(command_prefix='~', intents=intents,status_act=discord.Status.do_not_disturb)
 
@@ -474,9 +473,9 @@ async def credit(ctx):
     file = open(os.path.join(os.path.dirname(__file__), 'Ascii1.txt'), 'rt')
     content = file.read()
     file.close()
-    await ctx.send(content)
+    await ctx.reply(content)
     embed=discord.Embed(title=f"Made by: {owner}, Maintained by: {maintainer}", description="ask them anything! 24/7\n Feel free to add them as a friend", color=discord.Color.blurple())
-    await ctx.reply(embed=embed)
+    await ctx.send(embed=embed)
 
 @bot.command(pass_context=True, aliases=['fem']) # :skull:
 async def femboy(ctx):
@@ -486,15 +485,15 @@ async def femboy(ctx):
     await ctx.send(embed=embed)
     await ctx.reply(embed=embed2)
 
-async def support(ctx, args):
+@bot.command()
+async def support(ctx, *, message = None):
     """shows support server link"""
-    if args == "release" or args == "changelog":
+    if message == "release" or message == "changelog":
         await ctx.reply("Latest Bot release: \n https://github.com/maj113/Angel6/releases/latest")
         return
-    print(args)
     embed=discord.Embed(title="Support server",description="Need help with the bot? \nWant to contribute to the bot?", color=discord.Color.blurple())
-    await ctx.send(embed=embed)
-    await ctx.reply("https://discord.gg/ctsjpMQXEe \n https://github.com/maj113/Angel6")
+    await ctx.reply(embed=embed)
+    await ctx.send("https://discord.gg/ctsjpMQXEe \n https://github.com/maj113/Angel6")
 
 @bot.command(pass_context=True, aliases=["vio", "violated"])
 async def violation(ctx):
