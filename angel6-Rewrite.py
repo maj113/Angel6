@@ -507,7 +507,7 @@ async def german(ctx):
     await ctx.reply("https://giphy.com/gifs/fifa-Vd8wLaK3lNDNMuGaUL \n SHUT THE FUCK UP BAHZZ VIVA LA GERMANY AAJAJJAJAJAJA")
 
 
-
+global isinitready
 isinitready = 0
 @tasks.loop()
 async def test2():
@@ -516,7 +516,7 @@ async def test2():
         isinitready =+ 1
         global chanID2
         chanID2 = await aioconsole.ainput("Input channel ID: ")  
-    message = await aioconsole.ainput("Message:")
+    message = await aioconsole.ainput("Message: ")
     if message == "sel":
         chanID2 = await aioconsole.ainput("Input channel ID: ")
         return chanID2
