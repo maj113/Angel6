@@ -1,6 +1,4 @@
-from ast import While
 import asyncio, psutil, time, datetime, random, sys, discord, os, aioconsole
-from email import message
 from subprocess import run
 from discord import __version__ as d_version
 from discord.ext import commands, tasks
@@ -515,7 +513,10 @@ async def test():
     message = await aioconsole.ainput()
     ID = int(GEN_CHAN_ID)
     channel = bot.get_channel(ID)
-    await channel.send(message)
+    try:
+        await channel.send(message)
+    except discord.errors.HTTPException:
+        await channel.send("⠀") # this is not a space but U+2800 Unicode character
 test.start()
 
 async def main():
