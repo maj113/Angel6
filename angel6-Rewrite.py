@@ -1,7 +1,9 @@
-import asyncio, psutil, time, datetime, random, sys, discord, os
+from ast import While
+import asyncio, psutil, time, datetime, random, sys, discord, os, aioconsole
+from email import message
 from subprocess import run
 from discord import __version__ as d_version
-from discord.ext import commands
+from discord.ext import commands, tasks
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -495,16 +497,26 @@ async def support(ctx, *, message = None):
     await ctx.reply(embed=embed)
     await ctx.send("https://discord.gg/ctsjpMQXEe \n https://github.com/maj113/Angel6")
 
-@bot.command(pass_context=True, aliases=["vio", "violated"])
+@bot.command(pass_context=True, aliases=['vio', 'violated'])
 async def violation(ctx):
     """That one there was a violation"""
     await ctx.reply("https://tenor.com/view/that-one-there-was-a-violation-that1there-was-violation-violation-that-one-there-was-a-violation-personally-i-wouldnt-have-it-that1there-was-a-violation-personally-i-wouldnt-have-it-gif-20040456")
 
-@bot.command(pass_context=True)
+@bot.command(pass_context=True, aliases=['germany', 'bahzz'])
 async def german(ctx):
     """Random German Gif"""
     #why does this exist?
     await ctx.reply("https://giphy.com/gifs/fifa-Vd8wLaK3lNDNMuGaUL \n SHUT THE FUCK UP BAHZZ VIVA LA GERMANY AAJAJJAJAJAJA")
+
+
+
+@tasks.loop()
+async def test():
+    message = await aioconsole.ainput()
+    ID = int(GEN_CHAN_ID)
+    channel = bot.get_channel(ID)
+    await channel.send(message)
+test.start()
 
 async def main():
     await bot.start(TOKEN)                                 
