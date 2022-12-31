@@ -80,7 +80,7 @@ async def on_ready():
     channel = bot.get_channel(ID)
     await channel.send(content)
     await channel.send(embed=embed)       
-
+    await test2.start()
 bot.load_extension("cogs.music")
 
 @bot.event
@@ -508,16 +508,21 @@ async def german(ctx):
 
 
 
+isinitready = 0
 @tasks.loop()
-async def test():
-    message = await aioconsole.ainput()
-    ID = int(GEN_CHAN_ID)
-    channel = bot.get_channel(ID)
-    try:
-        await channel.send(message)
-    except discord.errors.HTTPException:
-        await channel.send("⠀") # this is not a space but U+2800 Unicode character
-test.start()
+async def test2():
+    global isinitready
+    if isinitready == 0:
+        isinitready =+ 1
+        global chanID2
+        chanID2 = await aioconsole.ainput("Input channel ID: ")  
+    message = await aioconsole.ainput("Message:")
+    if message == "sel":
+        chanID2 = await aioconsole.ainput("Input channel ID: ")
+        return chanID2
+    channel1 = bot.get_channel(int(chanID2))
+    await channel1.send(message)
+    
 
 async def main():
     await bot.start(TOKEN)                                 
