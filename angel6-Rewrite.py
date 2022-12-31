@@ -518,8 +518,8 @@ async def test2():
         chanID2 = await aioconsole.ainput("Input channel ID: ")  
     message = await aioconsole.ainput("Message: ")
     if message == "sel":
-        chanID2 = await aioconsole.ainput("Input channel ID: ")
-        return chanID2
+        isinitready = 0
+        return
     try:
         channel1 = bot.get_channel(int(chanID2))
     except ValueError:
