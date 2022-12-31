@@ -520,9 +520,20 @@ async def test2():
     if message == "sel":
         chanID2 = await aioconsole.ainput("Input channel ID: ")
         return chanID2
-    channel1 = bot.get_channel(int(chanID2))
-    await channel1.send(message)
-    
+    try:
+        channel1 = bot.get_channel(int(chanID2))
+    except ValueError:
+        print("ValueError, ID should be a Integer, try again")
+        isinitready = 0
+        return
+    try:
+        await channel1.send(message)
+    except discord.errors.HTTPException:
+        await channel1.send(" ") #this is a Unicode "U+2800/Braille Pattern Blank" character
+    except AttributeError:
+        print("AttributeError, Wrong ID provided , try again")
+        isinitready = 0
+        return
 
 async def main():
     await bot.start(TOKEN)                                 
