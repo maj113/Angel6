@@ -522,6 +522,10 @@ async def test2():
         return
     try:
         channel1 = bot.get_channel(int(chanID2))
+        if str(channel1.type) != 'text':
+            print("Selected channel is a Voice channel, try again")
+            isinitready = 0
+            return
     except ValueError:
         print("ValueError, ID should be a Integer, try again")
         isinitready = 0
@@ -531,7 +535,7 @@ async def test2():
     except discord.errors.HTTPException:
         await channel1.send(" ") #this is a Unicode "U+2800/Braille Pattern Blank" character
     except AttributeError:
-        print("AttributeError, Wrong ID provided , try again")
+        print("AttributeError, Wrong ID provided, try again")
         isinitready = 0
         return
 
