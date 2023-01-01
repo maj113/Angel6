@@ -512,7 +512,6 @@ async def helpertest2():
             if str(channel.type) == 'text':
                 print(f"{channel.name} : {channel.id}")
 
-
 global isinit
 isinit = 0
 @tasks.loop()
@@ -525,7 +524,7 @@ async def test2():
             await helpertest2()
             return
         isinit =+ 1
-    message = await aioconsole.ainput("Message: ")
+    message = await aioconsole.ainput(f"({discord.utils.get(bot.get_all_channels(), id=int(chanID2))}) Message: ")
     if message == "sel":
         await helpertest2()
         isinit = 0
@@ -547,7 +546,7 @@ async def test2():
     try:
         await channel1.send(message)
     except discord.errors.HTTPException:
-        await channel1.send(" ") #This is a Unicode "U+2800/Braille Pattern Blank" character
+        await channel1.send("⠀") #This is a Unicode "U+2800/Braille Pattern Blank" character
 
 
 async def main():
