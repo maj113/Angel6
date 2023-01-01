@@ -506,38 +506,49 @@ async def german(ctx):
     #why does this exist?
     await ctx.reply("https://giphy.com/gifs/fifa-Vd8wLaK3lNDNMuGaUL \n SHUT THE FUCK UP BAHZZ VIVA LA GERMANY AAJAJJAJAJAJA")
 
+async def helpertest2():
+    for server in bot.guilds:
+        for channel in server.channels:
+            if str(channel.type) == 'text':
+                print(f"{channel.name} : {channel.id}")
 
-global isinitready
-isinitready = 0
+
+global isinit
+isinit = 0
 @tasks.loop()
 async def test2():
-    global isinitready
-    if isinitready == 0:
-        isinitready =+ 1
+    global isinit
+    if isinit == 0:
         global chanID2
         chanID2 = await aioconsole.ainput("Input channel ID: ")  
+        if chanID2 == "show":
+            await helpertest2()
+            return
+        isinit =+ 1
     message = await aioconsole.ainput("Message: ")
     if message == "sel":
-        isinitready = 0
+        await helpertest2()
+        isinit = 0
         return
     try:
         channel1 = bot.get_channel(int(chanID2))
         if str(channel1.type) != 'text':
             print("Selected channel is a Voice channel, try again")
-            isinitready = 0
+            isinit = 0
             return
     except ValueError:
         print("ValueError, ID should be a Integer, try again")
-        isinitready = 0
+        isinit = 0
+        return
+    except AttributeError:
+        print("AttributeError, Wrong ID provided, try again")
+        isinit = 0
         return
     try:
         await channel1.send(message)
     except discord.errors.HTTPException:
-        await channel1.send(" ") #this is a Unicode "U+2800/Braille Pattern Blank" character
-    except AttributeError:
-        print("AttributeError, Wrong ID provided, try again")
-        isinitready = 0
-        return
+        await channel1.send(" ") #This is a Unicode "U+2800/Braille Pattern Blank" character
+
 
 async def main():
     await bot.start(TOKEN)                                 
