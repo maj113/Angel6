@@ -510,7 +510,7 @@ async def helpertest2():
     for server in bot.guilds:
         for channel in server.channels:
             if str(channel.type) == 'text':
-                print(f"{channel.name} : {channel.id}")
+                print(f"    {channel.name} : {channel.id}")
 
 global isinit
 isinit = 0
