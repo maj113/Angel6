@@ -15,5 +15,9 @@ Discord bot for my friends server.
 - [x] Fix and optimize first time setup AKA .env file setup
 
 - [ ] Add some sort of logging to the bot. currently it just displays Ascii art, configured channels and API latency
-
+  - [x] On message delete logging
+  - [ ] On channel create/delete logging
+  - [ ] On user AV change logging
+  - [ ] On adding/removing/changing permission logging
+  - [ ] ...
 - [ ] Better (Mobile friendly Ascii art) *We may just use a custom banner/GIF*
