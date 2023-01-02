@@ -444,7 +444,6 @@ class Music(commands.Cog):
 
         # Inverse boolean value to loop and unloop.
         ctx.voice_state.loop = not ctx.voice_state.loop
-        print(ctx.voice_state.loop)
         if ctx.voice_state.loop == True:
             await ctx.message.add_reaction('✅')
         else:
