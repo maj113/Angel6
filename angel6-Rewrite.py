@@ -114,8 +114,8 @@ async def on_member_remove(member):
     embed.set_thumbnail(url=f"{member.avatar.url}")
     embed.set_footer(text=f"{member.guild}", icon_url=f"{member.guild.icon.url}")
     await channel.send(embed=embed)
-@bot.event
 
+@bot.event
 async def on_message_delete(message):
     deleted = discord.Embed(
         description=f"Message deleted in {message.channel.mention}", color=discord.Color.blurple()).set_author(name=message.author, icon_url=message.author.avatar.url)
