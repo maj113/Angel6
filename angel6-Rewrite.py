@@ -114,6 +114,16 @@ async def on_member_remove(member):
     embed.set_thumbnail(url=f"{member.avatar.url}")
     embed.set_footer(text=f"{member.guild}", icon_url=f"{member.guild.icon.url}")
     await channel.send(embed=embed)
+@bot.event
+
+async def on_message_delete(message):
+    deleted = discord.Embed(
+        description=f"Message deleted in {message.channel.mention}", color=discord.Color.blurple()).set_author(name=message.author, icon_url=message.author.avatar.url)
+    ID = int(LOG_CHAN_ID)
+    channel = bot.get_channel(ID)
+    deleted.add_field(name="Message", value=message.content)
+    deleted.timestamp = message.created_at
+    await channel.send(embed=deleted)
 
 @bot.command()
 @commands.has_permissions(ban_members=True)
@@ -524,7 +534,7 @@ async def asbot():
             await helperasbot()
             return
         isinit =+ 1
-    message = await aioconsole.ainput(f"({discord.utils.get(bot.get_all_channels(), id=int(chanID2))}) Message: ")
+    message = await aioconsole.ainput(f"[{discord.utils.get(bot.get_all_channels(), id=int(chanID2))}] Message: ")
     if message == "sel":
         await helperasbot()
         isinit = 0

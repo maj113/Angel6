@@ -50,7 +50,6 @@ class YTDLSource(discord.FFmpegOpusAudio):
         self.requester = ctx.author
         self.channel = ctx.channel
         self.data = data
-
         self.uploader = data.get('uploader')
         self.uploader_url = data.get('uploader_url')
         date = data.get('upload_date')
@@ -219,7 +218,6 @@ class VoiceState:
                 
                 self.now = await discord.FFmpegOpusAudio.from_probe(self.current.source.stream_url, **YTDLSource.FFMPEG_OPTIONS)
                 self.voice.play(self.now, after=self.play_next_song)
-                
                 await self.current.source.channel.send(embed=self.current.create_embed())
             
             #If the song is looped
