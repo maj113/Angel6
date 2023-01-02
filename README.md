@@ -14,6 +14,6 @@ Discord bot for my friends server.
 
 - [x] Fix and optimize first time setup AKA .env file setup
 
-- [] Add some sort of logging to the bot. currently it just displays Ascii art, configured channels and API latency
+- [ ] Add some sort of logging to the bot. currently it just displays Ascii art, configured channels and API latency
 
-- [] Better (Mobile friendly Ascii art) *We may just use a custom banner/GIF*
+- [ ] Better (Mobile friendly Ascii art) *We may just use a custom banner/GIF*
