@@ -80,7 +80,7 @@ async def on_ready():
     channel = bot.get_channel(ID)
     await channel.send(content)
     await channel.send(embed=embed)       
-    await test2.start()
+    await asbot.start()
 bot.load_extension("cogs.music")
 
 @bot.event
@@ -506,7 +506,7 @@ async def german(ctx):
     #why does this exist?
     await ctx.reply("https://giphy.com/gifs/fifa-Vd8wLaK3lNDNMuGaUL \n SHUT THE FUCK UP BAHZZ VIVA LA GERMANY AAJAJJAJAJAJA")
 
-async def helpertest2():
+async def helperasbot():
     for server in bot.guilds:
         for channel in server.channels:
             if str(channel.type) == 'text':
@@ -515,18 +515,18 @@ async def helpertest2():
 global isinit
 isinit = 0
 @tasks.loop()
-async def test2():
+async def asbot():
     global isinit
     if isinit == 0:
         global chanID2
         chanID2 = await aioconsole.ainput("Input channel ID: ")  
         if chanID2 == "show":
-            await helpertest2()
+            await helperasbot()
             return
         isinit =+ 1
     message = await aioconsole.ainput(f"({discord.utils.get(bot.get_all_channels(), id=int(chanID2))}) Message: ")
     if message == "sel":
-        await helpertest2()
+        await helperasbot()
         isinit = 0
         return
     try:
