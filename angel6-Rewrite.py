@@ -523,35 +523,35 @@ async def helperasbot():
                 print(f"    {channel.name} : {channel.id}")
 
 global isinit
-isinit = 0
+isinit = False
 @tasks.loop()
 async def asbot():
     global isinit
-    if isinit == 0:
+    if isinit == False:
         global chanID2
         chanID2 = await aioconsole.ainput("Input channel ID: ")  
         if chanID2 == "show":
             await helperasbot()
             return
-        isinit =+ 1
+        isinit = True
     message = await aioconsole.ainput(f"[{discord.utils.get(bot.get_all_channels(), id=int(chanID2))}] Message: ")
     if message == "sel":
         await helperasbot()
-        isinit = 0
+        isinit = False
         return
     try:
         channel1 = bot.get_channel(int(chanID2))
         if str(channel1.type) != 'text':
             print("Selected channel is a Voice channel, try again")
-            isinit = 0
+            isinit = False
             return
     except ValueError:
         print("ValueError, ID should be a Integer, try again")
-        isinit = 0
+        isinit = False
         return
     except AttributeError:
         print("AttributeError, Wrong ID provided, try again")
-        isinit = 0
+        isinit = False
         return
     try:
         await channel1.send(message)
