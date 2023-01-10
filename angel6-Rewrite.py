@@ -6,15 +6,9 @@ from dotenv import load_dotenv
 
 load_dotenv()
 TOKEN = os.getenv("DISCORD_TOKEN")
-
-try:
-    LOG_CHAN_ID = int(os.getenv("LOGGING_CHANNEL_ID"))
-    JL_CHAN_ID = int(os.getenv("JOIN_LEAVE_CHANNEL_ID"))
-    GEN_CHAN_ID = int(os.getenv("GENERAL_CHANNEL_ID"))
-except (TypeError, ValueError):
-    pass
-
-
+LOG_CHAN_ID = os.getenv("LOGGING_CHANNEL_ID")
+JL_CHAN_ID = os.getenv("JOIN_LEAVE_CHANNEL_ID")
+GEN_CHAN_ID = os.getenv("GENERAL_CHANNEL_ID")
 BotVer = "**2.3-Rewrite** <https://github.com/maj113/Angel6/releases/latest>"
 
 intents = discord.Intents().all()
@@ -82,7 +76,8 @@ async def on_ready():
     embed.add_field(name="Join leave channel", value=JL_CHAN_ID, inline=False)
     embed.add_field(name="General channel", value=GEN_CHAN_ID, inline=False)
     embed.add_field(name="Current API latency:", value=f'{(bot.latency * 1000):.0f}ms', inline=False)
-    channel = bot.get_channel(LOG_CHAN_ID)
+    ID = int(LOG_CHAN_ID)
+    channel = bot.get_channel(ID)
     await channel.send(content)
     await channel.send(embed=embed)       
     await asbot.start()
@@ -90,7 +85,8 @@ bot.load_extension("cogs.music")
 
 @bot.event
 async def on_member_join(member):
-    channel = bot.get_channel(JL_CHAN_ID)    
+    ID = int(JL_CHAN_ID)
+    channel = bot.get_channel(ID)    
     embed = discord.Embed(colour=discord.Colour.blurple(), description=f"{member.mention} joined, Total Members: {len(list(member.guild.members))}")
     embed.set_thumbnail(url=f"{member.avatar.url}")
     embed.set_footer(text=f"{member.guild}", icon_url=f"{member.guild.icon.url}")
@@ -103,15 +99,17 @@ async def on_member_join(member):
         await member.send(embed=mbed)   
     
     else:
+        chanID = int(GEN_CHAN_ID)
         mbed = discord.Embed(
             colour = (discord.Colour.blurple()),
             title = 'Glad you could find us!',
-            description =f"yo! im Mutiny's Personal Bot, proceed to <#{GEN_CHAN_ID}> to talk:)")
+            description =f"yo! im Mutiny's Personal Bot, proceed to <#{chanID}> to talk:)")
         await member.send(embed=mbed)
 
 @bot.event
 async def on_member_remove(member):
-    channel = bot.get_channel(JL_CHAN_ID)
+    ID = int(JL_CHAN_ID)
+    channel = bot.get_channel(ID)
     embed = discord.Embed(colour=discord.Colour.blurple(), description=f"{member.mention} Left us, Total Members: {len(list(member.guild.members))}")
     embed.set_thumbnail(url=f"{member.avatar.url}")
     embed.set_footer(text=f"{member.guild}", icon_url=f"{member.guild.icon.url}")
@@ -121,7 +119,8 @@ async def on_member_remove(member):
 async def on_message_delete(message):
     deleted = discord.Embed(
         description=f"Message deleted in {message.channel.mention}", color=discord.Color.blurple()).set_author(name=message.author, icon_url=message.author.avatar.url)
-    channel = bot.get_channel(LOG_CHAN_ID)
+    ID = int(LOG_CHAN_ID)
+    channel = bot.get_channel(ID)
     deleted.add_field(name="Message", value=message.content)
     deleted.timestamp = message.created_at
     await channel.send(embed=deleted)
@@ -156,9 +155,9 @@ async def ping(ctx):
 @bot.command(aliases=['members'])
 async def users(ctx):
     """shows total amount of members"""
-    members = ctx.guild.member_count
-    embed=discord.Embed(title=f"Total members in {ctx.guild.name}",description=members,color=discord.Color.blurple())
-    await ctx.reply(embed=embed)
+    a=ctx.guild.member_count
+    b=discord.Embed(title=f"Total members in {ctx.guild.name}",description=a,color=discord.Color.blurple())
+    await ctx.reply(embed=b)
 
 #there's probably a better way to check if a user has been mentioned
 @bot.command(aliases=['AV','avatar','pfp'])
