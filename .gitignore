@@ -5,5 +5,5 @@
 *.ffmpeg-5.0.1
 *env
 __pycache__/
-
+*Angelbot
 *.code-workspace
