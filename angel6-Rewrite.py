@@ -159,19 +159,14 @@ async def users(ctx):
     b=discord.Embed(title=f"Total members in {ctx.guild.name}",description=a,color=discord.Color.blurple())
     await ctx.reply(embed=b)
 
-#there's probably a better way to check if a user has been mentioned
 @bot.command(aliases=['AV','avatar','pfp'])
 async def av(ctx, *,  user : discord.Member=None):
     """grabs users avatar"""
-    if user is None:
+    if user == None:
         user = ctx.author
-        userAvatarUrl = user.avatar.url
-        await ctx.reply(userAvatarUrl)
-        await ctx.send("^^")
-    else:
-        userAvatarUrl = user.avatar.url
-        await ctx.reply(userAvatarUrl)
-        await ctx.send("^^")
+    userAvatarUrl = user.avatar.url
+    await ctx.reply(userAvatarUrl)
+
 
 @bot.command(pass_context=True)
 async def userinfo(ctx, *, user : discord.Member=None): # b'\xfc'
@@ -384,6 +379,7 @@ async def stats(ctx):
     bedem.add_field(name = 'YTdl Version', value = ytdlfunc.strip(), inline = False)
     await ctx.reply(embed = bedem)
 
+#FIXME: get rid of if/else statment
 @bot.command()
 async def invites(ctx, user : discord.Member=None):
     """Shows how many people someone has invited"""
@@ -522,7 +518,7 @@ async def helperasbot():
             if str(channel.type) == 'text':
                 print(f"    {channel.name} : {channel.id}")
 
-
+#FIXME: get rid of global
 isinit = False
 @tasks.loop()
 async def asbot():
