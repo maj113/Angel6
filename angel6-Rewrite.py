@@ -379,7 +379,6 @@ async def stats(ctx):
     bedem.add_field(name = 'YTdl Version', value = ytdlfunc.strip(), inline = False)
     await ctx.reply(embed = bedem)
 
-#FIXME: get rid of if/else statment
 @bot.command()
 async def invites(ctx, user : discord.Member=None):
     """Shows how many people someone has invited"""
