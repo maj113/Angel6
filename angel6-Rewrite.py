@@ -383,18 +383,11 @@ async def stats(ctx):
 @bot.command()
 async def invites(ctx, user : discord.Member=None):
     """Shows how many people someone has invited"""
-    if user == None:
-        totalInvites = 0
-        for i in await ctx.guild.invites():
-            if i.inviter == ctx.author:
-                totalInvites += i.uses
-        await ctx.reply(f"You've invited {totalInvites} member{'' if totalInvites == 1 else 's'} to the server!")
-    else:
-        totalInvites = 0
-        for i in await ctx.guild.invites():
-            if i.inviter == user:
-                totalInvites += i.uses
-        await ctx.reply(f"{user} has invited {totalInvites} member{'' if totalInvites == 1 else 's'} to the server!")
+    totalInvites = 0
+    for i in await ctx.guild.invites():
+        if i.inviter == (ctx.author if user == None else user):
+            totalInvites += i.uses
+    await ctx.reply(f"{'You have' if user == None else user} invited {totalInvites} member{'' if totalInvites == 1 else 's'} to the server!")
 
 @bot.command(aliases=['iq'])
 async def IQ(ctx):
