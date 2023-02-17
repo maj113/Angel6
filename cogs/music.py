@@ -6,6 +6,7 @@ from yt_dlp import utils
 utils.bug_reports_message = lambda: ''
 DebuggingOpts = {
     "ytdllogging" : False,
+    "ytdlerringore" : False,
     "ytdlquiet" : True,
     "LogLevel" : logging.INFO
 }
@@ -29,7 +30,7 @@ class YTDLSource(discord.FFmpegOpusAudio):
         'restrictfilenames': True,
         'noplaylist': True,
         'nocheckcertificate': True,
-        'ignoreerrors': DebuggingOpts["ytdllogging"],
+        'ignoreerrors': DebuggingOpts["ytdlerringore"],
         'logtostderr': DebuggingOpts["ytdllogging"],
         'quiet': DebuggingOpts["ytdlquiet"],
         'no_warnings': True,
