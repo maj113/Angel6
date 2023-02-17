@@ -514,15 +514,13 @@ async def helperasbot():
 @commands.has_permissions(ban_members=True)
 async def asbot(ctx, *, arg = None):
     if arg == "stop":
-        if asbotmain.is_running() == False: return await ctx.reply("\"**asbotmain()**\" is not running!")
-        asbotmain.cancel()
-        await ctx.reply("Stopped task \"**asbotmain()**\" successfully")
-        print(f"Warning: asbotmain() was stopped externally by {ctx.author} !!!")
+        if asbotmain.is_running() == False: return await ctx.reply("**`asbotmain()`** is not running!")
+        await ctx.reply("Stopped task **`asbotmain()`** successfully")
+        print(f"Warning: asbotmain() was stopped externally by {ctx.author} !!!"), asbotmain.cancel()
     elif arg == "start":
-        if asbotmain.is_running() == True: return await ctx.reply("\"**asbotmain()**\" is already running!")
-        await ctx.reply("Started task \"**asbotmain()**\" successfully")
-        print(f"Warning: asbotmain() was started externally by {ctx.author} !!!")
-        asbotmain.start()
+        if asbotmain.is_running() == True: return await ctx.reply("**`asbotmain()`** is already running!")
+        await ctx.reply("Started task **`asbotmain()`** successfully")
+        print(f"Warning: asbotmain() was started externally by {ctx.author} !!!"), asbotmain.start()
     else: await ctx.reply("No argument provided or argument not understood")
 
 #FIXME: get rid of global
