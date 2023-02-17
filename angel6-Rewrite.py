@@ -500,7 +500,7 @@ async def german(ctx):
     await ctx.reply("https://giphy.com/gifs/fifa-Vd8wLaK3lNDNMuGaUL \n SHUT THE FUCK UP BAHZZ VIVA LA GERMANY AAJAJJAJAJAJA")
 
 
-async def clsscr():
+def clsscr():
     os.system('cls' if os.name == 'nt' else print("\x1B[2J"))
 
 async def helperasbot():
@@ -514,15 +514,15 @@ async def helperasbot():
 @commands.has_permissions(ban_members=True)
 async def asbot(ctx, *, arg = None):
     if arg == "stop":
-        if asbot.is_running() == False: return await ctx.reply("\"**asbotmain()**\" is not running!")
-        asbot.cancel()
+        if asbotmain.is_running() == False: return await ctx.reply("\"**asbotmain()**\" is not running!")
+        asbotmain.cancel()
         await ctx.reply("Stopped task \"**asbotmain()**\" successfully")
         print(f"Warning: asbotmain() was stopped externally by {ctx.author} !!!")
     elif arg == "start":
-        if asbot.is_running() == True: return await ctx.reply("\"**asbotmain()**\" is already running!")
+        if asbotmain.is_running() == True: return await ctx.reply("\"**asbotmain()**\" is already running!")
         await ctx.reply("Started task \"**asbotmain()**\" successfully")
         print(f"Warning: asbotmain() was started externally by {ctx.author} !!!")
-        asbot.start()
+        asbotmain.start()
     else: await ctx.reply("No argument provided or argument not understood")
 
 #FIXME: get rid of global
@@ -534,10 +534,10 @@ async def asbotmain():
         global chanID2
         chanID2 = await aioconsole.ainput("Input channel ID: ")
         if chanID2 == "show":
-            await clsscr()
+            clsscr()
             await helperasbot()
             return
-        await clsscr()
+        clsscr()
         try:
             global channel1
             channel1 = bot.get_channel(int(chanID2))
@@ -556,15 +556,14 @@ async def asbotmain():
         isinit = True
     message = await aioconsole.ainput(f"[{discord.utils.get(bot.get_all_channels(), id=int(chanID2))}] Message: ")
     if message == "sel":
-        await clsscr()
+        clsscr()
         await helperasbot()
         isinit = False
         return
     if message == "stopmessage":
-        asbot.cancel()
-        await clsscr()
+        asbotmain.cancel()
+        clsscr()
         print("Stopped task")
-        return
     try:
         await channel1.send(message)
     except discord.errors.HTTPException:
