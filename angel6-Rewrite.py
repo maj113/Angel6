@@ -389,8 +389,6 @@ async def roll(ctx,*args):
     """Rolls a dice in user specified format"""
     args = "".join(args)
     
-    print("args is:" + str(args))
-    
     # sanitize input - remove trailing spaces
     args=args.strip()
 
@@ -510,9 +508,10 @@ async def helperasbot():
                 print(f"    {channel.name} : {channel.id}")
 
 #FIXME: one line if statement 
-@bot.command(pass_context=False)
+@bot.command(pass_context=True)
 @commands.has_permissions(ban_members=True)
 async def asbot(ctx, *, arg = None):
+    """start or stop the asbot function"""
     if arg == "stop":
         if asbotmain.is_running() == False: return await ctx.reply("**`asbotmain()`** is not running!")
         await ctx.reply("Stopped task **`asbotmain()`** successfully")
@@ -521,7 +520,7 @@ async def asbot(ctx, *, arg = None):
         if asbotmain.is_running() == True: return await ctx.reply("**`asbotmain()`** is already running!")
         await ctx.reply("Started task **`asbotmain()`** successfully")
         print(f"Warning: asbotmain() was started externally by {ctx.author} !!!"), asbotmain.start()
-    else: await ctx.reply("No argument provided or argument not understood")
+    else: await ctx.reply(embed=discord.Embed(title="`asbotmain()` state:"+f"{' **running**' if asbotmain.is_running() == True else ' **stopped**'}", color=discord.Color.blurple()))
 
 #FIXME: get rid of global
 isinit = False
@@ -558,7 +557,7 @@ async def asbotmain():
         await helperasbot()
         isinit = False
         return
-    if message == "stopmessage":
+    if message == "asbotstop":
         asbotmain.cancel()
         clsscr()
         print("Stopped task")
