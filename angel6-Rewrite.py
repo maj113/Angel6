@@ -1,8 +1,8 @@
 import asyncio, psutil, time, datetime, random, sys, discord, os, aioconsole
-from subprocess import run
 from discord import __version__ as d_version
 from discord.ext import commands, tasks
 from dotenv import load_dotenv
+from yt_dlp import version as ytver
 
 load_dotenv()
 TOKEN = os.getenv("DISCORD_TOKEN")
@@ -10,15 +10,14 @@ LOG_CHAN_ID = os.getenv("LOGGING_CHANNEL_ID")
 JL_CHAN_ID = os.getenv("JOIN_LEAVE_CHANNEL_ID")
 GEN_CHAN_ID = os.getenv("GENERAL_CHANNEL_ID")
 BotVer = "**2.3-Rewrite** <https://github.com/maj113/Angel6/releases/latest>"
+creditsimage="https://media.discordapp.net/attachments/997647296189698129/1075817805691236543/1676492485892.jpg?width=1000&height=625"
 
-intents = discord.Intents().all()
-bot = commands.Bot(command_prefix='~', intents=intents,status_act=discord.Status.do_not_disturb)
+intents = discord.Intents.all()
+bot = commands.Bot(command_prefix='~',activity = discord.Game(name="Greatest bot alive"), intents=intents)
 
 @bot.event
 async def on_ready():
     print(f'Logged in as:\n{bot.user.name}\n{bot.user.id}')
-    with open(os.path.join(os.path.dirname(__file__), 'Ascii1.txt'), 'rt') as file:
-        content = file.read()
     restartbot = False
 
     if os.getenv("LOGGING_CHANNEL_ID") == "" :
@@ -76,17 +75,17 @@ async def on_ready():
     embed.add_field(name="Join leave channel", value=JL_CHAN_ID, inline=False)
     embed.add_field(name="General channel", value=GEN_CHAN_ID, inline=False)
     embed.add_field(name="Current API latency:", value=f'{(bot.latency * 1000):.0f}ms', inline=False)
-    ID = int(LOG_CHAN_ID)
-    channel = bot.get_channel(ID)
-    await channel.send(content)
+    channel = bot.get_channel(int(LOG_CHAN_ID))
+    await channel.send(creditsimage)
     await channel.send(embed=embed)       
-    await asbot.start()
+    try: await asbotmain.start()
+    except RuntimeError:
+        pass
 bot.load_extension("cogs.music")
 
 @bot.event
 async def on_member_join(member):
-    ID = int(JL_CHAN_ID)
-    channel = bot.get_channel(ID)    
+    channel = bot.get_channel(int(JL_CHAN_ID))    
     embed = discord.Embed(colour=discord.Colour.blurple(), description=f"{member.mention} joined, Total Members: {len(list(member.guild.members))}")
     embed.set_thumbnail(url=f"{member.avatar.url}")
     embed.set_footer(text=f"{member.guild}", icon_url=f"{member.guild.icon.url}")
@@ -108,8 +107,7 @@ async def on_member_join(member):
 
 @bot.event
 async def on_member_remove(member):
-    ID = int(JL_CHAN_ID)
-    channel = bot.get_channel(ID)
+    channel = bot.get_channel(int(JL_CHAN_ID))
     embed = discord.Embed(colour=discord.Colour.blurple(), description=f"{member.mention} Left us, Total Members: {len(list(member.guild.members))}")
     embed.set_thumbnail(url=f"{member.avatar.url}")
     embed.set_footer(text=f"{member.guild}", icon_url=f"{member.guild.icon.url}")
@@ -118,9 +116,11 @@ async def on_member_remove(member):
 @bot.event
 async def on_message_delete(message):
     deleted = discord.Embed(
-        description=f"Message deleted in {message.channel.mention}", color=discord.Color.blurple()).set_author(name=message.author, icon_url=message.author.avatar.url)
-    ID = int(LOG_CHAN_ID)
-    channel = bot.get_channel(ID)
+        description=f"Message deleted in {message.channel.mention}", 
+        color=discord.Color.blurple()).set_author(name=message.author, icon_url=message.author.avatar.url)
+    if message.author.id == bot.user.id:
+        return
+    channel = bot.get_channel(int(LOG_CHAN_ID))
     deleted.add_field(name="Message", value=message.content)
     deleted.timestamp = message.created_at
     await channel.send(embed=deleted)
@@ -155,8 +155,8 @@ async def ping(ctx):
 @bot.command(aliases=['members'])
 async def users(ctx):
     """shows total amount of members"""
-    a=ctx.guild.member_count
-    b=discord.Embed(title=f"Total members in {ctx.guild.name}",description=a,color=discord.Color.blurple())
+    count=ctx.guild.member_count
+    b=discord.Embed(title=f"Total members in {ctx.guild.name}",description=count,color=discord.Color.blurple())
     await ctx.reply(embed=b)
 
 @bot.command(aliases=['AV','avatar','pfp'])
@@ -166,7 +166,6 @@ async def av(ctx, *,  user : discord.Member=None):
         user = ctx.author
     userAvatarUrl = user.avatar.url
     await ctx.reply(userAvatarUrl)
-
 
 @bot.command(pass_context=True)
 async def userinfo(ctx, *, user : discord.Member=None): # b'\xfc'
@@ -203,7 +202,7 @@ async def serverinfo(ctx):
         description=description,
         color=discord.Color.blurple()
     )
-    embed.set_thumbnail(url=icon)#this is way too basic should fix
+    embed.set_thumbnail(url=icon)#FIXME: this is way too basic should fix
     embed.add_field(name="Owner", value=owner, inline=True)
     embed.add_field(name="Server ID", value=id, inline=True)
     embed.add_field(name="Member Count", value=memberCount, inline=True)
@@ -274,13 +273,10 @@ async def ban(ctx, member : discord.Member=None, *, reason=None):
             await ctx.reply(f"You can only ban members lower than yourself")
         else:
             await member.ban(reason=reason)
-            if reason == None:
-                embed = discord.Embed(title="bye lol", description=f"{member.mention} got banned ")
-            else:
-                embed = discord.Embed(title="bye lol", description=f"{member.mention} got banned: {reason} ")
+            embed = discord.Embed(title="bye lol", description=f"{member.mention + 'got banned' if reason == None else member.mention + 'got banned: ' + reason} ")
             await ctx.channel.send(embed=embed)
-    except discord.errors.Forbidden:
-        await ctx.reply("Can't ban the member, make sure the bot is higher on the role list and that the bot has the necessary permissions. ")
+    except discord.errors.Forbidden as err:
+        await ctx.reply(f"Can't ban the member, make sure the bot is higher on the role list and that the bot has the necessary permissions.\n Error: {err}")
 
 @bot.command()
 @commands.has_permissions(ban_members=True)   
@@ -307,22 +303,17 @@ async def warn(ctx, member : discord.Member=None, *, reason=None):
         await ctx.reply("You need to specify who to warn!")
     elif member == ctx.author:
         await ctx.reply(f"Can't warn yourself idiot")
-    else:
-        if reason == None:
-            embed2=discord.Embed(title="Warned🗡️", description=f"You were warned, now behave.")
-            embed=discord.Embed(title="Warned", description=f"{member.mention} was warned")
-        else:
-            embed2=discord.Embed(title="Warned🗡️", description=f"You were warned | Reason: {reason}")
-            embed=discord.Embed(title="Warned", description=f"{member.mention} was warned | Reason: {reason}")
-        await ctx.reply (embed=embed)
-        await member.send(embed=embed2)
+    embed2=discord.Embed(title="Warned🗡️", description=f"{'You were warned.' + ' Now behave.' if reason == None else (' | Reason: ' + reason)}", color=discord.Colour.blurple())
+    embed=discord.Embed(title="Warned", description=f"{member.mention + ' was warned' if reason == None else member.mention +  ' was warned, reason: ' + reason}", color=discord.Colour.blurple())
+    await ctx.reply (embed=embed)
+    await member.send(embed=embed2)
 
 @bot.command(aliases=['clear'])
 @commands.has_permissions(ban_members =True)
 async def wipe(ctx, amount=20):
     """wipes 20 messages or the number specified"""
     await ctx.channel.purge(limit=amount)
-    await ctx.channel.send(f"Cleanup Complete.")
+    await ctx.channel.send(f"Cleanup Complete, deleted {amount} messages")
 
 @bot.command(pass_context=True)
 @commands.has_permissions(ban_members=True)
@@ -363,7 +354,6 @@ async def uptime(ctx):
 meminfo = psutil.Process(os.getpid())
 totmem = psutil.virtual_memory().total / float(2 ** 20)  
 mem = meminfo.memory_info()[0] / float(2 ** 20) 
-ytdlfunc = run("yt-dlp --version", shell=True, capture_output=True).stdout.decode('ascii')
 
 @bot.command(pass_context=True, aliases=['info', 'debug'])
 async def stats(ctx):
@@ -376,7 +366,7 @@ async def stats(ctx):
     #bedem.add_field(name = 'CPU name', value = cpuinfo.get_cpu_info()['brand_raw'], inline = False) way too slow
     bedem.add_field(name = 'Discord.py Version', value = d_version, inline = False)
     bedem.add_field(name = 'Python Version', value = sys.version, inline = False)
-    bedem.add_field(name = 'YTdl Version', value = ytdlfunc.strip(), inline = False)
+    bedem.add_field(name = 'YTdl Version', value = ytver.__version__, inline = False)
     await ctx.reply(embed = bedem)
 
 @bot.command()
@@ -423,12 +413,26 @@ async def roll(ctx,*args):
             await ctx.reply('I didn\'t understand your input: `' + args + '`.\n try `~roll help` for supported options')
             return
     
+    maxdicesize = 150
+    maxsides =  100000000
+    if  diceToRoll > maxdicesize:
+        await ctx.reply(f"Too many dices, max is: {maxdicesize}")
+        return
+    elif diceToRoll < 0:
+         await ctx.reply(f"Dice amount can't be negative")
+         return
+    if numberOfSides > maxsides:
+        await ctx.reply(f"Too many sides, max is: {maxsides}")
+        return
+    elif numberOfSides < 0:
+        await ctx.reply(f"Sides can't be negative")  
+        return
+    
     await ctx.send('Rolling `' + str(diceToRoll) + '` dice with `' + str(numberOfSides) + '` sides')
 
     results = []
     
     for _ in range(0, diceToRoll):
-        print('rolling a ' + str(numberOfSides) + ' sided dice')
         results.insert(0, '['+str(rolladice(numberOfSides))+']')
 
     resultString = ',  '.join(results)
@@ -451,12 +455,6 @@ def parseInput(input):
         diceToRoll = int(split[0])
         sidedDice = int(split[1])
 
-    if diceToRoll > 150:
-        raise Exception('too many dice')
-    
-    if sidedDice > 100000000:
-        raise Exception('too many sides')
-    
     return diceToRoll, sidedDice
     
 def rolladice(sides):
@@ -468,10 +466,7 @@ async def credit(ctx):
     owner = await bot.fetch_user(978854415786184745)
     maintainer = await bot.fetch_user(347387857574428676)
     """Displays who created and maintained the bot"""
-    file = open(os.path.join(os.path.dirname(__file__), 'Ascii1.txt'), 'rt')
-    content = file.read()
-    file.close()
-    await ctx.reply(content)
+    await ctx.reply(creditsimage)
     embed=discord.Embed(title=f"Made by: {owner}, Maintained by: {maintainer}", description="ask them anything! 24/7\n Feel free to add them as a friend", color=discord.Color.blurple())
     await ctx.send(embed=embed)
 
@@ -489,9 +484,9 @@ async def support(ctx, *, message = None):
     if message == "release" or message == "changelog":
         await ctx.reply("Latest Bot release: \n https://github.com/maj113/Angel6/releases/latest")
         return
-    embed=discord.Embed(title="Support server",description="Need help with the bot? \nWant to contribute to the bot?", color=discord.Color.blurple())
+    embed=discord.Embed(title="Support server",description="Need help with the bot? https://discord.gg/ctsjpMQXEe \nWant to contribute to the bot? <https://github.com/maj113/Angel6>", color=discord.Color.blurple())
     await ctx.reply(embed=embed)
-    await ctx.send("https://discord.gg/ctsjpMQXEe \n https://github.com/maj113/Angel6")
+    await ctx.send("https://cdn.discordapp.com/attachments/997647296189698129/1075442911040262205/paintdotnet_LFkzPDrQML.png")
 
 @bot.command(pass_context=True, aliases=['vio', 'violated'])
 async def violation(ctx):
@@ -504,23 +499,45 @@ async def german(ctx):
     #why does this exist?
     await ctx.reply("https://giphy.com/gifs/fifa-Vd8wLaK3lNDNMuGaUL \n SHUT THE FUCK UP BAHZZ VIVA LA GERMANY AAJAJJAJAJAJA")
 
+
+async def clsscr():
+    os.system('cls' if os.name == 'nt' else print("\x1B[2J"))
+
 async def helperasbot():
     for server in bot.guilds:
         for channel in server.channels:
             if str(channel.type) == 'text':
                 print(f"    {channel.name} : {channel.id}")
 
+#FIXME: one line if statement 
+@bot.command(pass_context=False)
+@commands.has_permissions(ban_members=True)
+async def asbot(ctx, *, arg = None):
+    if arg == "stop":
+        if asbot.is_running() == False: return await ctx.reply("\"**asbotmain()**\" is not running!")
+        asbot.cancel()
+        await ctx.reply("Stopped task \"**asbotmain()**\" successfully")
+        print(f"Warning: asbotmain() was stopped externally by {ctx.author} !!!")
+    elif arg == "start":
+        if asbot.is_running() == True: return await ctx.reply("\"**asbotmain()**\" is already running!")
+        await ctx.reply("Started task \"**asbotmain()**\" successfully")
+        print(f"Warning: asbotmain() was started externally by {ctx.author} !!!")
+        asbot.start()
+    else: await ctx.reply("No argument provided or argument not understood")
+
 #FIXME: get rid of global
 isinit = False
 @tasks.loop()
-async def asbot():
+async def asbotmain():
     global isinit
     if isinit == False:
         global chanID2
-        chanID2 = await aioconsole.ainput("Input channel ID: ")  
+        chanID2 = await aioconsole.ainput("Input channel ID: ")
         if chanID2 == "show":
+            await clsscr()
             await helperasbot()
             return
+        await clsscr()
         try:
             global channel1
             channel1 = bot.get_channel(int(chanID2))
@@ -539,14 +556,19 @@ async def asbot():
         isinit = True
     message = await aioconsole.ainput(f"[{discord.utils.get(bot.get_all_channels(), id=int(chanID2))}] Message: ")
     if message == "sel":
+        await clsscr()
         await helperasbot()
         isinit = False
+        return
+    if message == "stopmessage":
+        asbot.cancel()
+        await clsscr()
+        print("Stopped task")
         return
     try:
         await channel1.send(message)
     except discord.errors.HTTPException:
         await channel1.send("⠀") #This is a Unicode "U+2800/Braille Pattern Blank" character
-
 
 async def main():
     await bot.start(TOKEN)                                 
