@@ -9,7 +9,7 @@ TOKEN = os.getenv("DISCORD_TOKEN")
 LOG_CHAN_ID = os.getenv("LOGGING_CHANNEL_ID")
 JL_CHAN_ID = os.getenv("JOIN_LEAVE_CHANNEL_ID")
 GEN_CHAN_ID = os.getenv("GENERAL_CHANNEL_ID")
-BotVer = "**2.3-Rewrite** <https://github.com/maj113/Angel6/releases/latest>"
+BotVer = "**2.3.1-Rewrite** <https://github.com/maj113/Angel6/releases/latest>"
 creditsimage="https://media.discordapp.net/attachments/997647296189698129/1075817805691236543/1676492485892.jpg?width=1000&height=625"
 
 intents = discord.Intents.all()
