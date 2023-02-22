@@ -1,4 +1,4 @@
-import asyncio, psutil, time, datetime, random, sys, discord, os, aioconsole
+import asyncio, psutil, time, datetime, random, sys, discord, os, aioconsole, requests
 from discord import __version__ as d_version
 from discord.ext import commands, tasks
 from dotenv import load_dotenv
