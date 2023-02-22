@@ -84,6 +84,13 @@ async def on_ready():
 bot.load_extension("cogs.music")
 
 @bot.event
+async def on_message(message):
+    if message.author.id != bot.user.id:
+        msgcontent = (f"{message.guild}/{message.channel}/{message.author.name}> {message.attachments[0].url if message.attachments else message.content}")
+        #channel = bot.get_channel(int(LOG_CHAN_ID))
+        print(msgcontent)#, await channel.send(msgcontent)
+
+@bot.event
 async def on_member_join(member):
     channel = bot.get_channel(int(JL_CHAN_ID))    
     embed = discord.Embed(colour=discord.Colour.blurple(), description=f"{member.mention} joined, Total Members: {len(list(member.guild.members))}")
