@@ -497,6 +497,11 @@ async def german(ctx):
     #why does this exist?
     await ctx.reply("https://giphy.com/gifs/fifa-Vd8wLaK3lNDNMuGaUL \n SHUT THE FUCK UP BAHZZ VIVA LA GERMANY AAJAJJAJAJAJA")
 
+@bot.command(pass_context=True)
+async def cat(ctx, arg=""):
+    caturl=requests.get('https://api.thecatapi.com/v1/images/search')
+    catimg = caturl.json()[0]['url']
+    await ctx.reply(catimg)
 
 def clsscr():
     os.system('cls' if os.name == 'nt' else print("\x1B[2J"))
