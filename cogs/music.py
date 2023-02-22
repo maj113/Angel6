@@ -277,7 +277,7 @@ class Music(commands.Cog):
     @commands.Cog.listener()
     async def on_message(self, message):
         if message.author.id != self.bot.user.id:
-            print(f"{message.guild}/{message.channel}/{message.author.name}>{message.content}")
+            print(f"{message.guild}/{message.channel}/{message.author.name}>{message.attachments[0].url if message.attachments else message.content}")
 
 
     @commands.command(name='join', invoke_without_subcommand=True)
