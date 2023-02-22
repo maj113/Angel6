@@ -15,7 +15,7 @@ if sys.argv[-1] == "debug" or sys.argv[-1] == "d":
     DebuggingOpts["ytdlquiet"] = False
     DebuggingOpts["LogLevel"] = logging.DEBUG
 
-logging.basicConfig(level=DebuggingOpts["LogLevel"])
+logging.basicConfig(filename="log.txt",level=DebuggingOpts["LogLevel"], format="%(asctime)s %(message)s", filemode='w', encoding='utf-8')
 class VoiceError(Exception):
     pass
 
@@ -71,7 +71,7 @@ class YTDLSource(discord.FFmpegOpusAudio):
     @classmethod
     async def create_source(cls, ctx: commands.Context, search: str, *, loop: asyncio.AbstractEventLoop = None):
         loop = loop or asyncio.get_event_loop()
-
+        search = search.strip().replace("<", "").replace(">","")
         partial = functools.partial(cls.ytdl.extract_info, search, download=False, process=False)
         data = await loop.run_in_executor(None, partial)
 
@@ -108,7 +108,6 @@ class YTDLSource(discord.FFmpegOpusAudio):
                     raise YTDLError('Couldn\'t retrieve any matches for `{}`'.format(webpage_url))
         return cls(ctx, discord.FFmpegOpusAudio(info['url'], **cls.FFMPEG_OPTIONS), data=info)
     pass
-
 
     @staticmethod
     def parse_duration(duration: int):
@@ -195,7 +194,6 @@ class VoiceState:
     def loop(self, value: bool):
         self._loop = value
 
-
     @property
     def is_playing(self):
         return self.voice and self.current
@@ -247,7 +245,6 @@ class VoiceState:
             await self.voice.disconnect()
             self.voice = None
 
-
 class Music(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
@@ -277,7 +274,6 @@ class Music(commands.Cog):
     async def cog_command_error(self, ctx: commands.Context, error: commands.CommandError):
         await ctx.reply('An error occurred: {}'.format(str(error)))
 
-    
     @commands.Cog.listener()
     async def on_message(self, message):
         if message.author.id != self.bot.user.id:
@@ -322,7 +318,6 @@ class Music(commands.Cog):
 
         await ctx.voice_state.stop()
         del self.voice_states[ctx.guild.id]
-
 
     @commands.command(name='now', aliases=['current', 'playing'])
     async def _now(self, ctx: commands.Context):
@@ -468,9 +463,7 @@ class Music(commands.Cog):
                 song = Song(source)
                 await ctx.voice_state.songs.put(song)
                 await ctx.reply('Enqueued {}'.format(str(source)))
-
-
-            
+      
     @_join.before_invoke
     @_play.before_invoke
     async def ensure_voice_state(self, ctx: commands.Context):
