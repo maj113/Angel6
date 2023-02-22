@@ -20,4 +20,4 @@ Discord bot for my friends server.
   - [ ] On user AV change logging
   - [ ] On adding/removing/changing permission logging
   - [ ] ...
-- [ ] Better (Mobile friendly Ascii art) *We may just use a custom banner/GIF*
+- [x] Better (Mobile friendly Ascii art) *We may just use a custom banner/GIF*
