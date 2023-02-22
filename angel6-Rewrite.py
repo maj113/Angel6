@@ -519,8 +519,8 @@ async def asbot(ctx, *, arg = None):
     """start or stop the asbot function"""
     if arg == "stop":
         if asbotmain.is_running() == False: return await ctx.reply("**`asbotmain()`** is not running!")
-        await ctx.reply("Stopped task **`asbotmain()`** successfully")
-        print(f"Warning: asbotmain() was stopped externally by {ctx.author} !!!"), asbotmain.cancel()
+        await ctx.reply("Stopped task **`asbotmain()`** successfully"), clsscr()
+        print(f"Warning: asbotmain() was stopped externally by {ctx.author} !!!"), asbotmain.cancel(),
     elif arg == "start":
         if asbotmain.is_running() == True: return await ctx.reply("**`asbotmain()`** is already running!")
         await ctx.reply("Started task **`asbotmain()`** successfully")
