@@ -301,8 +301,10 @@ async def warn(ctx, member : discord.Member=None, *, reason=None):
     """warns a user"""
     if member == None:
         await ctx.reply("You need to specify who to warn!")
+        return
     elif member == ctx.author:
         await ctx.reply(f"Can't warn yourself idiot")
+        return
     embed2=discord.Embed(title="Warned🗡️", description=f"{'You were warned.' + ' Now behave.' if reason == None else (' | Reason: ' + reason)}", color=discord.Colour.blurple())
     embed=discord.Embed(title="Warned", description=f"{member.mention + ' was warned' if reason == None else member.mention +  ' was warned, reason: ' + reason}", color=discord.Colour.blurple())
     await ctx.reply (embed=embed)
