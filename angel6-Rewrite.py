@@ -581,5 +581,9 @@ async def asbotmain():
         await channel1.send("⠀") #This is a Unicode "U+2800/Braille Pattern Blank" character
 
 async def main():
-    await bot.start(TOKEN)
+    try:
+        await bot.start(TOKEN)
+    except TypeError:
+        print("NO TOKEN FOUND, make sure that the env file is named '.env' and that there is a token present")
+        await bot.close()
 asyncio.get_event_loop().run_until_complete(main())
