@@ -68,7 +68,7 @@ async def on_ready():
     if restartbot == True:
         print("Setup complete, Rebooting")
         restart_program()
-    
+
     embed = discord.Embed(title = 'Bot settings', description = 'Current bot settings and status', color=discord.Color.blurple())
     embed.add_field(name="**Angel$IX Version:**", value=BotVer, inline=False)
     embed.add_field(name="logging channel", value=LOG_CHAN_ID, inline=False)
@@ -144,15 +144,13 @@ async def reload(ctx):
     except Exception as err:
         await ctx.reply(err)
 
-def restart_program():
-    os.execv(sys.executable, ['python3'] + sys.argv)     
 
 @bot.command()
 @commands.has_permissions(ban_members=True)
-async def restart(ctx):
+async def restart(ctx, arg=""):
     """restarts the bot"""
     await ctx.reply(" Restarting, please allow 5 seconds for this. ")
-    restart_program()
+    os.execv(sys.executable, ['python3'] + sys.argv + (['debug']) if arg == 'debug' else '')     
 
 @bot.command(aliases=['latency'])
 async def ping(ctx):
