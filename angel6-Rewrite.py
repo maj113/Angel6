@@ -81,7 +81,7 @@ async def on_ready():
     try: await asbotmain.start()
     except RuntimeError:
         pass
-bot.load_extension("cogs.music")
+bot.load_extension("cogs", recursive=True)
 
 @bot.event
 async def on_message(message):
