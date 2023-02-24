@@ -144,7 +144,6 @@ async def reload(ctx):
     except Exception as err:
         await ctx.reply(err)
 
-
 @bot.command()
 @commands.has_permissions(ban_members=True)
 async def restart(ctx, arg=""):
