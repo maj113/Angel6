@@ -199,7 +199,7 @@ async def serverinfo(ctx):
     name = str(ctx.guild.name)
     description = f"Official {ctx.guild.name} server"
     owner = str(ctx.guild.owner)
-    id = str(ctx.guild.id)
+    servid = str(ctx.guild.id)
     memberCount = str(ctx.guild.member_count)
     icon = str(ctx.guild.icon.url)
     embed = discord.Embed(
@@ -209,7 +209,7 @@ async def serverinfo(ctx):
     )
     embed.set_thumbnail(url=icon)#FIXME: this is way too basic should fix
     embed.add_field(name="Owner", value=owner, inline=True)
-    embed.add_field(name="Server ID", value=id, inline=True)
+    embed.add_field(name="Server ID", value=servid, inline=True)
     embed.add_field(name="Member Count", value=memberCount, inline=True)
     embed.add_field(name="Created", value=ctx.guild.created_at.strftime(
             "%B %d, %Y, %I:%M %p"), inline=True)
