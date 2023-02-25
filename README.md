@@ -1,6 +1,5 @@
 
 # Angel$IX
-[![CodeQL](https://github.com/maj113/Angel6/actions/workflows/github-code-scanning/codeql/badge.svg)](https://github.com/maj113/Angel6/actions/workflows/github-code-scanning/codeql)
 
 Discord bot for my friends server.
 
