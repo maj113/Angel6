@@ -1,4 +1,7 @@
+
 # Angel$IX
+[![CodeQL](https://github.com/maj113/Angel6/actions/workflows/github-code-scanning/codeql/badge.svg)](https://github.com/maj113/Angel6/actions/workflows/github-code-scanning/codeql)
+
 Discord bot for my friends server.
 
 **Mostly usable as of >= v2.2.2, ~~Music Cog needs improvment~~**
