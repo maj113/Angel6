@@ -1,5 +1,6 @@
 
 # Angel$IX
+[![CodeQL](https://github.com/maj113/Angel6/actions/workflows/codeql.yml/badge.svg)](https://github.com/maj113/Angel6/actions/workflows/codeql.yml) [![Pylint](https://github.com/maj113/Angel6/actions/workflows/pylint.yml/badge.svg)](https://github.com/maj113/Angel6/actions/workflows/pylint.yml)
 
 Discord bot for my friends server.
 
