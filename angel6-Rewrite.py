@@ -8,6 +8,7 @@ import discord
 import os
 import aioconsole
 import requests
+import json
 from discord import __version__ as d_version
 from discord.ext import commands, tasks
 from dotenv import load_dotenv
@@ -136,8 +137,14 @@ async def on_member_join(member):
             title='Glad you could find us!',
             description=f"yo! im Mutiny's Personal Bot, proceed to <#{chanID}> to talk:)")
         await member.send(embed=mbed)
-
-
+    """with open('muted.json', "r") as jsonmute:
+        datamute = json.load(jsonmute)
+        if member.id in datamute["muted"]:
+            for guild in bot.guilds:
+                guildid=(guild.id)
+            getguild = bot.get_guild(guildid)
+            mutedRole = discord.utils.get(getguild.roles, name="Muted")
+            await member.add_roles(mutedRole)"""
 @bot.event
 async def on_member_remove(member):
     channel = bot.get_channel(int(JL_CHAN_ID))
@@ -307,9 +314,12 @@ async def mute(ctx, member: discord.Member, *, reason=None):
     await member.add_roles(mutedRole, reason=reason)
     await ctx.reply(embed=embed)
     await member.send(f"You were muted {'for: ' + reason if reason != None else ''}")
+    """with open('muted.json', "r") as jsonmute:
+        datamute = json.load(jsonmute)
+        datamute["muted"].append(member.id)
+    with open('muted.json', "w") as jsonmuteafter:
+        json.dump(datamute, jsonmuteafter)""" 
 
-
-@bot.command()
 @commands.has_permissions(kick_members=True)
 async def unmute(ctx, member: discord.Member):
     """unmutes a user"""

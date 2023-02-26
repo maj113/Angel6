@@ -9,4 +9,4 @@ __pycache__/
 *.code-workspace
 log.txt
 .env_example
-
+muted.json
