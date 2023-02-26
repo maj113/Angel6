@@ -151,8 +151,8 @@ class SongQueue(asyncio.Queue):
     def __getitem__(self, item):
         if isinstance(item, slice):
             return list(itertools.islice(self._queue, item.start, item.stop, item.step))
-        else:
-            return self._queue[item]
+        
+        return self._queue[item]
 
     def __iter__(self):
         return self._queue.__iter__()
@@ -202,7 +202,7 @@ class VoiceState:
         while True:
             self.next.clear()
             self.now = None
-            if self.loop == False:
+            if self.loop is False:
                 # Try to get the next song within 3 minutes.
                 # If no song will be added to the queue in time,
                 # the player will disconnect due to performance
