@@ -29,13 +29,13 @@ async def on_ready():
                 envfile.write(changed)
         restartbot = True
     
-    if os.getenv("LOGGING_CHANNEL_ID") == None :
+    if os.getenv("LOGGING_CHANNEL_ID") is None :
         logginginput = int(input("Input logging channel ID "))
         with open(".env", "a") as envfile:
             envfile.write(f"\nLOGGING_CHANNEL_ID={logginginput}")
         restartbot = True
     
-    if os.getenv("JOIN_LEAVE_CHANNEL_ID") == None :
+    if os.getenv("JOIN_LEAVE_CHANNEL_ID") is None :
         joinleaveinput = int(input("Input join/leave channel ID "))
         with open(".env", "a") as envfile:
             envfile.write(f"\nJOIN_LEAVE_CHANNEL_ID={joinleaveinput}")
@@ -50,7 +50,7 @@ async def on_ready():
                 envfile.write(changed)
         restartbot = True
 
-    if os.getenv("GENERAL_CHANNEL_ID") == None :
+    if os.getenv("GENERAL_CHANNEL_ID") is None :
         generalinput = int(input("Input general channel ID "))
         with open(".env", "a") as envfile:
             envfile.write(f"\nGENERAL_CHANNEL_ID={generalinput}")
@@ -65,9 +65,9 @@ async def on_ready():
                 envfile.write(changed)
         restartbot = True
     
-    if restartbot == True:
+    if restartbot is True:
         print("Setup complete, Rebooting")
-        restart_program()
+        os.execv(sys.executable, ['python3'] + sys.argv)
 
     embed = discord.Embed(title = 'Bot settings', description = 'Current bot settings and status', color=discord.Color.blurple())
     embed.add_field(name="**Angel$IX Version:**", value=BotVer, inline=False)
@@ -505,6 +505,7 @@ async def german(ctx):
 
 @bot.command(pass_context=True)
 async def cat(ctx, arg=""):
+    """sends a random cat image"""
     caturl=requests.get('https://api.thecatapi.com/v1/images/search')
     catimg = caturl.json()[0]['url']
     await ctx.reply(catimg)
@@ -531,7 +532,8 @@ async def asbot(ctx, *, arg = None):
         if asbotmain.is_running() == True: return await ctx.reply("**`asbotmain()`** is already running!")
         await ctx.reply("Started task **`asbotmain()`** successfully")
         print(f"Warning: asbotmain() was started externally by {ctx.author} !!!"), asbotmain.start()
-    else: await ctx.reply(embed=discord.Embed(title="`asbotmain()` state:"+f"{' **running**' if asbotmain.is_running() == True else ' **stopped**'}", color=discord.Color.blurple()))
+    else: await ctx.reply(embed=discord.Embed(
+    title="`asbotmain()` state:"+f"{' **running**' if asbotmain.is_running() == True else ' **stopped**'}", color=discord.Color.blurple()))
 
 #FIXME: get rid of global
 isinit = False
