@@ -1,35 +1,50 @@
-import logging, asyncio, functools, math, random, sys, discord, yt_dlp, itertools
+import logging
+import asyncio
+import functools
+import math
+import random
+import sys
+import discord
+import yt_dlp
+import itertools
 from discord.ext import commands
 from async_timeout import timeout
 from yt_dlp import utils
 
 utils.bug_reports_message = lambda: ''
 DebuggingOpts = {
-    "ytdllogging" : False,
-    "ytdlquiet" : True,
-    "LogLevel" : logging.INFO
+    "ytdllogging": False,
+    "ytdlerringore": False,
+    "ytdlquiet": True,
+    "LogLevel": logging.INFO
 }
 if sys.argv[-1] == "debug" or sys.argv[-1] == "d":
     DebuggingOpts["ytdllogging"] = True
     DebuggingOpts["ytdlquiet"] = False
     DebuggingOpts["LogLevel"] = logging.DEBUG
 
-logging.basicConfig(level=DebuggingOpts["LogLevel"])
+logging.basicConfig(
+    filename="log.txt", level=DebuggingOpts["LogLevel"],
+    format="%(asctime)s %(message)s", filemode='w', encoding='utf-8')
+
+
 class VoiceError(Exception):
     pass
+
 
 class YTDLError(Exception):
     pass
 
+
 class YTDLSource(discord.FFmpegOpusAudio):
     YTDL_OPTIONS = {
         'extractaudio': True,
-        'format': 'bestaudio/best',      
+        'format': 'bestaudio/best',
         'outtmpl': '%(extractor)s-%(id)s-%(title)s.%(ext)s',
         'restrictfilenames': True,
         'noplaylist': True,
         'nocheckcertificate': True,
-        'ignoreerrors': DebuggingOpts["ytdllogging"],
+        'ignoreerrors': DebuggingOpts["ytdlerringore"],
         'logtostderr': DebuggingOpts["ytdllogging"],
         'quiet': DebuggingOpts["ytdlquiet"],
         'no_warnings': True,
@@ -44,7 +59,9 @@ class YTDLSource(discord.FFmpegOpusAudio):
 
     ytdl = yt_dlp.YoutubeDL(YTDL_OPTIONS)
 
-    def __init__(self, ctx: commands.Context, source: discord.FFmpegOpusAudio, *, data: dict):
+    def __init__(
+            self, ctx: commands.Context, source: discord.FFmpegOpusAudio, *,
+            data: dict):
         super().__init__
 
         self.requester = ctx.author
@@ -70,12 +87,14 @@ class YTDLSource(discord.FFmpegOpusAudio):
     @classmethod
     async def create_source(cls, ctx: commands.Context, search: str, *, loop: asyncio.AbstractEventLoop = None):
         loop = loop or asyncio.get_event_loop()
-
-        partial = functools.partial(cls.ytdl.extract_info, search, download=False, process=False)
+        search = search.strip().replace("<", "").replace(">", "")
+        partial = functools.partial(
+            cls.ytdl.extract_info, search, download=False, process=False)
         data = await loop.run_in_executor(None, partial)
 
         if data is None:
-            raise YTDLError('Couldn\'t find anything that matches `{}`'.format(search))
+            raise YTDLError(
+                'Couldn\'t find anything that matches `{}`'.format(search))
 
         if 'entries' not in data:
             process_info = data
@@ -87,10 +106,12 @@ class YTDLSource(discord.FFmpegOpusAudio):
                     break
 
             if process_info is None:
-                raise YTDLError('Couldn\'t find anything that matches `{}`'.format(search))
+                raise YTDLError(
+                    'Couldn\'t find anything that matches `{}`'.format(search))
 
         webpage_url = process_info['webpage_url']
-        partial = functools.partial(cls.ytdl.extract_info, webpage_url, download=False)
+        partial = functools.partial(
+            cls.ytdl.extract_info, webpage_url, download=False)
         processed_info = await loop.run_in_executor(None, partial)
 
         if processed_info is None:
@@ -104,20 +125,24 @@ class YTDLSource(discord.FFmpegOpusAudio):
                 try:
                     info = processed_info['entries'].pop(0)
                 except IndexError:
-                    raise YTDLError('Couldn\'t retrieve any matches for `{}`'.format(webpage_url))
-        return cls(ctx, discord.FFmpegOpusAudio(info['url'], **cls.FFMPEG_OPTIONS), data=info)
+                    raise YTDLError(
+                        'Couldn\'t retrieve any matches for `{}`'.format(
+                            webpage_url))
+        return cls(ctx, discord.FFmpegOpusAudio(
+            info['url'],
+            **cls.FFMPEG_OPTIONS),
+            data=info)
     pass
-
 
     @staticmethod
     def parse_duration(duration: int):
         if duration == 0:
             return "LIVE"
-        
+
         minutes, seconds = divmod(duration, 60)
         hours, minutes = divmod(minutes, 60)
         days, hours = divmod(hours, 24)
-        
+
         duration_formated = []
         if days > 0:
             duration_formated.append(f'{days}d')
@@ -127,8 +152,9 @@ class YTDLSource(discord.FFmpegOpusAudio):
             duration_formated.append(f'{minutes}m')
         if seconds > 0:
             duration_formated.append(f'{seconds}s')
-        
+
         return " ".join(duration_formated)
+
 
 class Song:
     __slots__ = ('source', 'requester')
@@ -136,23 +162,34 @@ class Song:
     def __init__(self, source: YTDLSource):
         self.source = source
         self.requester = source.requester
-    
+
     def create_embed(self):
-        embed = (discord.Embed(title='Now playing', description='```css\n{0.source.title}\n```'.format(self), color=discord.Color.blurple())
-                .add_field(name='Duration', value=self.source.duration)
-                .add_field(name='Requested by', value=self.requester.mention)
-                .add_field(name='Uploader', value='[{0.source.uploader}]({0.source.uploader_url})'.format(self))
-                .add_field(name='URL', value='[Click]({0.source.url})'.format(self))
-                .set_thumbnail(url=self.source.thumbnail)
-                .set_author(name=self.requester.name, icon_url=self.requester.avatar.url))
+        embed = (
+            discord.
+            Embed(
+                title='Now playing',
+                description='```css\n{0.source.title}\n```'.format(self),
+                color=discord.Color.blurple()).
+            add_field(name='Duration', value=self.source.duration).
+            add_field(name='Requested by', value=self.requester.mention).
+            add_field(
+                name='Uploader',
+                value='[{0.source.uploader}]({0.source.uploader_url})'.format(
+                    self)).add_field(
+                name='URL', value='[Click]({0.source.url})'.format(self)).
+            set_thumbnail(url=self.source.thumbnail).set_author(
+                name=self.requester.name, icon_url=self.requester.avatar.url))
         return embed
+
 
 class SongQueue(asyncio.Queue):
     def __getitem__(self, item):
         if isinstance(item, slice):
-            return list(itertools.islice(self._queue, item.start, item.stop, item.step))
-        else:
-            return self._queue[item]
+            return list(
+                itertools.islice(
+                    self._queue, item.start, item.stop, item.step))
+
+        return self._queue[item]
 
     def __iter__(self):
         return self._queue.__iter__()
@@ -169,9 +206,10 @@ class SongQueue(asyncio.Queue):
     def remove(self, index: int):
         del self._queue[index]
 
+
 class VoiceState:
     def __init__(self, bot: commands.Bot, ctx: commands.Context):
-        
+
         self.bot = bot
         self._ctx = ctx
         self.current = None
@@ -194,7 +232,6 @@ class VoiceState:
     def loop(self, value: bool):
         self._loop = value
 
-
     @property
     def is_playing(self):
         return self.voice and self.current
@@ -203,7 +240,7 @@ class VoiceState:
         while True:
             self.next.clear()
             self.now = None
-            if self.loop == False:
+            if self.loop is False:
                 # Try to get the next song within 3 minutes.
                 # If no song will be added to the queue in time,
                 # the player will disconnect due to performance
@@ -215,16 +252,16 @@ class VoiceState:
                     self.bot.loop.create_task(self.stop())
                     self.exists = False
                     return
-                
+
                 self.now = await discord.FFmpegOpusAudio.from_probe(self.current.source.stream_url, **YTDLSource.FFMPEG_OPTIONS)
                 self.voice.play(self.now, after=self.play_next_song)
                 await self.current.source.channel.send(embed=self.current.create_embed())
-            
-            #If the song is looped
+
+            # If the song is looped
             elif self.loop == True:
                 self.now = await discord.FFmpegOpusAudio.from_probe(self.current.source.stream_url, **YTDLSource.FFMPEG_OPTIONS)
                 self.voice.play(self.now, after=self.play_next_song)
-            
+
             await self.next.wait()
 
     def play_next_song(self, error=None):
@@ -266,7 +303,8 @@ class Music(commands.Cog):
 
     def cog_check(self, ctx: commands.Context):
         if not ctx.guild:
-            raise commands.NoPrivateMessage('This command can\'t be used in DM channels.')
+            raise commands.NoPrivateMessage(
+                'This command can\'t be used in DM channels.')
 
         return True
 
@@ -275,14 +313,6 @@ class Music(commands.Cog):
 
     async def cog_command_error(self, ctx: commands.Context, error: commands.CommandError):
         await ctx.reply('An error occurred: {}'.format(str(error)))
-
-    
-    @commands.Cog.listener()
-    async def on_message(self, message):
-        if message.author.id != self.bot.user.id:
-            print(f"{message.guild}/{message.channel}/{message.author.name}>{message.content}")
-            if message.embeds:
-                print(message.embeds[0].to_dict())
 
     @commands.command(name='join', invoke_without_subcommand=True)
     async def _join(self, ctx: commands.Context):
@@ -302,7 +332,8 @@ class Music(commands.Cog):
         """
 
         if not channel and not ctx.author.voice:
-            raise VoiceError('You are neither connected to a voice channel nor specified a channel to join.')
+            raise VoiceError(
+                'You are neither connected to a voice channel nor specified a channel to join.')
 
         destination = channel or ctx.author.voice.channel
         if ctx.voice_state.voice:
@@ -311,7 +342,7 @@ class Music(commands.Cog):
 
         ctx.voice_state.voice = await destination.connect()
 
-    @commands.command(name='leave', aliases=['disconnect','quit'])
+    @commands.command(name='leave', aliases=['disconnect', 'quit'])
     @commands.has_permissions(manage_guild=True)
     async def _leave(self, ctx: commands.Context):
         """Clears the queue and leaves the voice channel."""
@@ -321,7 +352,6 @@ class Music(commands.Cog):
 
         await ctx.voice_state.stop()
         del self.voice_states[ctx.guild.id]
-
 
     @commands.command(name='now', aliases=['current', 'playing'])
     async def _now(self, ctx: commands.Context):
@@ -404,10 +434,14 @@ class Music(commands.Cog):
         end = start + items_per_page
 
         queue = ''
-        for i, song in enumerate(ctx.voice_state.songs[start:end], start=start):
-            queue += '`{0}.` [**{1.source.title}**]({1.source.url})\n'.format(i + 1,song)
+        for i, song in enumerate(
+                ctx.voice_state.songs[start: end],
+                start=start):
+            queue += '`{0}.` [**{1.source.title}**]({1.source.url})\n'.format(
+                i + 1, song)
 
-        embed = (discord.Embed(description=f'**{len(ctx.voice_state.songs)} tracks:**\n\n{queue}'))
+        embed = (discord.Embed(
+            description=f'**{len(ctx.voice_state.songs)} tracks:**\n\n{queue}'))
         embed.set_footer(text=f'Viewing page {page}/{pages}')
         await ctx.reply(embed=embed)
 
@@ -445,7 +479,8 @@ class Music(commands.Cog):
         if ctx.voice_state.loop == True:
             await ctx.message.add_reaction('✅')
         else:
-            await ctx.message.add_reaction('❎') #when looping disabled
+            await ctx.message.add_reaction('❎')  # when looping disabled
+
     @commands.command(name='play', aliases=['p'])
     async def _play(self, ctx: commands.Context, *, search: str):
         """Plays a song.
@@ -457,7 +492,8 @@ class Music(commands.Cog):
 
         async with ctx.typing():
             try:
-                source = await YTDLSource.create_source(ctx, search, loop=self.bot.loop) #I don't think self is needed here, removed
+                # I don't think self is needed here, removed
+                source = await YTDLSource.create_source(ctx, search, loop=self.bot.loop)
             except YTDLError as err:
                 await ctx.reply('An error occurred while processing this request: {}'.format(str(err)))
             else:
@@ -468,17 +504,18 @@ class Music(commands.Cog):
                 await ctx.voice_state.songs.put(song)
                 await ctx.reply('Enqueued {}'.format(str(source)))
 
-
-            
     @_join.before_invoke
     @_play.before_invoke
     async def ensure_voice_state(self, ctx: commands.Context):
         if not ctx.author.voice or not ctx.author.voice.channel:
-            raise commands.CommandError('You are not connected to any voice channel.')
+            raise commands.CommandError(
+                'You are not connected to any voice channel.')
 
         if ctx.voice_client:
             if ctx.voice_client.channel != ctx.author.voice.channel:
-                raise commands.CommandError('Bot is already in a voice channel.')
+                raise commands.CommandError(
+                    'Bot is already in a voice channel.')
+
 
 def setup(bot):
     bot.add_cog(Music(bot))

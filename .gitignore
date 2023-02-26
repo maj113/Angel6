@@ -8,3 +8,5 @@ __pycache__/
 *Angelbot
 *.code-workspace
 log.txt
+.env_example
+
