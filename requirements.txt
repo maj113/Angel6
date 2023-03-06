@@ -29,4 +29,4 @@ urllib3==1.26.14
 websockets==10.4
 yarg==0.1.9
 yarl==1.8.2
-yt-dlp==2023.2.17
+yt-dlp==2023.3.4
