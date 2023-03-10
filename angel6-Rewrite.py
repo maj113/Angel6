@@ -20,7 +20,7 @@ LOG_CHAN_ID = os.getenv("LOGGING_CHANNEL_ID")
 JL_CHAN_ID = os.getenv("JOIN_LEAVE_CHANNEL_ID")
 GEN_CHAN_ID = os.getenv("GENERAL_CHANNEL_ID")
 BotVer = "**2.3.1-Rewrite** <https://github.com/maj113/Angel6/releases/latest>"
-creditsimage = "https://media.discordapp.net/attachments/997647296189698129/1075817805691236543/1676492485892.jpg?width=1000&height=625"
+creditsimage = "https://cdn.discordapp.com/attachments/1083114844875669604/1083121342150361118/1676492485892.png"
 
 intents = discord.Intents.all()
 bot = commands.Bot(command_prefix='~', activity=discord.Game(
@@ -320,6 +320,8 @@ async def mute(ctx, member: discord.Member, *, reason=None):
     with open('muted.json', "w") as jsonmuteafter:
         json.dump(datamute, jsonmuteafter)""" 
 
+
+@bot.command()
 @commands.has_permissions(kick_members=True)
 async def unmute(ctx, member: discord.Member):
     """unmutes a user"""
