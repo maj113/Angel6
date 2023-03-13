@@ -27,47 +27,36 @@ bot = commands.Bot(command_prefix='~', activity=discord.Game(
     name="Greatest bot alive"), intents=intents)
 
 
+async def set_env_var(env_var_name, prompt_text):
+    value = os.getenv(env_var_name)
+    if value == None:
+        value = int(input(prompt_text))
+        with open(".env", "a") as envfile:
+            envfile.write(f"\n{env_var_name}={value}")
+        return True
+    elif value == "":
+        value = int(input(prompt_text))
+        with open(".env", "r+") as envfile:
+            content = envfile.read()
+            changed = content.replace(f"{env_var_name}=", f"{env_var_name}={value}")
+            envfile.seek(0)
+            envfile.write(changed)
+            envfile.truncate()
+        return True
+    else:
+        return False
+
 @bot.event
 async def on_ready():
     print(f'Logged in as:\n{bot.user.name}\n{bot.user.id}')
     restartbot = False
-
-    if os.getenv("LOGGING_CHANNEL_ID") == "":
-        logginginput = int(input("Input logging channel ID "))
-        with open(".env", "r") as envfile:
-            content1 = envfile.read()
-            changed = content1.replace("LOGGING_CHANNEL_ID=", ''.join(
-                ["LOGGING_CHANNEL_ID=", str(logginginput)]))
-            with open('.env', 'w') as envfile:
-                envfile.write(changed)
-        restartbot = True
-
-    if os.getenv("LOGGING_CHANNEL_ID") is None:
-        logginginput = int(input("Input logging channel ID "))
-        with open(".env", "a") as envfile:
-            envfile.write(f"\nLOGGING_CHANNEL_ID={logginginput}")
-        restartbot = True
-
-    if os.getenv("JOIN_LEAVE_CHANNEL_ID") is None:
-        joinleaveinput = int(input("Input join/leave channel ID "))
-        with open(".env", "a") as envfile:
-            envfile.write(f"\nJOIN_LEAVE_CHANNEL_ID={joinleaveinput}")
-        restartbot = True
-
-    if os.getenv("JOIN_LEAVE_CHANNEL_ID") == "":
-        joinleaveinput = int(input("Input join/leave channel ID "))
-        with open(".env", "r") as envfile:
-            content1 = envfile.read()
-            changed = content1.replace("JOIN_LEAVE_CHANNEL_ID=", ''.join(
-                ["JOIN_LEAVE_CHANNEL_ID=", str(joinleaveinput)]))
-            with open('.env', 'w') as envfile:
-                envfile.write(changed)
-        restartbot = True
-
-    if os.getenv("GENERAL_CHANNEL_ID") is None:
-        generalinput = int(input("Input general channel ID "))
-        with open(".env", "a") as envfile:
-            envfile.write(f"\nGENERAL_CHANNEL_ID={generalinput}")
+    config_options = [
+        ("LOGGING_CHANNEL_ID", "Input logging channel ID "),
+        ("JOIN_LEAVE_CHANNEL_ID", "Input join/leave channel ID "),
+        ("GENERAL_CHANNEL_ID", "Input general channel ID ")
+    ]
+    for env_var_name, prompt_text in config_options:
+        if await set_env_var(env_var_name, prompt_text):
         restartbot = True
 
     if os.getenv("GENERAL_CHANNEL_ID") == "":
