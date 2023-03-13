@@ -59,16 +59,6 @@ async def on_ready():
         if await set_env_var(env_var_name, prompt_text):
         restartbot = True
 
-    if os.getenv("GENERAL_CHANNEL_ID") == "":
-        generalinput = int(input("Input general channel ID "))
-        with open(".env", "r") as envfile:
-            content1 = envfile.read()
-            changed = content1.replace("GENERAL_CHANNEL_ID=", ''.join(
-                ["GENERAL_CHANNEL_ID=", str(generalinput)]))
-            with open('.env', 'w') as envfile:
-                envfile.write(changed)
-        restartbot = True
-
     if restartbot is True:
         print("Setup complete, Rebooting")
         os.execv(sys.executable, ['python3'] + sys.argv)
