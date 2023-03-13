@@ -588,19 +588,35 @@ async def support(ctx, *, message=None):
     await ctx.reply(embed=embed)
     await ctx.send("https://cdn.discordapp.com/attachments/997647296189698129/1075442911040262205/paintdotnet_LFkzPDrQML.png")
 
+gif_links = {
+    'violation': 'https://tenor.com/view/that-one-there-was-a-violation-that1there-was-violation-violation-that-one-there-was-a-violation-personally-i-wouldnt-have-it-that1there-was-a-violation-personally-i-wouldnt-have-it-gif-20040456',
+    'germany': 'https://giphy.com/gifs/fifa-Vd8wLaK3lNDNMuGaUL \n SHUT THE FUCK UP BAHZZ VIVA LA GERMANY AAJAJJAJAJAJA'
+}
 
-@bot.command(pass_context=True, aliases=['vio', 'violated'])
-async def violation(ctx):
-    """That one there was a violation"""
-    await ctx.reply("https://tenor.com/view/that-one-there-was-a-violation-that1there-was-violation-violation-that-one-there-was-a-violation-personally-i-wouldnt-have-it-that1there-was-a-violation-personally-i-wouldnt-have-it-gif-20040456")
+@bot.command()
+async def giflist(ctx):
 
+    """List available gifs"""
+    embed = discord.Embed(title="Available Gifs:",
+                          color=discord.Color.blurple())
+    for gif_type, gif_link in gif_links.items():
+        command = f"`~gifsend {gif_type}`"
+        embed.add_field(name=gif_type, 
+                        value=command, inline=False)
+    await ctx.reply(embed=embed)
 
-@bot.command(pass_context=True, aliases=['germany', 'bahzz'])
-async def german(ctx):
-    """Random German Gif"""
-    # why does this exist?
-    await ctx.reply("https://giphy.com/gifs/fifa-Vd8wLaK3lNDNMuGaUL \n SHUT THE FUCK UP BAHZZ VIVA LA GERMANY AAJAJJAJAJAJA")
+@bot.command(pass_context=True, aliases=['GIF', 'gifsend', 'jiff'])
+async def gif(ctx, gif_type=''):
+    """Sends a gif thats in the the GIF list"""
+    if gif_type == '':
+        await ctx.reply("Please provide a GIF name. Use '~giflist' to see available options.")
+        return
+    gif_type = gif_type.lower()
 
+    if gif_type in gif_links:
+        await ctx.reply(gif_links[gif_type])
+    else:
+        await ctx.reply(f"Invalid GIF type '{gif_type}'. Use '~giflist' to see available options.")
 
 @bot.command(pass_context=True)
 async def cat(ctx, arg=""):
