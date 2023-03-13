@@ -57,7 +57,7 @@ async def on_ready():
     ]
     for env_var_name, prompt_text in config_options:
         if await set_env_var(env_var_name, prompt_text):
-        restartbot = True
+            restartbot = True
 
     if restartbot is True:
         print("Setup complete, Rebooting")
@@ -602,7 +602,7 @@ async def gif(ctx, gif_type=''):
         await ctx.reply("Please provide a GIF name. Use '~giflist' to see available options.")
         return
     gif_type = gif_type.lower()
-
+    
     if gif_type in gif_links:
         await ctx.reply(gif_links[gif_type])
     else:
