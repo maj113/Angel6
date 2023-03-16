@@ -375,20 +375,19 @@ async def unban(ctx, id="0"):
 @commands.has_permissions(kick_members=True)
 async def warn(ctx, member: discord.Member = None, *, reason=None):
     """warns a user"""
-    if member == None:
-        await ctx.reply("You need to specify who to warn!")
-        return
-    elif member == ctx.author:
-        await ctx.reply(f"Can't warn yourself idiot")
+    if member is None or member == ctx.author:
+        await ctx.reply("You need to specify someone to warn!")
         return
     embed2 = discord.Embed(
         title="Warned🗡️",
-        description=f"{'You were warned.' + ' Now behave.' if reason == None else (' | Reason: ' + reason)}",
-        color=discord.Colour.blurple())
+        description=f"You were warned.{' Now behave.' if reason is None else f' Reason: {reason}'}",
+        color=discord.Colour.blurple()
+    )
     embed = discord.Embed(
         title="Warned",
-        description=f"{member.mention + ' was warned' if reason == None else member.mention +  ' was warned, reason: ' + reason}",
-        color=discord.Colour.blurple())
+        description=f"{member.mention} was warned{'.' if reason is None else f', reason: {reason}'}",
+        color=discord.Colour.blurple()
+    )
     await ctx.reply(embed=embed)
     await member.send(embed=embed2)
 
