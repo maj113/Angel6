@@ -581,21 +581,24 @@ async def femboy(ctx):
 
 
 @bot.command()
-async def support(ctx, *, message=None):
-    """shows support server link"""
-    if message == "release" or message == "changelog":
-        await ctx.reply("Latest Bot release: \n https://github.com/maj113/Angel6/releases/latest")
+async def support(ctx, *, message: str = None):
+    """Shows support server link and latest release."""
+    if message in ["release", "changelog"]:
+        await ctx.send("Latest bot release: \n https://github.com/maj113/Angel6/releases/latest")
         return
+
     embed = discord.Embed(
         title="Support server",
         description="Need help with the bot? https://discord.gg/ctsjpMQXEe \nWant to contribute to the bot? <https://github.com/maj113/Angel6>",
-        color=discord.Color.blurple())
+        color=discord.Color.blurple()
+    )
+    embed.set_image(url="https://cdn.discordapp.com/attachments/1082901963718541354/1085636944639295568/paintdotnet_LFkzPDrQML.png")
     await ctx.reply(embed=embed)
-    await ctx.send("https://cdn.discordapp.com/attachments/997647296189698129/1075442911040262205/paintdotnet_LFkzPDrQML.png")
+
 
 gif_links = {
     'violation': 'https://tenor.com/view/that-one-there-was-a-violation-that1there-was-violation-violation-that-one-there-was-a-violation-personally-i-wouldnt-have-it-that1there-was-a-violation-personally-i-wouldnt-have-it-gif-20040456',
-    'germany': 'https://giphy.com/gifs/fifa-Vd8wLaK3lNDNMuGaUL \n SHUT THE FUCK UP BAHZZ VIVA LA GERMANY AAJAJJAJAJAJA'
+    'germany': 'https://giphy.com/gifs/fifa-Vd8wLaK3lNDNMuGaUL \n SHUT THE FUCK UP BAHZZ VIVA LA GERMANY AAJAJJAJAJAJA',
 }
 
 @bot.command()
