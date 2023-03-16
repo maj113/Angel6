@@ -285,30 +285,31 @@ async def kick(ctx, member: discord.Member, *, reason=None):
 @commands.has_permissions(manage_messages=True)
 async def mute(ctx, member: discord.Member, *, reason=None):
     """mutes a user"""
+    if member == ctx.author:
+        await ctx.reply("You cannot mute yourself.")
+        return
+    if member.top_role >= ctx.author.top_role:
+        await ctx.reply(f"You cannot mute {member.mention}.")
+        return
+
+    guild = ctx.guild
+    muted_role = discord.utils.get(guild.roles, name="Muted")
+    if not muted_role:
+        muted_role = await guild.create_role(name="Muted")
+        for channel in guild.channels:
+            await channel.set_permissions(muted_role, speak=False, send_messages=False, read_message_history=True, read_messages=True, create_private_threads=False, create_public_threads=False)
+
+    await member.add_roles(muted_role, reason=reason)
+
     embed = discord.Embed(
         title="Muted",
-        description=f"{member.mention} was muted {'for: ' + reason if reason != None else ''}",
+        description=f"{member.mention} has been muted{' for ' + reason if reason else ''}",
         color=discord.Color.blurple())
-    guild = ctx.guild
-    mutedRole = discord.utils.get(guild.roles, name="Muted")
-
-    if member == ctx.author:
-        await ctx.reply(f"Can't mute yourself idiot")
-        return
-
-    elif member.top_role >= ctx.author.top_role:
-        await ctx.reply(f"Nice try, ayo {member.mention}, {ctx.author.mention} just tried muting you")
-        return
-
-    if not mutedRole:
-        mutedRole = await guild.create_role(name="Muted")
-
-        for channel in guild.channels:
-            await channel.set_permissions(mutedRole, speak=False, send_messages=False, read_message_history=True, read_messages=True, create_private_threads=False, create_public_threads=False)
-
-    await member.add_roles(mutedRole, reason=reason)
     await ctx.reply(embed=embed)
-    await member.send(f"You were muted {'for: ' + reason if reason != None else ''}")
+    try:
+        await member.send(f"You were muted{' for ' + reason if reason else ''}")
+    except:
+        pass
     """with open('muted.json', "r") as jsonmute:
         datamute = json.load(jsonmute)
         datamute["muted"].append(member.id)
