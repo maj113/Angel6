@@ -559,12 +559,15 @@ async def credit(ctx):
     """Shows bot credits"""
     owner = await bot.fetch_user(978854415786184745)
     maintainer = await bot.fetch_user(347387857574428676)
-    """Displays who created and maintained the bot"""
-    await ctx.reply(creditsimage)
+
     embed = discord.Embed(
-        title=f"Made by: {owner}, Maintained by: {maintainer}",
-        description="ask them anything! 24/7\n Feel free to add them as a friend",
-        color=discord.Color.blurple())
+        title=f"Bot Creator",
+        description=f"{owner.mention}\nAsk them anything! 24/7. Feel free to add them as a friend.",
+        color=discord.Color.blurple()
+    )
+    embed.set_footer(text=f"Bot Maintainer: {maintainer}")
+
+    await ctx.reply(creditsimage)
     await ctx.send(embed=embed)
 
 
