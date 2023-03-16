@@ -7,6 +7,7 @@ import discord
 import os
 import aioconsole
 import requests
+import json
 from discord import __version__ as d_version
 from discord.ext import commands, tasks
 from dotenv import load_dotenv
@@ -193,7 +194,7 @@ async def av(ctx, *, user: discord.Member = None):
     if user is None:
         user = ctx.author
 
-
+    
     embed = discord.Embed(title=f"{user.display_name}'s avatar", 
                           color=discord.Colour.blurple())
     embed.set_image(url=user.avatar.url)
@@ -237,7 +238,7 @@ async def userinfo(ctx, *, user: discord.Member = None):
         embed.add_field(name="Roles [{}]".format(len(user.roles)-1), value=role_string, inline=False)
 
     embed.set_footer(text=f"Information last updated: {datetime.datetime.utcnow().strftime(date_format)}")
-
+    
     await ctx.reply(embed=embed)
 
 
@@ -435,7 +436,7 @@ async def uptime(ctx):
     embed.add_field(name="Uptime", value=text)
     embed.add_field(name="Bot started at", value=start_time.strftime("%Y-%m-%d %H:%M:%S"))
     embed.set_footer(text="Angel$IX")
-        await ctx.reply(embed=embed)
+    await ctx.reply(embed=embed)
 
 # im proud of this
 meminfo = psutil.Process(os.getpid())
@@ -594,7 +595,7 @@ async def support(ctx, *, message: str = None):
     )
     embed.set_image(url="https://cdn.discordapp.com/attachments/1082901963718541354/1085636944639295568/paintdotnet_LFkzPDrQML.png")
     await ctx.reply(embed=embed)
-
+    
 
 gif_links = {
     'violation': 'https://tenor.com/view/that-one-there-was-a-violation-that1there-was-violation-violation-that-one-there-was-a-violation-personally-i-wouldnt-have-it-that1there-was-a-violation-personally-i-wouldnt-have-it-gif-20040456',
@@ -629,9 +630,9 @@ async def gif(ctx, gif_type=''):
 async def cat(ctx):
     """sends a random cat image"""
     try:
-    caturl = requests.get('https://api.thecatapi.com/v1/images/search')
-    catimg = caturl.json()[0]['url']
-    await ctx.reply(catimg)
+        caturl = requests.get('https://api.thecatapi.com/v1/images/search')
+        catimg = caturl.json()[0]['url']
+        await ctx.reply(catimg)
     except Exception as e:
         print(e)
         await ctx.reply("Failed to fetch cat image. Please try again later.")
@@ -665,7 +666,7 @@ async def asbot(ctx, *, arg=None):
         if asbotmain.is_running():
             await ctx.reply("**`asbotmain()`** is already running!")
         else:
-        await ctx.reply("Started task **`asbotmain()`** successfully")
+            await ctx.reply("Started task **`asbotmain()`** successfully")
             print(f"Warning: asbotmain() was started externally by {ctx.author} !!!")
             asbotmain.start()
     else:
@@ -727,4 +728,4 @@ async def main():
         print("NO TOKEN FOUND, make sure that the env file is named '.env' and that there is a token present")
         await bot.close()
 if __name__ == '__main__':
-asyncio.get_event_loop().run_until_complete(main())
+    asyncio.get_event_loop().run_until_complete(main())
