@@ -336,18 +336,21 @@ async def unmute(ctx, member: discord.Member):
 @commands.has_permissions(ban_members=True)
 async def ban(ctx, member: discord.Member = None, *, reason=None):
     """Bans the specified user"""
+    if member is None:
+        return await ctx.reply("You need to specify who to ban.")
+
+    if member == ctx.author:
+        return await ctx.reply("Can't ban yourself, idiot.")
+
+    if member.top_role >= ctx.author.top_role:
+        return await ctx.reply("You can only ban members lower than yourself.")
+
     try:
-        if member == None:
-            await ctx.reply("You need to specify who to ban. ")
-        elif member == ctx.author:
-            await ctx.reply(f"Can't ban yourself idiot")
-        elif member.top_role >= ctx.author.top_role:
-            await ctx.reply(f"You can only ban members lower than yourself")
-        else:
             await member.ban(reason=reason)
             embed = discord.Embed(
                 title="bye lol",
-                description=f"{member.mention + 'got banned' if reason == None else member.mention + 'got banned: ' + reason} ")
+            description=f"{member.mention + ' got banned' if reason is None else member.mention + ' got banned: ' + reason} "
+        )
             await ctx.channel.send(embed=embed)
     except discord.errors.Forbidden as err:
         await ctx.reply(f"Can't ban the member, I don't have the necessary permissions. Please make sure I have the 'ban members' permission and that I am higher on the role list than the member you're trying to ban. \nError: {err}")
