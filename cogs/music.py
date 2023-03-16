@@ -373,7 +373,7 @@ class Music(commands.Cog):
         embed = ctx.voice_state.current.create_embed()
         await ctx.reply(embed=embed)
 
-    @commands.command(name='pause', aliases=['pa'])
+    @commands.command(name='toggle', aliases=['tog', 'resume', 'pause' ])
     @commands.has_permissions(manage_guild=True)
     async def _pause(self, ctx: commands.Context):
         """Pauses the currently playing song."""
