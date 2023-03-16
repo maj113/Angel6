@@ -603,7 +603,6 @@ gif_links = {
 
 @bot.command()
 async def giflist(ctx):
-
     """List available gifs"""
     embed = discord.Embed(title="Available Gifs:",
                           color=discord.Color.blurple())
@@ -627,11 +626,15 @@ async def gif(ctx, gif_type=''):
         await ctx.reply(f"Invalid GIF type '{gif_type}'. Use '~giflist' to see available options.")
 
 @bot.command(pass_context=True)
-async def cat(ctx, arg=""):
+async def cat(ctx):
     """sends a random cat image"""
+    try:
     caturl = requests.get('https://api.thecatapi.com/v1/images/search')
     catimg = caturl.json()[0]['url']
     await ctx.reply(catimg)
+    except Exception as e:
+        print(e)
+        await ctx.reply("Failed to fetch cat image. Please try again later.")
 
 
 def clsscr():
