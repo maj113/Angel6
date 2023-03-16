@@ -320,12 +320,16 @@ async def mute(ctx, member: discord.Member, *, reason=None):
 @bot.command()
 @commands.has_permissions(kick_members=True)
 async def unmute(ctx, member: discord.Member):
-    """unmutes a user"""
+    """Unmutes a user"""
     mutedRole = discord.utils.get(ctx.guild.roles, name="Muted")
+
+    if mutedRole not in member.roles:
+        await ctx.reply(f"{member.name} is not muted.")
+        return
 
     await member.remove_roles(mutedRole)
     await ctx.reply(f"Unmuted {member.mention}")
-    await member.send(f'Unmuted in {ctx.guild.name} welcome back')
+    await member.send(f'Unmuted in {ctx.guild.name}. Welcome back!')
 
 
 @bot.command()
@@ -346,7 +350,7 @@ async def ban(ctx, member: discord.Member = None, *, reason=None):
                 description=f"{member.mention + 'got banned' if reason == None else member.mention + 'got banned: ' + reason} ")
             await ctx.channel.send(embed=embed)
     except discord.errors.Forbidden as err:
-        await ctx.reply(f"Can't ban the member, make sure the bot is higher on the role list and that the bot has the necessary permissions.\n Error: {err}")
+        await ctx.reply(f"Can't ban the member, I don't have the necessary permissions. Please make sure I have the 'ban members' permission and that I am higher on the role list than the member you're trying to ban. \nError: {err}")
 
 
 @bot.command()
