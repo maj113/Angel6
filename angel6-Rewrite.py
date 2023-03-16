@@ -249,18 +249,18 @@ async def serverinfo(ctx):
     owner = str(ctx.guild.owner)
     servid = str(ctx.guild.id)
     memberCount = str(ctx.guild.member_count)
-    icon = str(ctx.guild.icon.url)
+    icon = str(ctx.guild.icon.url) if ctx.guild.icon else None
     embed = discord.Embed(
         title=name + " <3",
         description=description,
         color=discord.Color.blurple()
     )
-    embed.set_thumbnail(url=icon)  # FIXME: this is way too basic should fix
+    if icon:
+        embed.set_thumbnail(url=icon)
     embed.add_field(name="Owner", value=owner, inline=True)
     embed.add_field(name="Server ID", value=servid, inline=True)
     embed.add_field(name="Member Count", value=memberCount, inline=True)
-    embed.add_field(name="Created", value=ctx.guild.created_at.strftime(
-        "%B %d, %Y, %I:%M %p"), inline=True)
+    embed.add_field(name="Created", value=f"{ctx.guild.created_at:%B %d, %Y, %I:%M %p}", inline=True)
     await ctx.reply(embed=embed)
 
 
