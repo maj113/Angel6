@@ -428,13 +428,15 @@ class Music(commands.Cog):
 
     @commands.command(name='queue')
     async def _queue(self, ctx: commands.Context, *, page: int = 1):
-
-        """Shows the player's queue
+        """Shows the player's queue.
         You can optionally specify the page to show. Each page contains 10 elements.
         """
 
         if len(ctx.voice_state.songs) == 0:
-            return await ctx.reply('Queue is empty!.')
+            return await ctx.reply('Queue is empty!')
+
+        if page < 1:
+            return await ctx.reply('Page number cannot be less than 1.')
 
         items_per_page = 10
         pages = math.ceil(len(ctx.voice_state.songs) / items_per_page)
@@ -450,7 +452,8 @@ class Music(commands.Cog):
                 i + 1, song)
 
         embed = (discord.Embed(
-            description=f'**{len(ctx.voice_state.songs)} tracks:**\n\n{queue}'))
+            description=f'**{len(ctx.voice_state.songs)} tracks:**\n\n{queue}',
+            color=discord.Colour.blurple()))
         embed.set_footer(text=f'Viewing page {page}/{pages}')
         await ctx.reply(embed=embed)
 
