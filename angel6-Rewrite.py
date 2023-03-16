@@ -346,12 +346,12 @@ async def ban(ctx, member: discord.Member = None, *, reason=None):
         return await ctx.reply("You can only ban members lower than yourself.")
 
     try:
-            await member.ban(reason=reason)
-            embed = discord.Embed(
-                title="bye lol",
+        await member.ban(reason=reason)
+        embed = discord.Embed(
+            title="bye lol",
             description=f"{member.mention + ' got banned' if reason is None else member.mention + ' got banned: ' + reason} "
         )
-            await ctx.channel.send(embed=embed)
+        await ctx.channel.send(embed=embed)
     except discord.errors.Forbidden as err:
         await ctx.reply(f"Can't ban the member, I don't have the necessary permissions. Please make sure I have the 'ban members' permission and that I am higher on the role list than the member you're trying to ban. \nError: {err}")
 
