@@ -380,11 +380,11 @@ class Music(commands.Cog):
 
         if ctx.voice_state.is_playing:
             if ctx.voice_state.voice.is_playing():
-            ctx.voice_state.voice.pause()
-            await ctx.message.add_reaction('⏯')
+                ctx.voice_state.voice.pause()
+                await ctx.message.add_reaction('⏯')
             elif ctx.voice_state.voice.is_paused():
-            ctx.voice_state.voice.resume()
-            await ctx.message.add_reaction('⏯')
+                ctx.voice_state.voice.resume()
+                await ctx.message.add_reaction('⏯')
 
     @commands.command(name='stop')
     @commands.has_permissions(manage_guild=True)
@@ -396,7 +396,7 @@ class Music(commands.Cog):
         if ctx.voice_state.is_playing:
             ctx.voice_state.voice.stop()
             await ctx.message.add_reaction('⏹')
-
+    
 
     @commands.command(name='skip', aliases=['s'])
     async def _skip(self, ctx: commands.Context):
