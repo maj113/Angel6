@@ -202,30 +202,43 @@ async def av(ctx, *, user: discord.Member = None):
 
 
 @bot.command(pass_context=True)
-async def userinfo(ctx, *, user: discord.Member = None):  # b'\xfc'
+async def userinfo(ctx, *, user: discord.Member = None):
     """Shows userinfo"""
     if user is None:
         user = ctx.author
+    
     date_format = "%a, %d %b %Y %I:%M %p"
     embed = discord.Embed(color=discord.Color.blurple(),
                           description=user.mention)
-    embed.set_author(name=str(user), icon_url=user.avatar.url)
+    
+    embed.set_author(name=user.display_name, icon_url=user.avatar.url)
     embed.set_thumbnail(url=user.avatar.url)
+    
     embed.add_field(name="Joined", value=user.joined_at.strftime(date_format))
+    
     members = sorted(ctx.guild.members, key=lambda m: m.joined_at)
-    embed.add_field(name="Join position", value=str(members.index(user)+1))
-    embed.add_field(name="Registered",
-                    value=user.created_at.strftime(date_format))
+    join_position = members.index(user) + 1
+    join_position_suffix = ""
+    if join_position % 10 == 1 and join_position != 11:
+        join_position_suffix = "st"
+    elif join_position % 10 == 2 and join_position != 12:
+        join_position_suffix = "nd"
+    elif join_position % 10 == 3 and join_position != 13:
+        join_position_suffix = "rd"
+    else:
+        join_position_suffix = "th"
+    embed.add_field(name="Join position", value=f"{join_position}{join_position_suffix}")
+    
+    embed.add_field(name="Registered", value=user.created_at.strftime(date_format))
     embed.add_field(name="ID", value=user.id, inline=True)
+    
     if len(user.roles) > 1:
         role_string = ' '.join([r.mention for r in user.roles][1:])
-        embed.add_field(name="Roles [{}]".format(
-            len(user.roles)-1), value=role_string, inline=False)
-    # I don't like the guild permissions part, way too much info, useless
-    perm_string = ', '.join([str(p[0]).replace("_", " ").title()
-                            for p in user.guild_permissions if p[1]])
-    embed.add_field(name="Guild permissions", value=perm_string, inline=False)
-    return await ctx.reply(embed=embed)
+        embed.add_field(name="Roles [{}]".format(len(user.roles)-1), value=role_string, inline=False)
+
+    embed.set_footer(text=f"Information last updated: {datetime.datetime.utcnow().strftime(date_format)}")
+
+    await ctx.reply(embed=embed)
 
 
 @bot.command()
