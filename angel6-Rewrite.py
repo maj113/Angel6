@@ -188,12 +188,17 @@ async def users(ctx):
 
 
 @bot.command(aliases=['AV', 'avatar', 'pfp'])
-async def av(ctx, *,  user: discord.Member = None):
-    """grabs users avatar"""
-    if user == None:
+async def av(ctx, *, user: discord.Member = None):
+    """grabs user's avatar"""
+    if user is None:
         user = ctx.author
-    userAvatarUrl = user.avatar.url
-    await ctx.reply(userAvatarUrl)
+
+
+    embed = discord.Embed(title=f"{user.display_name}'s avatar", 
+                          color=discord.Colour.blurple())
+    embed.set_image(url=user.avatar.url)
+
+    await ctx.reply(embed=embed)
 
 
 @bot.command(pass_context=True)
