@@ -1,6 +1,5 @@
 import asyncio
 import psutil
-import time
 import datetime
 import random
 import sys
@@ -8,7 +7,6 @@ import discord
 import os
 import aioconsole
 import requests
-import json
 from discord import __version__ as d_version
 from discord.ext import commands, tasks
 from dotenv import load_dotenv
