@@ -462,11 +462,14 @@ async def stats(ctx):
 @bot.command()
 async def invites(ctx, user: discord.Member = None):
     """Shows how many people someone has invited"""
+    user_name = ctx.author if user is None else user
     totalInvites = 0
-    for i in await ctx.guild.invites():
-        if i.inviter == (ctx.author if user == None else user):
-            totalInvites += i.uses
-    await ctx.reply(f"{'You have' if user == None else user} invited {totalInvites} member{'' if totalInvites == 1 else 's'} to the server!")
+    for invite in await ctx.guild.invites():
+        if invite.inviter == user_name:
+            totalInvites += invite.uses
+    embed = discord.Embed(title=f"{user_name} has invited {totalInvites} member{'' if totalInvites == 1 else 's'} to the server!",color=discord.Colour.blurple())
+    embed.set_author(name=user_name.display_name, icon_url=user_name.avatar.url)
+    await ctx.reply(embed=embed)
 
 
 @bot.command(aliases=['iq'])
@@ -508,29 +511,24 @@ async def roll(ctx, *args):
 
     maxdicesize = 150
     maxsides = 100000000
-    if diceToRoll > maxdicesize:
-        await ctx.reply(f"Too many dices, max is: {maxdicesize}")
-        return
-    elif diceToRoll < 0:
-        await ctx.reply(f"Dice amount can't be negative")
-        return
-    if numberOfSides > maxsides:
-        await ctx.reply(f"Too many sides, max is: {maxsides}")
-        return
-    elif numberOfSides < 0:
-        await ctx.reply(f"Sides can't be negative")
+    if diceToRoll < 0 or diceToRoll > maxdicesize:
+        await ctx.reply(f"Invalid dice amount. Dice amount must be between 0 and {maxdicesize}")
         return
 
-    await ctx.send('Rolling `' + str(diceToRoll) + '` dice with `' + str(numberOfSides) + '` sides')
+    if numberOfSides < 0 or numberOfSides > maxsides:
+        await ctx.reply(f"Invalid number of sides. The number of sides must be between 0 and {maxsides}")
+        return
 
     results = []
 
     for _ in range(0, diceToRoll):
-        results.insert(0, '['+str(rolladice(numberOfSides))+']')
+        results.insert(0, rolladice(numberOfSides))
 
-    resultString = ',  '.join(results)
+    resultString = ', '.join([f'`{result}`' for result in results])
 
-    await ctx.reply('Results: ' + resultString)
+    embed = discord.Embed(title=f"{ctx.author.name} rolled {diceToRoll}d{numberOfSides}!", description=resultString, color=discord.Colour.blurple())
+
+    await ctx.reply(embed=embed)
 
 
 def parseInput(input):
