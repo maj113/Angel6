@@ -654,20 +654,23 @@ async def helperasbot():
 async def asbot(ctx, *, arg=None):
     """start or stop the asbot function"""
     if arg == "stop":
-        if asbotmain.is_running() == False:
-            return await ctx.reply("**`asbotmain()`** is not running!")
-        await ctx.reply("Stopped task **`asbotmain()`** successfully"), clsscr()
-        print(
-            f"Warning: asbotmain() was stopped externally by {ctx.author} !!!"), asbotmain.cancel(),
+        if asbotmain.is_running():
+            await ctx.reply("Stopped task **`asbotmain()`** successfully")
+            clsscr()
+            print(f"Warning: asbotmain() was stopped externally by {ctx.author} !!!")
+            asbotmain.cancel()
+        else:
+            await ctx.reply("**`asbotmain()`** is not running!")
     elif arg == "start":
-        if asbotmain.is_running() == True:
-            return await ctx.reply("**`asbotmain()`** is already running!")
+        if asbotmain.is_running():
+            await ctx.reply("**`asbotmain()`** is already running!")
+        else:
         await ctx.reply("Started task **`asbotmain()`** successfully")
-        print(
-            f"Warning: asbotmain() was started externally by {ctx.author} !!!"), asbotmain.start()
+            print(f"Warning: asbotmain() was started externally by {ctx.author} !!!")
+            asbotmain.start()
     else:
         await ctx.reply(embed=discord.Embed(
-            title="`asbotmain()` state:"+f"{' **running**' if asbotmain.is_running() == True else ' **stopped**'}", color=discord.Color.blurple()))
+            title="`asbotmain()` state:"+f"{' **running**' if asbotmain.is_running() else ' **stopped**'}", color=discord.Color.blurple()))
 
 # FIXME: get rid of global
 isinit = False
