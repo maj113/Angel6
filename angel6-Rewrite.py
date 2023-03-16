@@ -421,22 +421,21 @@ async def rmrole(ctx, user: discord.Member, role: discord.Role):
     await user.remove_roles(role)
     await ctx.reply(f"{user.name} was removed from role: {role.name}")
 
-start_time = time.time()
-
+start_time = datetime.datetime.now()
 
 @bot.command(pass_context=True)
 async def uptime(ctx):
     """shows bot uptime"""
-    current_time = time.time()
-    difference = int(round(current_time - start_time))
-    text = str(datetime.timedelta(seconds=difference))
+    current_time = datetime.datetime.now()
+    difference = current_time - start_time
+    hours, remainder = divmod(int(difference.total_seconds()), 3600)
+    minutes, seconds = divmod(remainder, 60)
+    text = f"{hours}h {minutes}m {seconds}s"
     embed = discord.Embed(colour=discord.Color.blurple())
     embed.add_field(name="Uptime", value=text)
+    embed.add_field(name="Bot started at", value=start_time.strftime("%Y-%m-%d %H:%M:%S"))
     embed.set_footer(text="Angel$IX")
-    try:
         await ctx.reply(embed=embed)
-    except discord.HTTPException:
-        await ctx.reply("Current uptime: " + text)
 
 # im proud of this
 meminfo = psutil.Process(os.getpid())
