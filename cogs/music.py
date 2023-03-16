@@ -410,20 +410,21 @@ class Music(commands.Cog):
         voter = ctx.message.author
         if voter == ctx.voice_state.current.requester or ctx.author.guild_permissions.manage_messages:
             await ctx.message.add_reaction('⏭')
-            ctx.voice_state.skip()
-
+            # Check if loop is enabled and temporarily disable it to allow the skip command to work
+            await _checkloop(ctx)
         elif voter.id not in ctx.voice_state.skip_votes:
             ctx.voice_state.skip_votes.add(voter.id)
             total_votes = len(ctx.voice_state.skip_votes)
 
             if total_votes >= 3:
                 await ctx.message.add_reaction('⏭')
-                ctx.voice_state.skip()
+                await _checkloop(ctx)
             else:
                 await ctx.reply('Skip vote added, currently at **{}/3**'.format(total_votes))
 
         else:
             await ctx.reply('You have already voted to skip this song.')
+
 
     @commands.command(name='queue')
     async def _queue(self, ctx: commands.Context, *, page: int = 1):
