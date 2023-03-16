@@ -726,4 +726,5 @@ async def main():
     except TypeError:
         print("NO TOKEN FOUND, make sure that the env file is named '.env' and that there is a token present")
         await bot.close()
+if __name__ == '__main__':
 asyncio.get_event_loop().run_until_complete(main())
