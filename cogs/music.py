@@ -284,6 +284,17 @@ class VoiceState:
             self.voice = None
 
 
+async def _checkloop(ctx):
+    if ctx.voice_state.loop:
+        ctx.voice_state.loop = False
+        await asyncio.sleep(1)
+        ctx.voice_state.skip()
+        await ctx.message.add_reaction('⏭')
+        await asyncio.sleep(1)
+        ctx.voice_state.loop = True
+        return
+    else: ctx.voice_state.skip()
+
 class Music(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
