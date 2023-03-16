@@ -514,7 +514,7 @@ class Music(commands.Cog):
 
                 song = Song(source)
                 await ctx.voice_state.songs.put(song)
-                await ctx.reply('Enqueued {}'.format(str(source)))
+                await ctx.reply(f'Enqueued {source}')
 
     @_join.before_invoke
     @_play.before_invoke
@@ -527,6 +527,9 @@ class Music(commands.Cog):
             if ctx.voice_client.channel != ctx.author.voice.channel:
                 raise commands.CommandError(
                     'Bot is already in a voice channel.')
+            elif ctx.voice_client.is_playing() or ctx.voice_client.is_paused():
+                raise commands.CommandError(
+                    'Bot is already playing audio in another channel.')
 
 
 def setup(bot):
