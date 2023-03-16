@@ -85,8 +85,7 @@ async def on_message(message):
     if message.author.id != bot.user.id:
         msgcontent = (
             f"{message.guild}/{message.channel}/{message.author.name}> {message.attachments[0].url if message.attachments else message.content}")
-        # channel = bot.get_channel(int(LOG_CHAN_ID))
-        print(msgcontent)  # , await channel.send(msgcontent)
+        print(msgcontent)
         await bot.process_commands(message)
 
 
