@@ -92,26 +92,22 @@ async def on_message(message):
 @bot.event
 async def on_member_join(member):
     channel = bot.get_channel(int(JL_CHAN_ID))
-    embed = discord.Embed(colour=discord.Colour.blurple(
-    ), description=f"{member.mention} joined, Total Members: {len(list(member.guild.members))}")
+    embed = discord.Embed(colour=discord.Colour.blurple(),
+                          description=f"{member.mention} joined, Total Members: {len(list(member.guild.members))}")
     embed.set_thumbnail(url=f"{member.avatar.url}")
     embed.set_footer(text=f"{member.guild}",
                      icon_url=f"{member.guild.icon.url}")
     await channel.send(embed=embed)
-    if os.getenv("GENERAL_CHANNEL_ID") == None or os.getenv(
-            "GENERAL_CHANNEL_ID") == "":
-        mbed = discord.Embed(
-            colour=(discord.Colour.blurple()),
-            title='Glad you could find us!',
-            description=f"yo! im Mutiny's Personal Bot, proceed to General to talk:)")
+    if os.getenv("GENERAL_CHANNEL_ID") is None or os.getenv("GENERAL_CHANNEL_ID") == "":
+        mbed = discord.Embed(colour=(discord.Colour.blurple()),
+                             title='Glad you could find us!',
+                             description=f"yo! im Mutiny's Personal Bot, proceed to General to talk:)")
         await member.send(embed=mbed)
-
     else:
         chanID = int(GEN_CHAN_ID)
-        mbed = discord.Embed(
-            colour=(discord.Colour.blurple()),
-            title='Glad you could find us!',
-            description=f"yo! im Mutiny's Personal Bot, proceed to <#{chanID}> to talk:)")
+        mbed = discord.Embed(colour=(discord.Colour.blurple()),
+                             title='Glad you could find us!',
+                             description=f"yo! im Mutiny's Personal Bot, proceed to <#{chanID}> to talk:)")
         await member.send(embed=mbed)
     """with open('muted.json', "r") as jsonmute:
         datamute = json.load(jsonmute)
