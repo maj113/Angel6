@@ -39,7 +39,7 @@ class YTDLError(Exception):
 class YTDLSource(discord.FFmpegOpusAudio):
     YTDL_OPTIONS = {
         'extractaudio': True,
-        'format': 'bestaudio/best',
+        'format': 'bestaudio/[ext=opus]best',
         'outtmpl': '%(extractor)s-%(id)s-%(title)s.%(ext)s',
         'restrictfilenames': True,
         'noplaylist': True,
@@ -54,7 +54,7 @@ class YTDLSource(discord.FFmpegOpusAudio):
 
     FFMPEG_OPTIONS = {
         'before_options': '-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 15',
-        'options': '-vn -ar 192000 -b:a 960k',
+        'options': '-vn -ar 48000 -b:a 512k -c:a libopus',
     }
 
     ytdl = yt_dlp.YoutubeDL(YTDL_OPTIONS)
