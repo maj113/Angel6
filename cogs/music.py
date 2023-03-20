@@ -527,9 +527,7 @@ class Music(commands.Cog):
             if ctx.voice_client.channel != ctx.author.voice.channel:
                 raise commands.CommandError(
                     'Bot is already in a voice channel.')
-            elif ctx.voice_client.is_playing() or ctx.voice_client.is_paused():
-                raise commands.CommandError(
-                    'Bot is already playing audio in another channel.')
+
 
 
 def setup(bot):
