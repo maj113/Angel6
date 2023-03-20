@@ -73,18 +73,22 @@ async def on_ready():
     channel = bot.get_channel(int(LOG_CHAN_ID))
     await channel.send(creditsimage)
     await channel.send(embed=embed)
-    try:
+    if not asbotmain.is_running():
         await asbotmain.start()
-    except RuntimeError:
-        pass
 bot.load_extension("cogs", recursive=True)
 
 
 @bot.event
 async def on_message(message):
     if message.author.id != bot.user.id:
-        msgcontent = (
-            f"{message.guild}/{message.channel}/{message.author.name}> {message.attachments[0].url if message.attachments else message.content}")
+        if message.attachments:
+            # If there is at least one attachment, include the URLs of all attachments in the message string
+            attachments = "\n".join(a.url for a in message.attachments)
+            content = message.content if message.content else ""
+            msgcontent = f"{message.guild}/{message.channel}/{message.author.name}> {content}\n{attachments}"
+        else:
+            # If there are no attachments, simply include the text content of the message
+            msgcontent = f"{message.guild}/{message.channel}/{message.author.name}> {message.content}"
         print(msgcontent)
         await bot.process_commands(message)
 
@@ -117,11 +121,14 @@ async def on_member_join(member):
             getguild = bot.get_guild(guildid)
             mutedRole = discord.utils.get(getguild.roles, name="Muted")
             await member.add_roles(mutedRole)"""
+
 @bot.event
 async def on_member_remove(member):
     channel = bot.get_channel(int(JL_CHAN_ID))
-    embed = discord.Embed(colour=discord.Colour.blurple(
-    ), description=f"{member.mention} Left us, Total Members: {len(list(member.guild.members))}")
+    embed = discord.Embed(
+        colour=discord.Colour.blurple(),
+        description=f"{member.mention} Left us, Total Members: {len(member.guild.members)}"
+    )
     embed.set_thumbnail(url=f"{member.avatar.url}")
     embed.set_footer(text=f"{member.guild}",
                      icon_url=f"{member.guild.icon.url}")
@@ -147,11 +154,10 @@ async def on_message_delete(message):
 async def reload(ctx):
     """Reload Bot cog"""
     try:
-        bot.unload_extension("cogs.music")
-        bot.load_extension("cogs.music")
-        await ctx.reply('Cogs sucessfully reloaded!')
-    except Exception as err:
-        await ctx.reply(err)
+        bot.reload_extension("cogs.music")
+        await ctx.reply('Cogs successfully reloaded!')
+    except commands.ExtensionError as e:
+        await ctx.reply(f'An error occurred while reloading the cog: {e}')
 
 
 @bot.command()
@@ -159,26 +165,34 @@ async def reload(ctx):
 async def restart(ctx, arg=""):
     """restarts the bot"""
     await ctx.reply(" Restarting, please allow 5 seconds for this. ")
-    os.execv(sys.executable, ['python3'] + sys.argv +
-             (['debug']) if arg == 'debug' else '')
+    os.execv(sys.executable, ['python3'] + sys.argv)
 
 
 @bot.command(aliases=['latency'])
 async def ping(ctx):
-    """shows the ping"""
-    embed = discord.Embed(title="Bot latency:",
-                          description=f"**{(bot.latency * 1000):.0f}ms**",
+    """shows the bot and Discord API latency"""
+    start_time = datetime.datetime.now()
+    message = await ctx.reply("Pinging...")
+    end_time = datetime.datetime.now()
+    bot_latency = (end_time - start_time).total_seconds() * 1000
+    api_latency = bot.latency * 1000
+    embed = discord.Embed(title="Bot and API latency:",
+                          description=f"**Bot: {bot_latency:.2f}ms**\n**API: {api_latency:.2f}ms**",
                           color=discord.Color.blurple())
-    await ctx.reply(embed=embed)
+    await message.edit(embed=embed)
 
 
 @bot.command(aliases=['members'])
 async def users(ctx):
-    """shows total amount of members"""
-    count = ctx.guild.member_count
+    """shows total amount of members (excluding bots)"""
+    member_count = len([m for m in ctx.guild.members if not m.bot])
+    bot_count = len([m for m in ctx.guild.members if m.bot])
     b = discord.Embed(
-        title=f"Total members in {ctx.guild.name}", description=count,
-        color=discord.Color.blurple())
+        title=f"Total members in {ctx.guild.name}", 
+        color=discord.Color.blurple()
+    )
+    b.add_field(name="Members", value=str(member_count))
+    b.add_field(name="Bots", value=str(bot_count))
     await ctx.reply(embed=b)
 
 
@@ -294,16 +308,21 @@ async def mute(ctx, member: discord.Member, *, reason=None):
         for channel in guild.channels:
             await channel.set_permissions(muted_role, speak=False, send_messages=False, read_message_history=True, read_messages=True, create_private_threads=False, create_public_threads=False)
 
-    await member.add_roles(muted_role, reason=reason)
+    try:
+        await member.add_roles(muted_role, reason=reason)
+    except discord.errors.Forbidden:
+        await ctx.reply("I don't have permission to mute this user.")
+        return
 
     embed = discord.Embed(
         title="Muted",
         description=f"{member.mention} has been muted{' for ' + reason if reason else ''}",
         color=discord.Color.blurple())
     await ctx.reply(embed=embed)
+
     try:
         await member.send(f"You were muted{' for ' + reason if reason else ''}")
-    except:
+    except discord.errors.Forbidden:
         pass
     """with open('muted.json', "r") as jsonmute:
         datamute = json.load(jsonmute)
@@ -317,6 +336,10 @@ async def mute(ctx, member: discord.Member, *, reason=None):
 async def unmute(ctx, member: discord.Member):
     """Unmutes a user"""
     mutedRole = discord.utils.get(ctx.guild.roles, name="Muted")
+
+    if not mutedRole:
+        await ctx.reply("Muted role not found.")
+        return
 
     if mutedRole not in member.roles:
         await ctx.reply(f"{member.name} is not muted.")
@@ -342,52 +365,68 @@ async def ban(ctx, member: discord.Member = None, *, reason=None):
 
     try:
         await member.ban(reason=reason)
-        embed = discord.Embed(
-            title="bye lol",
-            description=f"{member.mention + ' got banned' if reason is None else member.mention + ' got banned: ' + reason} "
-        )
-        await ctx.channel.send(embed=embed)
-    except discord.errors.Forbidden as err:
-        await ctx.reply(f"Can't ban the member, I don't have the necessary permissions. Please make sure I have the 'ban members' permission and that I am higher on the role list than the member you're trying to ban. \nError: {err}")
+    except (discord.errors.Forbidden, discord.errors.HTTPException) as err:
+        return await ctx.reply(f"Failed to ban {member.mention}. Please check my permissions and role hierarchy. \nError: {err}")
+
+    embed = discord.Embed(
+        title="Bye Bye",
+        description=f"{member.mention} {'was banned.' if reason is None else 'was banned for ' + reason + '.'}",
+        color=discord.Color.blurple())
+    await ctx.send(embed=embed)
 
 
 @bot.command()
 @commands.has_permissions(ban_members=True)
-async def unban(ctx, id="0"):
-    """unbans a user"""
-    if id == "0":
-        await ctx.reply("You need to provide an ID to unban!")
-    else:
-        try:
-            id = int(id)
-            user = await bot.fetch_user(id)
-            await ctx.guild.unban(user)
-            await ctx.reply(f'{user} has been unbanned')
-        except ValueError:
-            await ctx.reply("ID must be an integer")
-        except discord.errors.NotFound:
-            await ctx.reply("User not found")
+async def unban(ctx, id: int):
+    """Unbans a user."""
+    try:
+        user = await bot.fetch_user(id)
+        await ctx.guild.unban(user)
+        await ctx.reply(f"{user} has been unbanned.")
+    except discord.errors.Forbidden as e:
+        await ctx.reply(f"I don't have permissions to unban that user. Error: {e}")
+    except discord.errors.NotFound:
+        await ctx.reply("I couldn't find that user in the ban list.")
+    except commands.BadArgument:
+        await ctx.reply("Please provide a valid user ID.")
 
 
 @bot.command()
 @commands.has_permissions(kick_members=True)
 async def warn(ctx, member: discord.Member = None, *, reason=None):
-    """warns a user"""
+    """Warns a user and logs the warning to a specified channel"""
     if member is None or member == ctx.author:
         await ctx.reply("You need to specify someone to warn!")
         return
+    
     embed2 = discord.Embed(
         title="Warned🗡️",
         description=f"You were warned.{' Now behave.' if reason is None else f' Reason: {reason}'}",
         color=discord.Colour.blurple()
     )
+    
     embed = discord.Embed(
         title="Warned",
         description=f"{member.mention} was warned{'.' if reason is None else f', reason: {reason}'}",
         color=discord.Colour.blurple()
     )
+    
+
     await ctx.reply(embed=embed)
-    await member.send(embed=embed2)
+    try:
+        await member.send(embed=embed2)
+    except discord.errors.HTTPException:
+        pass
+    
+    if LOG_CHAN_ID is not None:
+        log_channel = bot.get_channel(int(LOG_CHAN_ID))
+        if log_channel is not None:
+            log_embed = discord.Embed(
+                title="Member Warned",
+                description=f"{ctx.author.mention} warned {member.mention}{'.' if reason is None else f', reason: {reason}'}",
+                color=discord.Colour.blurple()
+            )
+            await log_channel.send(embed=log_embed)
 
 
 @bot.command(aliases=['clear'])
@@ -671,51 +710,54 @@ async def asbot(ctx, *, arg=None):
             title="`asbotmain()` state:"+f"{' **running**' if asbotmain.is_running() else ' **stopped**'}", color=discord.Color.blurple()))
 
 # FIXME: get rid of global
-isinit = False
+
 
 
 @tasks.loop()
 async def asbotmain():
-    global isinit
-    if isinit == False:
-        global chanID2
-        chanID2 = await aioconsole.ainput("Input channel ID: ")
-        if chanID2 == "show":
-            clsscr()
-            await helperasbot()
-            return
-        clsscr()
-        try:
-            global channel1
-            channel1 = bot.get_channel(int(chanID2))
-            if str(channel1.type) != 'text':
-                print("Selected channel is a Voice channel, try again")
-                isinit = False
-                return
-        except AttributeError:
-            print("AttributeError; Wrong ID provided, try again")
-            isinit = False
-            return
-        except ValueError:
-            print("ValueError; ID should be a Integer, try again")
-            isinit = False
-            return
-        isinit = True
-    message = await aioconsole.ainput(f"[{discord.utils.get(bot.get_all_channels(), id=int(chanID2))}] Message: ")
-    if message == "sel":
+    """Send messages as a bot in a specified text channel.
+
+    Usage: 
+        - Input the channel ID to start sending messages.
+        - Type "sel" to select a different channel.
+        - Type "asbotstop" to stop sending messages.
+
+    Prints error messages if the input is invalid or the channel is a voice channel.
+    """
+
+    isinit = False
+    chanID2 = await aioconsole.ainput("Input channel ID: ")
+    if chanID2 == "show":
         clsscr()
         await helperasbot()
-        isinit = False
         return
-    if message == "asbotstop":
-        asbotmain.cancel()
-        clsscr()
-        print("Stopped task")
+    clsscr()
     try:
-        await channel1.send(message)
-    except discord.errors.HTTPException:
-        # This is a Unicode "U+2800/Braille Pattern Blank" character
-        await channel1.send("⠀")
+        channel1 = bot.get_channel(int(chanID2))
+        if not isinstance(channel1, discord.TextChannel):
+            print("Selected channel is a Voice channel, try again")
+            return
+    except Exception:
+        print("Error; Wrong ID provided or an unexpected exception occurred, try again")
+        return
+    isinit = True
+    while True:
+        message = await aioconsole.ainput(f"[{channel1}] Message: ")
+        if message == "sel":
+            clsscr()
+            await helperasbot()
+            isinit = False
+            break
+        elif message == "asbotstop":
+            asbotmain.cancel()
+            clsscr()
+            print("Stopped task")
+            return
+        try:
+            await channel1.send(message)
+        except discord.errors.HTTPException:
+            # This is a Unicode "U+2800/Braille Pattern Blank" character
+            await channel1.send("⠀")
 
 
 async def main():
