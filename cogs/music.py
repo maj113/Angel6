@@ -350,7 +350,11 @@ class Music(commands.Cog):
     async def _toggle(self, ctx: commands.Context):
         """Toggles between pause and resume for the currently playing song."""
 
-        if ctx.voice_state.is_playing:
+        if not ctx.voice_state.voice:
+            await ctx.reply('I am not currently connected to a voice channel.')
+            return
+
+        if ctx.voice_state.is_playing and not ctx.voice_state.voice.is_paused():
             if ctx.voice_state.voice.is_playing():
                 ctx.voice_state.voice.pause()
                 await ctx.message.add_reaction('⏯')
@@ -363,13 +367,12 @@ class Music(commands.Cog):
     async def _stop(self, ctx: commands.Context):
         """Stops playing song and clears the queue."""
 
-        ctx.voice_state.songs.clear()
-
         if ctx.voice_state.is_playing:
             ctx.voice_state.voice.stop()
+
+        ctx.voice_state.songs.clear()
             await ctx.message.add_reaction('⏹')
     
-
     @commands.command(name='skip', aliases=['s'])
     async def _skip(self, ctx: commands.Context):
         """Vote to skip a song. The requester can automatically skip.
