@@ -88,9 +88,7 @@ class YTDLSource(discord.FFmpegOpusAudio):
     async def create_source(cls, ctx: commands.Context, search: str, *, loop: asyncio.AbstractEventLoop = None):
         loop = loop or asyncio.get_event_loop()
         search = search.strip().replace("<", "").replace(">", "")
-        partial = functools.partial(
-            cls.ytdl.extract_info, search, download=False, process=False)
-        data = await loop.run_in_executor(None, partial)
+        data = await asyncio.to_thread(cls.ytdl.extract_info, search, download=False, process=False)
 
         if data is None:
             raise YTDLError(
