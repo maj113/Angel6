@@ -39,11 +39,11 @@ class YTDLError(Exception):
 class YTDLSource(discord.FFmpegOpusAudio):
     YTDL_OPTIONS = {
         'extractaudio': True,
-        'format': 'bestaudio/[ext=opus]best',
+        'format': 'bestaudio[ext=opus]/251',
         'outtmpl': '%(extractor)s-%(id)s-%(title)s.%(ext)s',
         'restrictfilenames': True,
         'noplaylist': True,
-        'nocheckcertificate': True,
+        'ssl_verify': False,
         'ignoreerrors': DebuggingOpts["ytdlerringore"],
         'logtostderr': DebuggingOpts["ytdllogging"],
         'quiet': DebuggingOpts["ytdlquiet"],
