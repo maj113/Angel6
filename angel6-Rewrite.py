@@ -27,7 +27,7 @@ bot = commands.Bot(command_prefix='~', activity=discord.Game(
 
 async def set_env_var(env_var_name, prompt_text):
     value = os.getenv(env_var_name)
-    if value == None:
+    if value is None:
         value = int(input(prompt_text))
         with open(".env", "a") as envfile:
             envfile.write(f"\n{env_var_name}={value}")
