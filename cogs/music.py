@@ -211,7 +211,7 @@ class VoiceState:
 
     @property
     def is_playing(self):
-        return self.voice and self.voice.is_playing()
+        return self.voice and self.current
 
     async def audio_player_task(self):
         while True:
