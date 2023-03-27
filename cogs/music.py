@@ -92,7 +92,7 @@ class YTDLSource(discord.FFmpegOpusAudio):
 
         if data is None:
             raise YTDLError(
-                'Couldn\'t find anything that matches `{}`'.format(search))
+                f'Couldn\'t find anything that matches `{search}`')
 
         if 'entries' not in data:
             process_info = data
