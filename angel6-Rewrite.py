@@ -449,18 +449,18 @@ async def role(ctx, action: str, user: discord.Member, role: discord.Role):
         return
 
     if action == 'add':
-    await user.add_roles(role)
+        await user.add_roles(role)
         await ctx.reply(embed=discord.Embed(
             title=f"Role Added",
             description=f"{user.mention} was given the {role.mention} role.",
             color=discord.Color.green()
         ))
     elif action == 'remove':
-    if role == ctx.author.top_role and user == ctx.author:
+        if role == ctx.author.top_role and user == ctx.author:
             await ctx.reply(f"Can't remove role \"{role}\" as it's your highest role.")
-        return
+            return
 
-    await user.remove_roles(role)
+        await user.remove_roles(role)
         await ctx.reply(embed=discord.Embed(
             title=f"Role Removed",
             description=f"{user.mention} was removed from the {role.mention} role.",
