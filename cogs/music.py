@@ -217,16 +217,10 @@ class VoiceState:
         while True:
             self.next.clear()
             self.now = None
-            if self.loop is False:
-                # Try to get the next song within 3 minutes.
-                # If no song will be added to the queue in time,
-                # the player will disconnect due to performance
-                # reasons.
                 try:
-                    async with timeout(180):  # 3 minutes
-                        self.current = await self.songs.get()
+                self.current = await asyncio.wait_for(self.songs.get(), timeout=180)  # 3 minutes
                 except asyncio.TimeoutError:
-                    self.bot.loop.create_task(self.stop())
+                asyncio.create_task(self.stop())
                     self.exists = False
                     return
 
