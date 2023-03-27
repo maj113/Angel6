@@ -151,32 +151,14 @@ async def on_message_delete(message):
 
 @bot.command()
 @commands.has_permissions(ban_members=True)
-async def cog(ctx, action: str):
-    """Start, stop, or reload the Music cog."""
-    cog_name = "cogs.music"
-    cog = bot.get_cog(cog_name)
+async def reload(ctx):
+    """Reload Bot cog"""
+    try:
+        bot.reload_extension("cogs.music")
+        await ctx.reply('Cogs successfully reloaded!')
+    except commands.ExtensionError as e:
+        await ctx.reply(f'An error occurred while reloading the cog: {e}')
 
-    if action == "start":
-        if cog:
-            await ctx.reply(f"The {cog_name} cog is already running.")
-        else:
-            bot.load_extension(cog_name)
-            print(bot.get_cog(cog_name))
-            await ctx.reply(f"The {cog_name} cog has been started.")
-    elif action == "stop":
-        if not cog:
-            await ctx.reply(f"The {cog_name} cog is not currently running.")
-        else:
-            bot.unload_extension(cog_name)
-            await ctx.reply(f"The {cog_name} cog has been stopped.")
-    elif action == "reload":
-        if not cog:
-            await ctx.reply(f"The {cog_name} cog is not currently running.")
-        else:
-            bot.reload_extension(cog_name)
-            await ctx.reply(f"The {cog_name} cog has been reloaded.")
-    else:
-        await ctx.reply("Invalid action. Please specify 'start', 'stop', or 'reload'.")
 
 
 @bot.command(aliases=["reboot"])
