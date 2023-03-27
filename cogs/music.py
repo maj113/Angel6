@@ -419,12 +419,10 @@ class Music(commands.Cog):
         start = (page - 1) * items_per_page
         end = start + items_per_page
 
-        queue = ''
-        for i, song in enumerate(
-                ctx.voice_state.songs[start: end],
-                start=start):
-            queue += '`{0}.` [**{1.source.title}**]({1.source.url})\n'.format(
-                i + 1, song)
+        queue = []
+        for i, song in enumerate(ctx.voice_state.songs[start: end], start=start):
+            queue.append(f"`{i+1}.` [**{song.source.title}**]({song.source.url})")
+        queue = '\n'.join(queue)
 
         embed = (discord.Embed(
             description=f'**{len(ctx.voice_state.songs)} tracks:**\n\n{queue}',
