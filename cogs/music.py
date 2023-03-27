@@ -211,20 +211,20 @@ class VoiceState:
 
     @property
     def is_playing(self):
-        return self.voice and self.current
+        return self.voice and self.voice.is_playing()
 
     async def audio_player_task(self):
         while True:
             self.next.clear()
             self.now = None
-                try:
+            try:
                 self.current = await asyncio.wait_for(self.songs.get(), timeout=180)  # 3 minutes
-                except asyncio.TimeoutError:
+            except asyncio.TimeoutError:
                 asyncio.create_task(self.stop())
-                    self.exists = False
-                    return
+                self.exists = False
+                return
 
-                self.now = await discord.FFmpegOpusAudio.from_probe(self.current.source.stream_url, **YTDLSource.FFMPEG_OPTIONS)
+            self.now = await discord.FFmpegOpusAudio.from_probe(self.current.source.stream_url, **YTDLSource.FFMPEG_OPTIONS)
 
             if not self.loop:
                 await self.current.source.channel.send(embed=self.current.create_embed())
@@ -371,8 +371,8 @@ class Music(commands.Cog):
             ctx.voice_state.voice.stop()
 
         ctx.voice_state.songs.clear()
-            await ctx.message.add_reaction('⏹')
-    
+        await ctx.message.add_reaction('⏹')
+
     @commands.command(name='skip', aliases=['s'])
     async def _skip(self, ctx: commands.Context):
         """Vote to skip a song. The requester can automatically skip.
@@ -474,17 +474,17 @@ class Music(commands.Cog):
         This command automatically searches from various sites if no URL is provided.
         A list of these sites can be found here: https://rg3.github.io/youtube-dl/supportedsites.html
         """
-            try:
-                source = await YTDLSource.create_source(ctx, search, loop=self.bot.loop)
-            except YTDLError as err:
+        try:
+            source = await YTDLSource.create_source(ctx, search, loop=self.bot.loop)
+        except YTDLError as err:
             await ctx.reply(f"An error occurred while processing this request: {err}")
-            else:
-                if not ctx.voice_state.voice:
-                    await ctx.invoke(self._join)
+        else:
+            if not ctx.voice_state.voice:
+                await ctx.invoke(self._join)
 
-                song = Song(source)
-                await ctx.voice_state.songs.put(song)
-                await ctx.reply(f'Enqueued {source}')
+            song = Song(source)
+            await ctx.voice_state.songs.put(song)
+            await ctx.reply(f'Enqueued {source}')
 
     @_join.before_invoke
     @_play.before_invoke
