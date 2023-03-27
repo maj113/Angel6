@@ -339,7 +339,7 @@ class Music(commands.Cog):
     @commands.command(name='now', aliases=['current', 'playing'])
     async def _now(self, ctx: commands.Context):
         """Displays the currently playing song."""
-        if ctx.voice_state.current == None:
+        if ctx.voice_state.current is None:
             await ctx.reply("Nothing is playing at the moment")
             return
         embed = ctx.voice_state.current.create_embed()
