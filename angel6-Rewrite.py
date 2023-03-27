@@ -433,6 +433,8 @@ async def warn(ctx, member: discord.Member = None, *, reason=None):
 @commands.has_permissions(ban_members=True)
 async def wipe(ctx, amount: int = 20):
     """wipes 20 messages or the number specified"""
+    if amount <= 0 or amount > 10000:  # Check that amount is within range
+        return await ctx.send("Amount must be between 1 and 10000.")
     await ctx.channel.purge(limit=amount)
     await ctx.channel.send(f"Cleanup Complete, deleted {amount} messages")
 
