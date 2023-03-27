@@ -474,13 +474,10 @@ class Music(commands.Cog):
         This command automatically searches from various sites if no URL is provided.
         A list of these sites can be found here: https://rg3.github.io/youtube-dl/supportedsites.html
         """
-
-        async with ctx.typing():
             try:
-                # I don't think self is needed here, removed
                 source = await YTDLSource.create_source(ctx, search, loop=self.bot.loop)
             except YTDLError as err:
-                await ctx.reply('An error occurred while processing this request: {}'.format(str(err)))
+            await ctx.reply(f"An error occurred while processing this request: {err}")
             else:
                 if not ctx.voice_state.voice:
                     await ctx.invoke(self._join)
