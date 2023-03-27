@@ -669,6 +669,7 @@ async def gif(ctx, gif_type=''):
     if gif_type in gif_links:
         await ctx.reply(gif_links[gif_type])
     else:
+        gif_type = discord.utils.escape_mentions(gif_type)
         await ctx.reply(f"Invalid GIF type '{gif_type}'. Use '~giflist' to see available options.")
 
 @bot.command(pass_context=True)
