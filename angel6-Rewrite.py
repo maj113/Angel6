@@ -438,24 +438,34 @@ async def wipe(ctx, amount: int = 20):
 
 @bot.command(pass_context=True)
 @commands.has_permissions(ban_members=True)
-async def role(ctx, user: discord.Member, role: discord.Role):
-    """Gives user a role"""
+async def role(ctx, action: str, user: discord.Member, role: discord.Role):
+    """Add or remove a role from a user."""
+    if action not in ['add', 'remove']:
+        await ctx.reply("Invalid action specified. Use 'add' or 'remove'.")
+        return
+
     if role >= ctx.author.top_role:
-        await ctx.reply(f"Can't give {role} since its higher than {ctx.author.top_role}")
+        await ctx.reply(f"Can't give {role} since it's higher than {ctx.author.top_role}.")
         return
+
+    if action == 'add':
     await user.add_roles(role)
-    await ctx.reply(f"{user.name} has been given: {role.name}")
-
-
-@bot.command(pass_context=True)
-@commands.has_permissions(ban_members=True)
-async def rmrole(ctx, user: discord.Member, role: discord.Role):
-    """Removes user's role away"""
+        await ctx.reply(embed=discord.Embed(
+            title=f"Role Added",
+            description=f"{user.mention} was given the {role.mention} role.",
+            color=discord.Color.green()
+        ))
+    elif action == 'remove':
     if role == ctx.author.top_role and user == ctx.author:
-        await ctx.reply(f"Can't remove role \"{role}\" as it's your highest role")
+            await ctx.reply(f"Can't remove role \"{role}\" as it's your highest role.")
         return
+
     await user.remove_roles(role)
-    await ctx.reply(f"{user.name} was removed from role: {role.name}")
+        await ctx.reply(embed=discord.Embed(
+            title=f"Role Removed",
+            description=f"{user.mention} was removed from the {role.mention} role.",
+            color=discord.Color.red()
+        ))
 
 start_time = datetime.datetime.now()
 
