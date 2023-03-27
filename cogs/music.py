@@ -94,23 +94,12 @@ class YTDLSource(discord.FFmpegOpusAudio):
             raise YTDLError(
                 f'Couldn\'t find anything that matches `{search}`')
 
-        if 'entries' not in data:
-            process_info = data
-        else:
-            process_info = None
-            for entry in data['entries']:
-                if entry:
-                    process_info = entry
-                    break
-
-            if process_info is None:
-                raise YTDLError(
-                    'Couldn\'t find anything that matches `{}`'.format(search))
+        entries = data.get('entries')
+        process_info = entries[0] if entries else data
 
         webpage_url = process_info['webpage_url']
-        partial = functools.partial(
-            cls.ytdl.extract_info, webpage_url, download=False)
-        processed_info = await loop.run_in_executor(None, partial)
+        partial = functools.partial(cls.ytdl.extract_info, webpage_url, download=False)
+        processed_info = await asyncio.to_thread(partial)
 
         if processed_info is None:
             raise YTDLError('Couldn\'t fetch `{}`'.format(webpage_url))
