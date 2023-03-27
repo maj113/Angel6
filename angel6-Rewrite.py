@@ -160,10 +160,14 @@ async def reload(ctx):
         await ctx.reply(f'An error occurred while reloading the cog: {e}')
 
 
-@bot.command()
+
+@bot.command(aliases=["reboot"])
 @commands.has_permissions(ban_members=True)
 async def restart(ctx, arg=""):
     """restarts the bot"""
+    if arg == "debug":
+        sys.argv.append('debug')
+        await ctx.send("Debug on!")
     await ctx.reply(" Restarting, please allow 5 seconds for this. ")
     os.execv(sys.executable, ['python3'] + sys.argv)
 
