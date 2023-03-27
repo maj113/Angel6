@@ -102,24 +102,15 @@ class YTDLSource(discord.FFmpegOpusAudio):
         processed_info = await asyncio.to_thread(partial)
 
         if processed_info is None:
-            raise YTDLError('Couldn\'t fetch `{}`'.format(webpage_url))
+            raise YTDLError(f'Couldn\'t fetch `{webpage_url}`')
 
-        if 'entries' not in processed_info:
-            info = processed_info
-        else:
-            info = None
-            while info is None:
-                try:
-                    info = processed_info['entries'].pop(0)
-                except IndexError:
-                    raise YTDLError(
-                        'Couldn\'t retrieve any matches for `{}`'.format(
-                            webpage_url))
+        entries = processed_info.get('entries')
+        info = entries[0] if entries else processed_info
+
         return cls(ctx, discord.FFmpegOpusAudio(
             info['url'],
             **cls.FFMPEG_OPTIONS),
             data=info)
-    pass
 
     @staticmethod
     def parse_duration(duration: int):
