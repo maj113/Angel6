@@ -229,15 +229,10 @@ async def userinfo(ctx, *, user: discord.Member = None):
     
     members = sorted(ctx.guild.members, key=lambda m: m.joined_at)
     join_position = members.index(user) + 1
-    join_position_suffix = ""
-    if join_position % 10 == 1 and join_position != 11:
-        join_position_suffix = "st"
-    elif join_position % 10 == 2 and join_position != 12:
-        join_position_suffix = "nd"
-    elif join_position % 10 == 3 and join_position != 13:
-        join_position_suffix = "rd"
-    else:
+    if 11 <= join_position <= 13:
         join_position_suffix = "th"
+    else:
+        join_position_suffix = {1: "st", 2: "nd", 3: "rd"}.get(join_position % 10, "th")
     embed.add_field(name="Join position", value=f"{join_position}{join_position_suffix}")
     
     embed.add_field(name="Registered", value=user.created_at.strftime(date_format))
@@ -245,7 +240,7 @@ async def userinfo(ctx, *, user: discord.Member = None):
     
     if len(user.roles) > 1:
         role_string = ' '.join([r.mention for r in user.roles][1:])
-        embed.add_field(name="Roles [{}]".format(len(user.roles)-1), value=role_string, inline=False)
+        embed.add_field(name=f"Roles [{len(user.roles)-1}]", value=role_string, inline=False)
 
     embed.set_footer(text=f"Information last updated: {datetime.datetime.utcnow().strftime(date_format)}")
     
