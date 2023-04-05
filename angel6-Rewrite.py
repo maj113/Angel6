@@ -692,11 +692,10 @@ def clsscr():
 
 
 async def helperasbot():
-
     for server in bot.guilds:
-        for channel in server.channels:
-            if channel.type == discord.ChannelType.text:
-                print(f"    {channel.name} : {channel.id}")
+        text_channels = server.text_channels
+        for channel in text_channels:
+            print(f"    {channel.name} : {channel.id}")
 
 
 @bot.command(pass_context=True)
