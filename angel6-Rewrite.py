@@ -551,18 +551,21 @@ async def roll(ctx, *args):
     if args:
         try:
             (diceToRoll, numberOfSides) = parseInput(args)
-        except:
-            await ctx.reply('I didn\'t understand your input: `' + args + '`.\n try `~roll help` for supported options')
+        except ValueError:
+            embed = discord.Embed(title="Error", description=f"I didn't understand your input: `{args}`. Try `~roll help` for supported options", color=discord.Color.brand_red())
+            await ctx.reply(embed=embed)
             return
 
     maxdicesize = 150
     maxsides = 100000000
-    if diceToRoll < 0 or diceToRoll > maxdicesize:
-        await ctx.reply(f"Invalid dice amount. Dice amount must be between 0 and {maxdicesize}")
+    if not 0 <= diceToRoll <= maxdicesize:
+        embed = discord.Embed(title="Error", description=f"Invalid dice amount. Dice amount must be between 0 and {maxdicesize}.", color=discord.Color.brand_red())
+        await ctx.reply(embed=embed)
         return
 
-    if numberOfSides < 0 or numberOfSides > maxsides:
-        await ctx.reply(f"Invalid number of sides. The number of sides must be between 0 and {maxsides}")
+    if not 0 <= numberOfSides <= maxsides:
+        embed = discord.Embed(title="Error", description=f"Invalid number of sides. The number of sides must be between 0 and {maxsides}.", color=discord.Color.brand_red())
+        await ctx.reply(embed=embed)
         return
 
     results = []
