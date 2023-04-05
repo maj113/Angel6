@@ -688,7 +688,7 @@ async def cat(ctx):
 
 
 def clsscr():
-    os.system('cls' if os.name == 'nt' else print("\x1B[2J"))
+    os.system('cls' if os.name == 'nt' else 'clear')
 
 
 async def helperasbot():
