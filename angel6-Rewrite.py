@@ -735,8 +735,7 @@ def clsscr():
 
 
 async def helperasbot():
-
-    for server in bot.guilds:
+    server = bot.guilds[0] # get the first (and only) server the bot is in
         for channel in server.channels:
             if channel.type == discord.ChannelType.text:
                 print(f"    {channel.name} : {channel.id}")
