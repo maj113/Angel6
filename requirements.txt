@@ -25,7 +25,7 @@ python-dotenv==1.0.0
 soupsieve==2.4
 typing_extensions==4.5.0
 urllib3==1.26.15
-websockets==11.0
+websockets==11.0.1
 yarg==0.1.9
 yarl==1.8.2
 yt-dlp==2023.3.4
