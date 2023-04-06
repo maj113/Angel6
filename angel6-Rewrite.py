@@ -541,17 +541,16 @@ mem = meminfo.memory_info()[0] / float(2 ** 20)
 @bot.command(pass_context=True, aliases=['info', 'debug'])
 async def stats(ctx):
     """shows bot stats"""
-    bedem = discord.Embed(
+    embed = discord.Embed(
         title='System Resource Usage and statistics',
         description='See bot host statistics.', color=discord.Color.blurple())
-    bedem.add_field(name="Angel$IX version", value=BotVer, inline=False)
-    bedem.add_field(name='CPU Usage', value=f'`{psutil.cpu_percent()}%`', inline=True)
-    bedem.add_field(name='Memory Usage', value=f'`{mem:.0f}MB/{totmem:.0f}MB`', inline=True)
-    # bedem.add_field(name='CPU name', value=cpuinfo.get_cpu_info()['brand_raw'], inline=False) way too slow
-    bedem.add_field(name='Discord.py Version', value=f'`{d_version}`', inline=True)
-    bedem.add_field(name='Python Version', value=f'`{sys.version}`', inline=False)
-    bedem.add_field(name='YTdl Version', value=f'`{ytver.__version__}`', inline=False)
-    await ctx.reply(embed=bedem)
+    embed.add_field(name="Angel$IX version", value=BotVer, inline=False)
+    embed.add_field(name='CPU Usage', value=f'`{psutil.cpu_percent()}%`', inline=True)
+    embed.add_field(name='Memory Usage', value=f'`{mem:.0f}MB/{totmem:.0f}MB`', inline=True)
+    embed.add_field(name='Discord.py Version', value=f'`{d_version}`', inline=True)
+    embed.add_field(name='Python Version', value=f'`{sys.version}`', inline=False)
+    embed.add_field(name='YTdl Version', value=f'`{ytver.__version__}`', inline=False)
+    await ctx.reply(embed=embed)
 
 
 @bot.command()
