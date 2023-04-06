@@ -61,18 +61,37 @@ async def on_ready():
         print("Setup complete, Rebooting")
         os.execv(sys.executable, ['python3'] + sys.argv)
 
-    embed = discord.Embed(title='Bot settings',
-                          description='Current bot settings and status',
-                          color=discord.Color.blurple())
-    embed.add_field(name="**Angel$IX Version:**", value=BotVer, inline=False)
-    embed.add_field(name="logging channel", value=LOG_CHAN_ID, inline=False)
-    embed.add_field(name="Join leave channel", value=JL_CHAN_ID, inline=False)
-    embed.add_field(name="General channel", value=GEN_CHAN_ID, inline=False)
-    embed.add_field(name="Current API latency:",
-                    value=f'{(bot.latency * 1000):.0f}ms', inline=False)
-    channel = bot.get_channel(int(LOG_CHAN_ID))
-    await channel.send(creditsimage)
-    await channel.send(embed=embed)
+    embed = discord.Embed(title='Bot Settings', description='Current bot settings and status', color=discord.Color.blurple())
+
+    # Add information about the bot version
+    embed.add_field(name='Bot Version:', value='Angel$IX ' + BotVer, inline=False)
+
+    # Add information about the logging channel
+    log_channel = bot.get_channel(int(LOG_CHAN_ID))
+    embed.add_field(name=f'Logging Channel: {log_channel.mention}', value='', inline=False)
+
+    # Add information about the join/leave channel
+    jl_channel = bot.get_channel(int(JL_CHAN_ID))
+    embed.add_field(name=f'Join/Leave Channel: {jl_channel.mention}', value='', inline=False)
+
+    # Add information about the general channel
+    gen_channel = bot.get_channel(int(GEN_CHAN_ID))
+    embed.add_field(name=f'General Channel: {gen_channel.mention}', value='', inline=False)
+
+    # Add information about the API latency
+    api_latency = f'{(bot.latency * 1000):.0f}ms'
+    embed.add_field(name=f'API Latency: {api_latency}', value='', inline=False)
+
+    # Get the member object for the bot user in the guild and add it to the embed
+    guild = bot.guilds[0]
+    bot_member = guild.get_member(347387857574428676)
+    footer_text = f'Bot made by {bot_member.name}'
+    embed.set_footer(text=footer_text)
+
+
+    # Send the message to the logging channel
+    await log_channel.send(embed=embed)
+    await log_channel.send(creditsimage)
     if not asbotmain.is_running():
         await asbotmain.start()
 bot.load_extension("cogs", recursive=True)
