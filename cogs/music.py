@@ -264,13 +264,13 @@ class VoiceState:
 async def _checkloop(ctx):
     if ctx.voice_state.loop:
         ctx.voice_state.loop = False
-        await asyncio.sleep(1)
-        ctx.voice_state.skip()
+        await ctx.voice_state.skip()
         await ctx.message.add_reaction('⏭')
-        await asyncio.sleep(1)
         ctx.voice_state.loop = True
-        return
-    else: ctx.voice_state.skip()
+        return True
+    else:
+        await ctx.voice_state.skip()
+        return False
 
 class Music(commands.Cog):
     def __init__(self, bot: commands.Bot):
