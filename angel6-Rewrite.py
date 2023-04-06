@@ -162,6 +162,42 @@ async def on_guild_channel_create(channel):
                 await logging_channel.send(embed=embed)
                 break
 
+@bot.event
+async def on_guild_channel_delete(channel):
+    logging_channel = bot.get_channel(int(LOG_CHAN_ID))
+    if logging_channel:
+        async for entry in channel.guild.audit_logs(limit=1, action=discord.AuditLogAction.channel_delete):
+            if entry.target.id == channel.id:
+                embed = discord.Embed(title="Channel deleted", color=discord.Colour.brand_red())
+                embed.add_field(name="Name", value=channel.name, inline=True)
+                embed.add_field(name="Type", value=str(channel.type).title(), inline=True)
+                embed.add_field(name="Category", value=channel.category.name if channel.category else "None", inline=True)
+                embed.set_footer(text=f"ID: {channel.id} • Deleted by {entry.user.display_name}", icon_url=entry.user.avatar.url)
+                await logging_channel.send(embed=embed)
+                break
+
+@bot.event
+async def on_user_update(before, after):
+    if before.avatar != after.avatar:
+        logging_channel = bot.get_channelint(int(LOG_CHAN_ID))
+        if logging_channel:
+            embed = discord.Embed(title="User avatar changed", color=discord.Colour.blurple())
+            embed.set_author(name=f"{before.name}#{before.discriminator}", icon_url=before.avatar.url)
+            embed.set_thumbnail(url=after.avatar_url)
+            embed.set_footer(text=f"ID: {before.id}")
+            await logging_channel.send(embed=embed)
+"""
+@bot.event
+async def on_guild_channel_update(before, after):
+    logging_channel = bot.get_channel(int(LOG_CHAN_ID))
+    if logging_channel:
+        if before.overwrites != after.overwrites:
+            embed = discord.Embed(title="Channel permissions updated", color=discord.Colour.blurple())
+            embed.add_field(name="Channel", value=f"#{before.name}", inline=True)
+            embed.add_field(name="Type", value=str(before.type).title(), inline=True)
+            embed.set_footer(text=f"ID: {before.id}")
+            await logging_channel.send(embed=embed)
+"""
 @bot.command()
 @commands.has_permissions(ban_members=True)
 async def reload(ctx):
