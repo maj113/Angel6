@@ -134,7 +134,6 @@ async def on_member_remove(member):
                      icon_url=f"{member.guild.icon.url}")
     await channel.send(embed=embed)
 
-
 @bot.event
 async def on_message_delete(message):
     deleted = discord.Embed(
@@ -590,16 +589,16 @@ async def roll(ctx, args : str = ""):
                         "`~roll 2d6` - rolls two 6-sided dice\n"
                         )
         return
-
+ 
     try:
         if args != "":
             diceToRoll, numberOfSides = parseInput(args)
         else: 
-    diceToRoll = 1
-    numberOfSides = 6
+            diceToRoll = 1
+            numberOfSides = 6
     except ValueError:
-            await ctx.reply('I didn\'t understand your input: `' + args + '`.\n try `~roll help` for supported options')
-            return
+        await ctx.reply('I didn\'t understand your input: `' + args + '`.\n try `~roll help` for supported options')
+        return
 
     maxdicesize = 150
     maxsides = 100000000
@@ -736,9 +735,9 @@ def clsscr():
 
 async def helperasbot():
     server = bot.guilds[0] # get the first (and only) server the bot is in
-        for channel in server.channels:
-            if channel.type == discord.ChannelType.text:
-                print(f"    {channel.name} : {channel.id}")
+    for channel in server.channels:
+        if channel.type == discord.ChannelType.text:
+            print(f"    {channel.name} : {channel.id}")
 
 
 @bot.command(pass_context=True)
