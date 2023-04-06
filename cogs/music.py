@@ -361,13 +361,14 @@ class Music(commands.Cog):
             await ctx.reply('I am not currently connected to a voice channel.')
             return
 
-        if ctx.voice_state.is_playing and not ctx.voice_state.voice.is_paused():
-            if ctx.voice_state.voice.is_playing():
-                ctx.voice_state.voice.pause()
-                await ctx.message.add_reaction('⏯')
-            elif ctx.voice_state.voice.is_paused():
+        if ctx.voice_state.is_playing() and ctx.voice_state.voice.is_paused():
                 ctx.voice_state.voice.resume()
                 await ctx.message.add_reaction('⏯')
+        elif ctx.voice_state.is_playing():
+            ctx.voice_state.voice.pause()
+            await ctx.message.add_reaction('⏯')
+        else:
+            await ctx.reply('I am not currently playing anything.')
 
     @commands.command(name='stop')
     @commands.has_permissions(manage_guild=True)
