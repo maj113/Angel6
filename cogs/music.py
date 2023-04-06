@@ -8,7 +8,6 @@ import discord
 import yt_dlp
 import itertools
 from discord.ext import commands
-from async_timeout import timeout
 from yt_dlp import utils
 
 utils.bug_reports_message = lambda: ''
@@ -362,8 +361,8 @@ class Music(commands.Cog):
             return
 
         if ctx.voice_state.is_playing() and ctx.voice_state.voice.is_paused():
-                ctx.voice_state.voice.resume()
-                await ctx.message.add_reaction('⏯')
+            ctx.voice_state.voice.resume()
+            await ctx.message.add_reaction('⏯')
         elif ctx.voice_state.is_playing():
             ctx.voice_state.voice.pause()
             await ctx.message.add_reaction('⏯')
@@ -427,7 +426,7 @@ class Music(commands.Cog):
 
         items_per_page = 10
         try:
-        pages = math.ceil(len(ctx.voice_state.songs) / items_per_page)
+            pages = math.ceil(len(ctx.voice_state.songs) / items_per_page)
         except TypeError:
             return await ctx.reply('Invalid page number!')
 

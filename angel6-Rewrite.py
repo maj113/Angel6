@@ -185,7 +185,7 @@ async def on_user_update(before, after):
             embed.set_thumbnail(url=after.avatar_url)
             embed.set_footer(text=f"ID: {before.id}")
             await logging_channel.send(embed=embed)
-"""
+
 @bot.event
 async def on_guild_channel_update(before, after):
     logging_channel = bot.get_channel(int(LOG_CHAN_ID))
@@ -196,7 +196,7 @@ async def on_guild_channel_update(before, after):
             embed.add_field(name="Type", value=str(before.type).title(), inline=True)
             embed.set_footer(text=f"ID: {before.id}")
             await logging_channel.send(embed=embed)
-"""
+
 @bot.command()
 @commands.has_permissions(ban_members=True)
 async def reload(ctx):
