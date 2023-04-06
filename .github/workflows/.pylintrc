@@ -1,0 +1,46 @@
+[MASTER]
+
+# Specify the maximum allowed line length
+max-line-length = 120
+
+# Disable the message, report, category or checker with the given id(s).
+disable = C0114, C0115, C0116, R0903
+
+[BASIC]
+
+# Enable pylint's basic set of checks
+enable = all
+
+[FORMAT]
+
+# Allow up to one leading underscore for names that are not exported
+good-names = _,
+
+# Disallow trailing whitespace
+no-trailing-whitespace = True
+
+# Require two blank lines after module level variables and imports
+expected-module-level-dunder = True
+
+[TYPECHECK]
+
+# Enable type checking
+# If you're using Python 3.5 or earlier, you should use the 'pylint-quotes' package
+# to support type hints syntax
+# See https://github.com/edaniszewski/pylint-quotes
+enable = typecheck
+
+[MESSAGES CONTROL]
+
+# Disable specific messages that you don't want to see
+disable = W0511, W0703
+
+# Change the severity of specific messages
+# Possible values are: disable, refactor, convention, warning, error, fatal
+[FORMAT]
+max-line-length = 120
+ignore = E203, E266, E501, W503, F403, F401
+exclude = .git,__pycache__,venv
+
+[TYPECHECK]
+ignore = E1, E2, E3, E4, E5, W1, W2, W3, W4, W5, R
