@@ -153,7 +153,6 @@ async def on_member_remove(member):
                      icon_url=f"{member.guild.icon.url}")
     await channel.send(embed=embed)
 
-
 @bot.event
 async def on_message_delete(message):
     deleted = discord.Embed(
@@ -167,7 +166,56 @@ async def on_message_delete(message):
     deleted.timestamp = message.created_at
     await channel.send(embed=deleted)
 
+@bot.event
+async def on_guild_channel_create(channel):
+    logging_channel = bot.get_channel(int(LOG_CHAN_ID))
+    if logging_channel:
+        async for entry in channel.guild.audit_logs(limit=1, action=discord.AuditLogAction.channel_create):
+            if entry.target.id == channel.id:
+                embed = discord.Embed(title="Channel created", color=discord.Colour.brand_green())
+                embed.add_field(name="Name", value=channel.name, inline=True)
+                embed.add_field(name="Type", value=str(channel.type).title(), inline=True)
+                embed.add_field(name="Category", value=channel.category.name if channel.category else "None", inline=True)
+                embed.set_footer(text=f"ID: {channel.id} • Created by {entry.user.display_name}", icon_url=entry.user.avatar.url)
+                await logging_channel.send(embed=embed)
+                break
 
+@bot.event
+async def on_guild_channel_delete(channel):
+    logging_channel = bot.get_channel(int(LOG_CHAN_ID))
+    if logging_channel:
+        async for entry in channel.guild.audit_logs(limit=1, action=discord.AuditLogAction.channel_delete):
+            if entry.target.id == channel.id:
+                embed = discord.Embed(title="Channel deleted", color=discord.Colour.brand_red())
+                embed.add_field(name="Name", value=channel.name, inline=True)
+                embed.add_field(name="Type", value=str(channel.type).title(), inline=True)
+                embed.add_field(name="Category", value=channel.category.name if channel.category else "None", inline=True)
+                embed.set_footer(text=f"ID: {channel.id} • Deleted by {entry.user.display_name}", icon_url=entry.user.avatar.url)
+                await logging_channel.send(embed=embed)
+                break
+
+@bot.event
+async def on_user_update(before, after):
+    if before.avatar != after.avatar:
+        logging_channel = bot.get_channelint(int(LOG_CHAN_ID))
+        if logging_channel:
+            embed = discord.Embed(title="User avatar changed", color=discord.Colour.blurple())
+            embed.set_author(name=f"{before.name}#{before.discriminator}", icon_url=before.avatar.url)
+            embed.set_thumbnail(url=after.avatar_url)
+            embed.set_footer(text=f"ID: {before.id}")
+            await logging_channel.send(embed=embed)
+"""
+@bot.event
+async def on_guild_channel_update(before, after):
+    logging_channel = bot.get_channel(int(LOG_CHAN_ID))
+    if logging_channel:
+        if before.overwrites != after.overwrites:
+            embed = discord.Embed(title="Channel permissions updated", color=discord.Colour.blurple())
+            embed.add_field(name="Channel", value=f"#{before.name}", inline=True)
+            embed.add_field(name="Type", value=str(before.type).title(), inline=True)
+            embed.set_footer(text=f"ID: {before.id}")
+            await logging_channel.send(embed=embed)
+"""
 @bot.command()
 @commands.has_permissions(ban_members=True)
 async def reload(ctx):
@@ -511,17 +559,16 @@ mem = meminfo.memory_info()[0] / float(2 ** 20)
 @bot.command(pass_context=True, aliases=['info', 'debug'])
 async def stats(ctx):
     """shows bot stats"""
-    bedem = discord.Embed(
+    embed = discord.Embed(
         title='System Resource Usage and statistics',
         description='See bot host statistics.', color=discord.Color.blurple())
-    bedem.add_field(name="Angel$IX version", value=BotVer, inline=False)
-    bedem.add_field(name='CPU Usage', value=f'`{psutil.cpu_percent()}%`', inline=True)
-    bedem.add_field(name='Memory Usage', value=f'`{mem:.0f}MB/{totmem:.0f}MB`', inline=True)
-    # bedem.add_field(name='CPU name', value=cpuinfo.get_cpu_info()['brand_raw'], inline=False) way too slow
-    bedem.add_field(name='Discord.py Version', value=f'`{d_version}`', inline=True)
-    bedem.add_field(name='Python Version', value=f'`{sys.version}`', inline=False)
-    bedem.add_field(name='YTdl Version', value=f'`{ytver.__version__}`', inline=False)
-    await ctx.reply(embed=bedem)
+    embed.add_field(name="Angel$IX version", value=BotVer, inline=False)
+    embed.add_field(name='CPU Usage', value=f'`{psutil.cpu_percent()}%`', inline=True)
+    embed.add_field(name='Memory Usage', value=f'`{mem:.0f}MB/{totmem:.0f}MB`', inline=True)
+    embed.add_field(name='Discord.py Version', value=f'`{d_version}`', inline=True)
+    embed.add_field(name='Python Version', value=f'`{sys.version}`', inline=False)
+    embed.add_field(name='YTdl Version', value=f'`{ytver.__version__}`', inline=False)
+    await ctx.reply(embed=embed)
 
 
 @bot.command()
@@ -546,11 +593,9 @@ async def IQ(ctx):
         color=discord.Color.blurple())
     await ctx.reply(embed=embed)
 
-
 @bot.command('roll')
-async def roll(ctx, *args):
+async def roll(ctx, args : str = ""):
     """Rolls a dice in user specified format"""
-    args = "".join(args)
 
     # sanitize input - remove trailing spaces
     args = args.strip()
@@ -564,16 +609,17 @@ async def roll(ctx, *args):
                         )
         return
 
-    diceToRoll = 1
-    numberOfSides = 6
+ 
+    try:
+        if args != "":
+            diceToRoll, numberOfSides = parseInput(args)
+        else: 
+            diceToRoll = 1
+            numberOfSides = 6
+    except ValueError:
+        await ctx.reply('I didn\'t understand your input: `' + args + '`.\n try `~roll help` for supported options')
+        return
 
-    if args:
-        try:
-            (diceToRoll, numberOfSides) = parseInput(args)
-        except ValueError:
-            embed = discord.Embed(title="Error", description=f"I didn't understand your input: `{args}`. Try `~roll help` for supported options", color=discord.Color.brand_red())
-            await ctx.reply(embed=embed)
-            return
 
     maxdicesize = 150
     maxsides = 100000000
@@ -589,12 +635,12 @@ async def roll(ctx, *args):
 
     results = []
 
-    for _ in range(0, diceToRoll):
-        results.insert(0, rolladice(numberOfSides))
+    for _ in range(diceToRoll):
+        results.append(rolladice(numberOfSides))
 
     resultString = ', '.join([f'`{result}`' for result in results])
 
-    embed = discord.Embed(title=f"{ctx.author.name} rolled {diceToRoll}d{numberOfSides}!", description=resultString, color=discord.Colour.blurple())
+    embed = discord.Embed(title=f"{ctx.author.name} rolled {diceToRoll}d{numberOfSides}!", description=resultString, color=discord.Color.blurple())
 
     await ctx.reply(embed=embed)
 
@@ -740,8 +786,6 @@ async def asbot(ctx, *, arg=None):
         await ctx.reply(embed=discord.Embed(
             title="`asbotmain()` state:"+f"{' **running**' if asbotmain.is_running() else ' **stopped**'}", color=discord.Color.blurple()))
 
-# FIXME: get rid of global
-
 
 
 @tasks.loop()
@@ -774,7 +818,7 @@ async def asbotmain():
     isinit = True
     while True:
         message = await aioconsole.ainput(f"[{channel1}] Message: ")
-        if message == "sel":
+        if message == "show":
             clsscr()
             await helperasbot()
             isinit = False
@@ -794,8 +838,8 @@ async def asbotmain():
 async def main():
     try:
         await bot.start(TOKEN)
-    except TypeError:
-        print("NO TOKEN FOUND, make sure that the env file is named '.env' and that there is a token present")
+    except discord.errors.LoginFailure:
+        print("NO TOKEN FOUND OR WRONG TOKEN SPECIFIED,\nmake sure that the env file is named '.env' and that there is a token present")
         await bot.close()
 if __name__ == '__main__':
     asyncio.get_event_loop().run_until_complete(main())

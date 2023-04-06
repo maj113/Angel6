@@ -8,7 +8,6 @@ import discord
 import yt_dlp
 import itertools
 from discord.ext import commands
-from async_timeout import timeout
 from yt_dlp import utils
 
 utils.bug_reports_message = lambda: ''
@@ -24,8 +23,13 @@ if sys.argv[-1] == "debug" or sys.argv[-1] == "d":
     DebuggingOpts["LogLevel"] = logging.DEBUG
 
 logging.basicConfig(
-    filename="log.txt", level=DebuggingOpts["LogLevel"],
-    format="%(asctime)s %(message)s", filemode='w', encoding='utf-8')
+    level=DebuggingOpts["LogLevel"],
+    format="%(asctime)s %(message)s",
+    handlers=[
+        logging.FileHandler("log.txt", mode="w", encoding="utf-8"),
+        logging.StreamHandler(sys.stdout)
+    ]
+)
 
 
 class VoiceError(Exception):
@@ -54,7 +58,7 @@ class YTDLSource(discord.FFmpegOpusAudio):
 
     FFMPEG_OPTIONS = {
         'before_options': '-re -reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 15',
-        'options': '-vn -sn -dn -c:a libopus -ar 48000 -b:a 512k -threads 16',
+        'options': '-vn -sn -dn -c:a libopus -ar 48000 -b:a 512k -threads 16 -loglevel debug',
     }
 
     ytdl = yt_dlp.YoutubeDL(YTDL_OPTIONS)
@@ -259,13 +263,13 @@ class VoiceState:
 async def _checkloop(ctx):
     if ctx.voice_state.loop:
         ctx.voice_state.loop = False
-        await asyncio.sleep(1)
-        ctx.voice_state.skip()
+        await ctx.voice_state.skip()
         await ctx.message.add_reaction('⏭')
-        await asyncio.sleep(1)
         ctx.voice_state.loop = True
-        return
-    else: ctx.voice_state.skip()
+        return True
+    else:
+        await ctx.voice_state.skip()
+        return False
 
 class Music(commands.Cog):
     def __init__(self, bot: commands.Bot):
@@ -305,7 +309,9 @@ class Music(commands.Cog):
         if ctx.voice_state.voice:
             await ctx.voice_state.voice.move_to(destination)
             return
-
+        if ctx.voice_client and ctx.voice_client.channel != destination:
+            await ctx.send(f"I'm already connected to a voice channel ({ctx.voice_client.channel.name}).")
+            return
         ctx.voice_state.voice = await destination.connect()
 
     @commands.command(name='summon')
@@ -354,13 +360,14 @@ class Music(commands.Cog):
             await ctx.reply('I am not currently connected to a voice channel.')
             return
 
-        if ctx.voice_state.is_playing and not ctx.voice_state.voice.is_paused():
-            if ctx.voice_state.voice.is_playing():
-                ctx.voice_state.voice.pause()
-                await ctx.message.add_reaction('⏯')
-            elif ctx.voice_state.voice.is_paused():
-                ctx.voice_state.voice.resume()
-                await ctx.message.add_reaction('⏯')
+        if ctx.voice_state.is_playing() and ctx.voice_state.voice.is_paused():
+            ctx.voice_state.voice.resume()
+            await ctx.message.add_reaction('⏯')
+        elif ctx.voice_state.is_playing():
+            ctx.voice_state.voice.pause()
+            await ctx.message.add_reaction('⏯')
+        else:
+            await ctx.reply('I am not currently playing anything.')
 
     @commands.command(name='stop')
     @commands.has_permissions(manage_guild=True)
@@ -386,14 +393,18 @@ class Music(commands.Cog):
         if voter == ctx.voice_state.current.requester or ctx.author.guild_permissions.manage_messages:
             await ctx.message.add_reaction('⏭')
             # Check if loop is enabled and temporarily disable it to allow the skip command to work
-            await _checkloop(ctx)
+            skipped = _checkloop(ctx)
+            if skipped:
+                await ctx.reply('Skipped song due to loop being enabled.')
         elif voter.id not in ctx.voice_state.skip_votes:
             ctx.voice_state.skip_votes.add(voter.id)
             total_votes = len(ctx.voice_state.skip_votes)
 
             if total_votes >= 3:
                 await ctx.message.add_reaction('⏭')
-                await _checkloop(ctx)
+                skipped = _checkloop(ctx)
+                if skipped:
+                    await ctx.reply('Skipped song due to loop being enabled.')
             else:
                 await ctx.reply('Skip vote added, currently at **{}/3**'.format(total_votes))
 
@@ -414,7 +425,10 @@ class Music(commands.Cog):
             return await ctx.reply('Page number cannot be less than 1.')
 
         items_per_page = 10
-        pages = math.ceil(len(ctx.voice_state.songs) / items_per_page)
+        try:
+            pages = math.ceil(len(ctx.voice_state.songs) / items_per_page)
+        except TypeError:
+            return await ctx.reply('Invalid page number!')
 
         start = (page - 1) * items_per_page
         end = start + items_per_page
