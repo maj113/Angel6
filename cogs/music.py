@@ -426,7 +426,10 @@ class Music(commands.Cog):
             return await ctx.reply('Page number cannot be less than 1.')
 
         items_per_page = 10
+        try:
         pages = math.ceil(len(ctx.voice_state.songs) / items_per_page)
+        except TypeError:
+            return await ctx.reply('Invalid page number!')
 
         start = (page - 1) * items_per_page
         end = start + items_per_page
