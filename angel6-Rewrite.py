@@ -576,11 +576,9 @@ async def IQ(ctx):
         color=discord.Color.blurple())
     await ctx.reply(embed=embed)
 
-
 @bot.command('roll')
-async def roll(ctx, *args):
+async def roll(ctx, args : str = ""):
     """Rolls a dice in user specified format"""
-    args = "".join(args)
 
     # sanitize input - remove trailing spaces
     args = args.strip()
@@ -594,13 +592,13 @@ async def roll(ctx, *args):
                         )
         return
 
+    try:
+        if args != "":
+            diceToRoll, numberOfSides = parseInput(args)
+        else: 
     diceToRoll = 1
     numberOfSides = 6
-
-    if args:
-        try:
-            (diceToRoll, numberOfSides) = parseInput(args)
-        except:
+    except ValueError:
             await ctx.reply('I didn\'t understand your input: `' + args + '`.\n try `~roll help` for supported options')
             return
 
@@ -616,12 +614,12 @@ async def roll(ctx, *args):
 
     results = []
 
-    for _ in range(0, diceToRoll):
-        results.insert(0, rolladice(numberOfSides))
+    for _ in range(diceToRoll):
+        results.append(rolladice(numberOfSides))
 
     resultString = ', '.join([f'`{result}`' for result in results])
 
-    embed = discord.Embed(title=f"{ctx.author.name} rolled {diceToRoll}d{numberOfSides}!", description=resultString, color=discord.Colour.blurple())
+    embed = discord.Embed(title=f"{ctx.author.name} rolled {diceToRoll}d{numberOfSides}!", description=resultString, color=discord.Color.blurple())
 
     await ctx.reply(embed=embed)
 
