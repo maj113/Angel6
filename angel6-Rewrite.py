@@ -764,8 +764,6 @@ async def asbot(ctx, *, arg=None):
         await ctx.reply(embed=discord.Embed(
             title="`asbotmain()` state:"+f"{' **running**' if asbotmain.is_running() else ' **stopped**'}", color=discord.Color.blurple()))
 
-# FIXME: get rid of global
-
 
 
 @tasks.loop()
@@ -798,7 +796,7 @@ async def asbotmain():
     isinit = True
     while True:
         message = await aioconsole.ainput(f"[{channel1}] Message: ")
-        if message == "sel":
+        if message == "show":
             clsscr()
             await helperasbot()
             isinit = False
