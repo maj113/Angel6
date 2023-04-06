@@ -148,6 +148,19 @@ async def on_message_delete(message):
     deleted.timestamp = message.created_at
     await channel.send(embed=deleted)
 
+@bot.event
+async def on_guild_channel_create(channel):
+    logging_channel = bot.get_channel(int(LOG_CHAN_ID))
+    if logging_channel:
+        async for entry in channel.guild.audit_logs(limit=1, action=discord.AuditLogAction.channel_create):
+            if entry.target.id == channel.id:
+                embed = discord.Embed(title="Channel created", color=discord.Colour.brand_green())
+                embed.add_field(name="Name", value=channel.name, inline=True)
+                embed.add_field(name="Type", value=str(channel.type).title(), inline=True)
+                embed.add_field(name="Category", value=channel.category.name if channel.category else "None", inline=True)
+                embed.set_footer(text=f"ID: {channel.id} • Created by {entry.user.display_name}", icon_url=entry.user.avatar.url)
+                await logging_channel.send(embed=embed)
+                break
 
 @bot.command()
 @commands.has_permissions(ban_members=True)
