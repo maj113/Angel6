@@ -24,8 +24,13 @@ if sys.argv[-1] == "debug" or sys.argv[-1] == "d":
     DebuggingOpts["LogLevel"] = logging.DEBUG
 
 logging.basicConfig(
-    filename="log.txt", level=DebuggingOpts["LogLevel"],
-    format="%(asctime)s %(message)s", filemode='w', encoding='utf-8')
+    level=DebuggingOpts["LogLevel"],
+    format="%(asctime)s %(message)s",
+    handlers=[
+        logging.FileHandler("log.txt", mode="w", encoding="utf-8"),
+        logging.StreamHandler(sys.stdout)
+    ]
+)
 
 
 class VoiceError(Exception):
