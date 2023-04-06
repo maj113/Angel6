@@ -816,8 +816,8 @@ async def asbotmain():
 async def main():
     try:
         await bot.start(TOKEN)
-    except TypeError:
-        print("NO TOKEN FOUND, make sure that the env file is named '.env' and that there is a token present")
+    except discord.errors.LoginFailure:
+        print("NO TOKEN FOUND OR WRONG TOKEN SPECIFIED,\nmake sure that the env file is named '.env' and that there is a token present")
         await bot.close()
 if __name__ == '__main__':
     asyncio.get_event_loop().run_until_complete(main())
