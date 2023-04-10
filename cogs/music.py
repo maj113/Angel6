@@ -1,6 +1,5 @@
 import logging
 import asyncio
-import functools
 import math
 import random
 import sys
