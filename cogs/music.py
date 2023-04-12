@@ -194,7 +194,7 @@ class VoiceState:
         self.exists = True
         self._loop = False
         self.skip_votes = set()
-        self.audio_player = bot.loop.create_task(self.audio_player_task())
+        self.audio_player = asyncio.create_task(self.audio_player_task())
 
     def __del__(self):
         self.audio_player.cancel()
