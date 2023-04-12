@@ -117,19 +117,17 @@ class YTDLSource(discord.FFmpegOpusAudio):
 
         minutes, seconds = divmod(duration, 60)
         hours, minutes = divmod(minutes, 60)
-        days, hours = divmod(hours, 24)
-
-        duration_formated = []
+        days, hours = hours // 24, hours % 24
+        duration_formatted = []
         if days > 0:
-            duration_formated.append(f'{days}d')
+            duration_formatted.append(f'{days}d')
         if hours > 0:
-            duration_formated.append(f'{hours}h')
+            duration_formatted.append(f'{hours}h')
         if minutes > 0:
             duration_formated.append(f'{minutes}m')
         if seconds > 0:
-            duration_formated.append(f'{seconds}s')
-
-        return " ".join(duration_formated)
+            duration_formatted.append(f'{seconds}s')
+        return " ".join(duration_formatted)
 
 
 class Song:
