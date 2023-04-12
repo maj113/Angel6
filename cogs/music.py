@@ -480,8 +480,7 @@ class Music(commands.Cog):
             await ctx.reply(f"An error occurred while processing this request: {err}")
         else:
             if not ctx.voice_state.voice:
-                await ctx.invoke(self._join)
-
+                await ctx.invoke(self._join) #FIXME: this should be optimized if possible otherwise remove this
             song = Song(source)
             await ctx.voice_state.songs.put(song)
             await ctx.reply(f'Enqueued {source}')
