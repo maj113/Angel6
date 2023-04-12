@@ -246,15 +246,13 @@ class VoiceState:
             self.voice = None
 
 
-async def _checkloop(ctx):
-    if ctx.voice_state.loop:
-        ctx.voice_state.loop = False
-        await ctx.voice_state.skip()
+async def checkloop(ctx):
+    should_disable_loop = not ctx.voice_state.loop
+    if should_disable_loop:
+        ctx.voice_state.skip()
         await ctx.message.add_reaction('⏭')
-        ctx.voice_state.loop = True
         return True
     else:
-        await ctx.voice_state.skip()
         return False
 
 class Music(commands.Cog):
@@ -379,7 +377,7 @@ class Music(commands.Cog):
         if voter == ctx.voice_state.current.requester or ctx.author.guild_permissions.manage_messages:
             await ctx.message.add_reaction('⏭')
             # Check if loop is enabled and temporarily disable it to allow the skip command to work
-            skipped = _checkloop(ctx)
+            skipped = checkloop(ctx)
             if skipped:
                 await ctx.reply('Skipped song due to loop being enabled.')
         elif voter.id not in ctx.voice_state.skip_votes:
@@ -388,7 +386,7 @@ class Music(commands.Cog):
 
             if total_votes >= 3:
                 await ctx.message.add_reaction('⏭')
-                skipped = _checkloop(ctx)
+                skipped = checkloop(ctx)
                 if skipped:
                     await ctx.reply('Skipped song due to loop being enabled.')
             else:
