@@ -124,7 +124,7 @@ class YTDLSource(discord.FFmpegOpusAudio):
         if hours > 0:
             duration_formatted.append(f'{hours}h')
         if minutes > 0:
-            duration_formated.append(f'{minutes}m')
+            duration_formatted.append(f'{minutes}m')
         if seconds > 0:
             duration_formatted.append(f'{seconds}s')
         return " ".join(duration_formatted)
