@@ -213,21 +213,15 @@ class VoiceState:
 
     async def audio_player_task(self):
         while True:
-            self.next.clear()
+            self.next.clear() #FIXME: significant performance slowdowns here
             self.now = None
-            try:
-                self.current = await asyncio.wait_for(self.songs.get(), timeout=180)  # 3 minutes
-            except asyncio.TimeoutError:
-                asyncio.create_task(self.stop())
-                self.exists = False
-                return
-
+            self.current = await self.songs.get() #FIXME: Readd timeout here
             self.now = await discord.FFmpegOpusAudio.from_probe(self.current.source.stream_url, **YTDLSource.FFMPEG_OPTIONS)
-
+            
             if not self.loop:
                 await self.current.source.channel.send(embed=self.current.create_embed())
                 self.voice.play(self.now, after=self.play_next_song)
-
+            
             elif self.loop:
                 self.voice.play(self.now, after=self.play_next_song)
 
