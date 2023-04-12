@@ -91,29 +91,24 @@ class YTDLSource(discord.FFmpegOpusAudio):
     async def create_source(cls, ctx: commands.Context, search: str, *, loop: asyncio.AbstractEventLoop = None):
         loop = loop or asyncio.get_event_loop()
         search = search.strip().replace("<", "").replace(">", "")
-        data = await asyncio.to_thread(cls.ytdl.extract_info, search, download=False, process=False)
-
+        data = await asyncio.to_thread(cls.ytdl.extract_info, search, False, False)
         if data is None:
-            raise YTDLError(
-                f'Couldn\'t find anything that matches `{search}`')
+            raise YTDLError(f"Couldn't find anything that matches `{search}`")
 
-        entries = data.get('entries')
+        entries = data.get("entries")
         process_info = entries[0] if entries else data
-
-        webpage_url = process_info['webpage_url']
-        partial = functools.partial(cls.ytdl.extract_info, webpage_url, download=False)
-        processed_info = await asyncio.to_thread(partial)
-
+        webpage_url = process_info["webpage_url"]
+        processed_info = await asyncio.to_thread(cls.ytdl.extract_info, webpage_url, False) #FIXME: slowdowns here... should improve till release 2.5
         if processed_info is None:
-            raise YTDLError(f'Couldn\'t fetch `{webpage_url}`')
+            raise YTDLError(f"Couldn't fetch `{webpage_url}`")
 
         entries = processed_info.get('entries')
         info = entries[0] if entries else processed_info
-
-        return cls(ctx, discord.FFmpegOpusAudio(
-            info['url'],
-            **cls.FFMPEG_OPTIONS),
-            data=info)
+        return cls(
+            ctx,
+            discord.FFmpegOpusAudio(info["url"], **cls.FFMPEG_OPTIONS),
+            data=info,
+        )
 
     @staticmethod
     def parse_duration(duration: int):
@@ -145,21 +140,21 @@ class Song:
         self.requester = source.requester
 
     def create_embed(self):
-        embed = (
-            discord.
-            Embed(
-                title='Now playing',
-                description=f'```css\n{self.source.title}\n```',
-                color=discord.Color.blurple())
-            .add_field(name='Duration', value=self.source.duration)
-            .add_field(name='Requested by', value=self.requester.mention)
-            .add_field(
-                name='Uploader',
-                value=f"[{self.source.uploader}]({self.source.uploader_url})")
-            .add_field(name='URL', value=f'[Click]({self.source.url})')
-            .set_thumbnail(url=self.source.thumbnail)
-            .set_author(name=self.requester.name, icon_url=self.requester.avatar.url))
-        return embed
+        embed_dict = {
+            'title': 'Now playing',
+            'description': f'```css\n{self.source.title}\n```',
+            'color': discord.Color.blurple().value,
+            'fields': [
+                {'name': 'Duration', 'value': self.source.duration},
+                {'name': 'Requested by', 'value': self.requester.mention},
+                {'name': 'Uploader', 'value': f"[{self.source.uploader}]({self.source.uploader_url})"},
+                {'name': 'URL', 'value': f'[Click]({self.source.url})'}
+            ],
+            'thumbnail': {'url': self.source.thumbnail},
+            'author': {'name': self.requester.name, 'icon_url': self.requester.avatar.url}
+        }
+        print("embed2")
+        return discord.Embed.from_dict(embed_dict)
 
 
 class SongQueue(asyncio.Queue):
