@@ -156,21 +156,21 @@ class Song:
         print("embed2")
         return discord.Embed.from_dict(embed_dict)
 
+class SongQueue(asyncio.LifoQueue):
 
-class SongQueue(asyncio.Queue):
     def __getitem__(self, item):
         if isinstance(item, slice):
-            return list(
-                itertools.islice(
-                    self._queue, item.start, item.stop, item.step))
-
+            return list(itertools.islice(self._queue, item.start, item.stop, item.step))
         return self._queue[item]
 
     def __iter__(self):
         return self._queue.__iter__()
 
+    def shuffle(self):
+        random.shuffle(self._queue)
+    
     def __len__(self):
-        return self.qsize()
+        return len(self._queue)
 
     def clear(self):
         self._queue.clear()
