@@ -767,25 +767,23 @@ async def helperasbot():
 @commands.has_permissions(ban_members=True)
 async def asbot(ctx, *, arg=None):
     """start or stop the asbot function"""
-    if arg == "stop":
-        if asbotmain.is_running():
-            await ctx.reply("Stopped task **`asbotmain()`** successfully")
-            clsscr()
-            print(f"Warning: asbotmain() was stopped externally by {ctx.author} !!!")
-            asbotmain.cancel()
-        else:
-            await ctx.reply("**`asbotmain()`** is not running!")
-    elif arg == "start":
-        if asbotmain.is_running():
-            await ctx.reply("**`asbotmain()`** is already running!")
-        else:
-            await ctx.reply("Started task **`asbotmain()`** successfully")
-            print(f"Warning: asbotmain() was started externally by {ctx.author} !!!")
-            asbotmain.start()
+    if arg not in ('start', 'stop', None):
+        await ctx.reply("Invalid argument. Use `start` or `stop`.")
+    elif arg == "stop" and asbotmain.is_running():
+        await ctx.reply("Stopped task **`asbotmain()`** successfully")
+        clsscr()
+        print(f"Warning: asbotmain() was stopped externally by {ctx.author} !!!")
+        asbotmain.cancel()
+    elif arg == "start" and not asbotmain.is_running():
+        await ctx.reply("Started task **`asbotmain()`** successfully")
+        print(f"Warning: asbotmain() was started externally by {ctx.author} !!!")
+        asbotmain.start()
+    elif arg == None:
+        await ctx.reply(embed=discord.Embed(
+            title="`asbotmain()` state:"+f"{'**running**' if asbotmain.is_running() else '**stopped**'}", color=discord.Color.blurple()))
     else:
         await ctx.reply(embed=discord.Embed(
-            title="`asbotmain()` state:"+f"{' **running**' if asbotmain.is_running() else ' **stopped**'}", color=discord.Color.blurple()))
-
+            title=f"⚠️ Warning! Cannot {arg} the asbot extension", description=f"The extension is already {'**running**' if asbotmain.is_running() else '**stopped**'}", color=discord.Color.yellow()))
 
 
 @tasks.loop()
