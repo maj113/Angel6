@@ -176,7 +176,7 @@ async def on_guild_channel_create(channel):
                 embed.add_field(name="Name", value=channel.name, inline=True)
                 embed.add_field(name="Type", value=str(channel.type).title(), inline=True)
                 embed.add_field(name="Category", value=channel.category.name if channel.category else "None", inline=True)
-                embed.set_footer(text=f"ID: {channel.id} • Created by {entry.user.display_name}", icon_url=entry.user.avatar.url)
+                embed.set_footer(text=f"ID: {channel.id} • Created by {entry.user}", icon_url=entry.user.avatar.url)
                 await logging_channel.send(embed=embed)
                 break
 
