@@ -151,7 +151,6 @@ class Song:
             'thumbnail': {'url': self.source.thumbnail},
             'author': {'name': self.requester.name, 'icon_url': self.requester.avatar.url}
         }
-        print("embed2")
         return discord.Embed.from_dict(embed_dict)
 
 class SongQueue(asyncio.LifoQueue):
