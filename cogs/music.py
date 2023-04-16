@@ -172,9 +172,6 @@ class SongQueue(asyncio.LifoQueue):
     def clear(self):
         self._queue.clear()
 
-    def shuffle(self):
-        random.shuffle(self._queue)
-
     def remove(self, index: int):
         del self._queue[index]
 
