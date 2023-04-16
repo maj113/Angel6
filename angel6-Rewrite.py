@@ -3,12 +3,12 @@ import psutil
 import datetime
 import random
 import sys
-import discord
 import os
+import nextcord as discord
 import aioconsole
 import requests
-from discord import __version__ as d_version
-from discord.ext import commands, tasks
+from nextcord import __version__ as d_version
+from nextcord.ext import commands, tasks
 from dotenv import load_dotenv
 from yt_dlp import version as ytver
 
@@ -23,7 +23,6 @@ creditsimage = "https://cdn.discordapp.com/attachments/1083114844875669604/10831
 intents = discord.Intents.all()
 bot = commands.Bot(command_prefix='~', activity=discord.Game(
     name="Greatest bot alive"), intents=intents)
-
 
 async def set_env_var(env_var_name, prompt_text):
     value = os.getenv(env_var_name)
@@ -82,7 +81,7 @@ async def on_ready():
     api_latency = f'{(bot.latency * 1000):.0f}ms'
     embed.add_field(name=f'API Latency: {api_latency}', value='', inline=False)
 
-    # Get the member object for the bot user in the guild and add it to the embed
+    # Get the member object for the bot creator in the guild and add it to the embed
     guild = bot.guilds[0]
     bot_member = guild.get_member(347387857574428676)
     footer_text = f'Bot made by {bot_member.name}'
@@ -94,7 +93,7 @@ async def on_ready():
     await log_channel.send(creditsimage)
     if not asbotmain.is_running():
         await asbotmain.start()
-bot.load_extension("cogs", recursive=True)
+bot.load_extension("cogs.music")
 
 
 @bot.event
@@ -204,7 +203,7 @@ async def on_user_update(before, after):
             embed.set_thumbnail(url=after.avatar_url)
             embed.set_footer(text=f"ID: {before.id}")
             await logging_channel.send(embed=embed)
-"""
+
 @bot.event
 async def on_guild_channel_update(before, after):
     logging_channel = bot.get_channel(int(LOG_CHAN_ID))
