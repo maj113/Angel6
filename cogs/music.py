@@ -3,10 +3,10 @@ import asyncio
 import math
 import random
 import sys
-import discord
+import nextcord as discord
 import yt_dlp
 import itertools
-from discord.ext import commands
+from nextcord.ext import commands
 from yt_dlp import utils
 
 utils.bug_reports_message = lambda: ''
