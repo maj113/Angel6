@@ -145,7 +145,7 @@ class Song:
             'fields': [
                 {'name': 'Duration', 'value': self.source.duration},
                 {'name': 'Requested by', 'value': self.requester.mention},
-                {'name': 'Uploader', 'value': f"[{self.source.uploader}]({self.source.uploader_url})"},
+                {'name': 'Uploader', 'value': f"[{self.source.uploader}]({self.source.uploader_url})", 'inline': True},
                 {'name': 'URL', 'value': f'[Click]({self.source.url})'}
             ],
             'thumbnail': {'url': self.source.thumbnail},
