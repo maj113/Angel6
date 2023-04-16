@@ -106,7 +106,7 @@ class YTDLSource(discord.FFmpegOpusAudio):
         info = entries[0] if entries else processed_info
         return cls(
             ctx,
-            discord.FFmpegOpusAudio(info["url"], **cls.FFMPEG_OPTIONS),
+            discord.FFmpegOpusAudio(info["url"], before_options=YTDLSource.FFMPEG_OPTIONS['before_options'], options=YTDLSource.FFMPEG_OPTIONS['options']),
             data=info,
         )
 
