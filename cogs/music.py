@@ -85,7 +85,7 @@ class YTDLSource(discord.FFmpegOpusAudio):
         self.stream_url = data.get('url')
 
     def __str__(self):
-        return '**{0.title}** by **{0.uploader}**'.format(self)
+        return f"**{self.title}** by **{self.uploader}**"
 
     @classmethod
     async def create_source(cls, ctx: commands.Context, search: str, *, loop: asyncio.AbstractEventLoop = None):
