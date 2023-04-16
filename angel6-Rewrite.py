@@ -206,15 +206,36 @@ async def on_user_update(before, after):
 
 @bot.event
 async def on_guild_channel_update(before, after):
-    logging_channel = bot.get_channel(int(LOG_CHAN_ID))
-    if logging_channel:
-        if before.overwrites != after.overwrites:
-            embed = discord.Embed(title="Channel permissions updated", color=discord.Colour.blurple())
-            embed.add_field(name="Channel", value=f"#{before.name}", inline=True)
-            embed.add_field(name="Type", value=str(before.type).title(), inline=True)
-            embed.set_footer(text=f"ID: {before.id}")
-            await logging_channel.send(embed=embed)
-"""
+    log_channel = bot.get_channel(int(LOG_CHAN_ID))
+    async for entry in before.guild.audit_logs(limit=1, action=discord.AuditLogAction.channel_update):
+        if entry.target.id == before.id:
+            author = entry.user
+            embed = discord.Embed(title="Channel Update", color=discord.Color.blurple())
+            embed.add_field(name="Before", value=before.name)
+            embed.add_field(name="After", value=after.name)
+            embed.set_footer(text=f"Updated by: {author}", icon_url=author.avatar.url)
+            
+            await log_channel.send(embed=embed)
+
+@bot.event
+async def on_guild_role_update(before, after):
+    log_channel = bot.get_channel(int(LOG_CHAN_ID))
+
+    embed = discord.Embed(title=f"Role Updated: `{after.name}`", color=discord.Color.yellow())
+
+    if before.name != after.name:
+        embed.add_field(name="Name changed", value=f"{before.name} -> {after.name}", inline=False)
+
+    if before.permissions != after.permissions:
+        permission_changes = []
+        for perm, value in before.permissions:
+            if getattr(after.permissions, perm) != value:
+                permission_changes.append(f"{perm.replace('_', ' ').title()}: {value} -> {getattr(after.permissions, perm)}")
+        if permission_changes:
+            embed.add_field(name="Permissions Changed", value="\n".join(permission_changes), inline=False)
+
+    await log_channel.send(embed=embed)
+
 @bot.command()
 @commands.has_permissions(ban_members=True)
 async def reload(ctx):
