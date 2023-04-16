@@ -210,7 +210,7 @@ class VoiceState:
             self.next.clear() #FIXME: significant performance slowdowns here
             self.now = None
             self.current = await self.songs.get() #FIXME: Readd timeout here
-            self.now = await discord.FFmpegOpusAudio.from_probe(self.current.source.stream_url, **YTDLSource.FFMPEG_OPTIONS)
+            self.now = await discord.FFmpegOpusAudio.from_probe(self.current.source.stream_url, before_options=YTDLSource.FFMPEG_OPTIONS['before_options'], options=YTDLSource.FFMPEG_OPTIONS['options'])
             
             if not self.loop:
                 await self.current.source.channel.send(embed=self.current.create_embed())
@@ -243,13 +243,12 @@ class VoiceState:
 
 
 async def checkloop(ctx):
-    should_disable_loop = not ctx.voice_state.loop
+    should_disable_loop = ctx.voice_state.loop
+    print(ctx.voice_state.loop)
     if should_disable_loop:
-        ctx.voice_state.skip()
+        ctx.voice_state.loop = False
         await ctx.message.add_reaction('⏭')
-        return True
-    else:
-        return False
+    await ctx.voice_state.skip()
 
 class Music(commands.Cog):
     def __init__(self, bot: commands.Bot):
@@ -279,7 +278,7 @@ class Music(commands.Cog):
         ctx.voice_state = self.get_voice_state(ctx)
 
     async def cog_command_error(self, ctx: commands.Context, error: commands.CommandError):
-        await ctx.reply('An error occurred: {}'.format(str(error)))
+        await ctx.reply(f"An error occurred: {error}")
 
     @commands.command(name='join', invoke_without_subcommand=True)
     async def _join(self, ctx: commands.Context):
@@ -373,21 +372,17 @@ class Music(commands.Cog):
         if voter == ctx.voice_state.current.requester or ctx.author.guild_permissions.manage_messages:
             await ctx.message.add_reaction('⏭')
             # Check if loop is enabled and temporarily disable it to allow the skip command to work
-            skipped = checkloop(ctx)
-            if skipped:
-                await ctx.reply('Skipped song due to loop being enabled.')
+            await checkloop(ctx)
+
         elif voter.id not in ctx.voice_state.skip_votes:
             ctx.voice_state.skip_votes.add(voter.id)
             total_votes = len(ctx.voice_state.skip_votes)
 
             if total_votes >= 3:
                 await ctx.message.add_reaction('⏭')
-                skipped = checkloop(ctx)
-                if skipped:
-                    await ctx.reply('Skipped song due to loop being enabled.')
+                await checkloop(ctx)
             else:
-                await ctx.reply('Skip vote added, currently at **{}/3**'.format(total_votes))
-
+                await ctx.reply(f"Skip vote added, currently at **{total_votes}/3**")
         else:
             await ctx.reply('You have already voted to skip this song.')
 
@@ -441,7 +436,10 @@ class Music(commands.Cog):
         if len(ctx.voice_state.songs) == 0:
             return await ctx.reply('Empty queue.')
 
-        ctx.voice_state.songs.remove(index - 1)
+        if index < 1 or index > len(ctx.voice_state.songs):
+            return await ctx.reply('Invalid index.')
+
+        ctx.voice_state.songs.pop(index - 1)
         await ctx.message.add_reaction('✅')
 
     @commands.command(name='loop')
