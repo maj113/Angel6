@@ -336,24 +336,35 @@ async def userinfo(ctx, *, user: discord.Member = None):
 
 @bot.command()
 async def serverinfo(ctx):
-    """displays server information"""
+    """Displays server information."""
     name = str(ctx.guild.name)
     description = f"Official {ctx.guild.name} server"
     owner = str(ctx.guild.owner)
     servid = str(ctx.guild.id)
     memberCount = str(ctx.guild.member_count)
+    channels = f"Text: {len(ctx.guild.text_channels)}\nVoice: {len(ctx.guild.voice_channels)}"
+    roles = str(len(ctx.guild.roles))
+    created = f"{ctx.guild.created_at:%B %d, %Y, %I:%M %p}"
     icon = str(ctx.guild.icon.url) if ctx.guild.icon else None
+
     embed = discord.Embed(
         title=name + " <3",
         description=description,
         color=discord.Color.blurple()
     )
+
     if icon:
         embed.set_thumbnail(url=icon)
+
     embed.add_field(name="Owner", value=owner, inline=True)
     embed.add_field(name="Server ID", value=servid, inline=True)
+    embed.add_field(name="Channels", value=channels, inline=True)
+    embed.add_field(name="Roles", value=roles, inline=True)
     embed.add_field(name="Member Count", value=memberCount, inline=True)
-    embed.add_field(name="Created", value=f"{ctx.guild.created_at:%B %d, %Y, %I:%M %p}", inline=True)
+    embed.add_field(name="Created", value=created, inline=True)
+
+    embed.set_footer(text="Thanks for being a part of our server!", icon_url=ctx.author.avatar.url)
+    
     await ctx.reply(embed=embed)
 
 
