@@ -777,7 +777,9 @@ async def cat(ctx):
     try:
         caturl = requests.get('https://api.thecatapi.com/v1/images/search')
         catimg = caturl.json()[0]['url']
-        await ctx.reply(catimg)
+        embed = discord.Embed(title="🐱 Catto :D", color=discord.Color.blurple())
+        embed.set_image(url=catimg)
+        await ctx.reply(embed=embed)
     except Exception as e:
         print(e)
         await ctx.reply("Failed to fetch cat image. Please try again later.")
