@@ -374,7 +374,7 @@ async def kick(ctx, member: discord.Member, *, reason=None):
     """kicks a user"""
 
     if member == ctx.author:
-        await ctx.reply(f"Can't kick yourself idiot")
+        await ctx.reply(f"Can't kick yourself! ...baka!!")
     elif member.top_role >= ctx.author.top_role:
         await ctx.reply(f"Yo, you can only kick members lower than yourself lmao ")
     else:
