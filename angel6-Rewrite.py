@@ -578,7 +578,7 @@ async def uptime(ctx):
     embed = discord.Embed(colour=discord.Color.blurple())
     embed.add_field(name="Uptime", value=text)
     embed.add_field(name="Bot started at", value=start_time.strftime("%Y-%m-%d %H:%M:%S"))
-    embed.set_footer(text="Angel$IX")
+    embed.set_footer(text="Angel$IX", icon_url=bot.user.avatar.url)
     await ctx.reply(embed=embed)
 
 # im proud of this
