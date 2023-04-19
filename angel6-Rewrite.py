@@ -788,10 +788,10 @@ def clsscr():
 
 
 async def helperasbot():
-    for server in bot.guilds:
-        text_channels = server.text_channels
-        for channel in text_channels:
-            print(f"    {channel.name} : {channel.id}")
+    server = bot.guilds[0]
+    text_channels = server.text_channels
+    for channel in text_channels:
+        print(f"    {channel.name} : {channel.id}")
 
 
 @bot.command(pass_context=True)
