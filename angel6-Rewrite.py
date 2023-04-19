@@ -825,7 +825,7 @@ async def asbotmain():
 
     Usage: 
         - Input the channel ID to start sending messages.
-        - Type "sel" to select a different channel.
+        - Type "show" to select a different channel.
         - Type "asbotstop" to stop sending messages.
 
     Prints error messages if the input is invalid or the channel is a voice channel.
