@@ -44,8 +44,7 @@ async def set_env_var(env_var_name, prompt_text):
             envfile.write(changed)
             envfile.truncate()
         return True
-    else:
-        return False
+    return False
 
 
 @bot.event
@@ -662,21 +661,21 @@ async def role(ctx, action: str, user: discord.Member, role: discord.Role):
         )
 
 
-start_time = datetime.datetime.now()
+bot_uptime = datetime.datetime.now()
 
 
 @bot.command(pass_context=True)
 async def uptime(ctx):
     """shows bot uptime"""
     current_time = datetime.datetime.now()
-    difference = current_time - start_time
+    difference = current_time - bot_uptime
     hours, remainder = divmod(int(difference.total_seconds()), 3600)
     minutes, seconds = divmod(remainder, 60)
     text = f"{hours}h {minutes}m {seconds}s"
     embed = discord.Embed(colour=discord.Color.blurple())
     embed.add_field(name="Uptime", value=text)
     embed.add_field(
-        name="Bot started at", value=start_time.strftime("%Y-%m-%d %H:%M:%S")
+        name="Bot started at", value=bot_uptime.strftime("%Y-%m-%d %H:%M:%S")
     )
     embed.set_footer(text="Angel$IX", icon_url=bot.user.avatar.url)
     await ctx.reply(embed=embed)
@@ -915,7 +914,7 @@ async def gif(ctx, gif_type=""):
 async def cat(ctx):
     """sends a random cat image"""
     try:
-        caturl = requests.get("https://api.thecatapi.com/v1/images/search")
+        caturl = requests.get("https://api.thecatapi.com/v1/images/search", timeout=5)
         catimg = caturl.json()[0]["url"]
         embed = discord.Embed(title="🐱 Catto :D", color=discord.Color.blurple())
         embed.set_image(url=catimg)
@@ -981,7 +980,6 @@ async def asbotmain():
     Prints error messages if the input is invalid or the channel is a voice channel.
     """
 
-    isinit = False
     chanID2 = await aioconsole.ainput("Input channel ID: ")
     if chanID2 == "show":
         clsscr()
