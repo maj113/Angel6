@@ -994,13 +994,11 @@ async def asbotmain():
     except Exception:
         print("Error; Wrong ID provided or an unexpected exception occurred, try again")
         return
-    isinit = True
     while True:
         message = await aioconsole.ainput(f"[{channel1}] Message: ")
         if message == "show":
             clsscr()
             await helperasbot()
-            isinit = False
             break
         if message == "asbotstop":
             asbotmain.cancel()
