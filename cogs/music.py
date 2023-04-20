@@ -3,9 +3,9 @@ import asyncio
 import math
 import random
 import sys
+import itertools
 import nextcord as discord
 import yt_dlp
-import itertools
 from nextcord.ext import commands
 from yt_dlp import utils
 
@@ -489,7 +489,7 @@ class Music(commands.Cog):
 
         # Inverse boolean value to loop and unloop.
         ctx.voice_state.loop = not ctx.voice_state.loop
-        if ctx.voice_state.loop == True:
+        if ctx.voice_state.loop is True:
             await ctx.message.add_reaction("✅")
         else:
             await ctx.message.add_reaction("❎")  # when looping disabled

@@ -1,9 +1,9 @@
 import asyncio
-import psutil
 import datetime
 import random
 import sys
 import os
+import psutil
 import nextcord as discord
 import aioconsole
 import requests
@@ -35,7 +35,7 @@ async def set_env_var(env_var_name, prompt_text):
         with open(".env", "a") as envfile:
             envfile.write(f"\n{env_var_name}={value}")
         return True
-    elif value == "":
+    if value == "":
         value = int(input(prompt_text))
         with open(".env", "r+") as envfile:
             content = envfile.read()
@@ -141,7 +141,7 @@ async def on_member_join(member):
         mbed = discord.Embed(
             colour=(discord.Colour.blurple()),
             title="Glad you could find us!",
-            description=f"yo! im Mutiny's Personal Bot, proceed to General to talk:)",
+            description="yo! im Mutiny's Personal Bot, proceed to General to talk:)",
         )
         await member.send(embed=mbed)
     else:
@@ -453,9 +453,9 @@ async def kick(ctx, member: discord.Member, *, reason=None):
     """kicks a user"""
 
     if member == ctx.author:
-        await ctx.reply(f"Can't kick yourself! ...baka!!")
+        await ctx.reply("Can't kick yourself! ...baka!!")
     elif member.top_role >= ctx.author.top_role:
-        await ctx.reply(f"Yo, you can only kick members lower than yourself lmao ")
+        await ctx.reply("Yo, you can only kick members lower than yourself lmao ")
     else:
         await member.kick(reason=reason)
         embed = discord.Embed(
@@ -563,14 +563,14 @@ async def ban(ctx, member: discord.Member = None, *, reason=None):
 
 @bot.command()
 @commands.has_permissions(ban_members=True)
-async def unban(ctx, id: int):
+async def unban(ctx, ID: int):
     """Unbans a user."""
     try:
-        user = await bot.fetch_user(id)
+        user = await bot.fetch_user(ID)
         await ctx.guild.unban(user)
         await ctx.reply(f"{user} has been unbanned.")
-    except discord.errors.Forbidden as e:
-        await ctx.reply(f"I don't have permissions to unban that user. Error: {e}")
+    except discord.errors.Forbidden as err:
+        await ctx.reply(f"I don't have permissions to unban that user. Error: {err}")
     except discord.errors.NotFound:
         await ctx.reply("I couldn't find that user in the ban list.")
     except commands.BadArgument:
@@ -642,7 +642,7 @@ async def role(ctx, action: str, user: discord.Member, role: discord.Role):
         await user.add_roles(role)
         await ctx.reply(
             embed=discord.Embed(
-                title=f"Role Added",
+                title="Role Added",
                 description=f"{user.mention} was given the {role.mention} role.",
                 color=discord.Color.green(),
             )
@@ -655,7 +655,7 @@ async def role(ctx, action: str, user: discord.Member, role: discord.Role):
         await user.remove_roles(role)
         await ctx.reply(
             embed=discord.Embed(
-                title=f"Role Removed",
+                title="Role Removed",
                 description=f"{user.mention} was removed from the {role.mention} role.",
                 color=discord.Color.red(),
             )
@@ -801,8 +801,8 @@ async def roll(ctx, args: str = ""):
     await ctx.reply(embed=embed)
 
 
-def parseInput(input):
-    split = input.split("d")
+def parseInput(prased_input):
+    split = prased_input.split("d")
 
     # remove empty items
     split = [x for x in split if x]
@@ -829,7 +829,7 @@ async def credit(ctx):
     maintainer = await bot.fetch_user(347387857574428676)
 
     embed = discord.Embed(
-        title=f"Bot Creator",
+        title="Bot Creator",
         description=f"{owner.mention}\nAsk them anything! 24/7. Feel free to add them as a friend.",
         color=discord.Color.blurple(),
     )
@@ -886,7 +886,7 @@ gif_links = {
 async def giflist(ctx):
     """List available gifs"""
     embed = discord.Embed(title="Available Gifs:", color=discord.Color.blurple())
-    for gif_type, gif_link in gif_links.items():
+    for gif_type in gif_links.items():
         command = f"`~gifsend {gif_type}`"
         embed.add_field(name=gif_type, value=command, inline=False)
     await ctx.reply(embed=embed)
@@ -951,7 +951,7 @@ async def asbot(ctx, *, arg=None):
         await ctx.reply("Started task **`asbotmain()`** successfully")
         print(f"Warning: asbotmain() was started externally by {ctx.author} !!!")
         asbotmain.start()
-    elif arg == None:
+    elif arg is None:
         await ctx.reply(
             embed=discord.Embed(
                 title="`asbotmain()` state:"
@@ -1004,7 +1004,7 @@ async def asbotmain():
             await helperasbot()
             isinit = False
             break
-        elif message == "asbotstop":
+        if message == "asbotstop":
             asbotmain.cancel()
             clsscr()
             print("Stopped task")
