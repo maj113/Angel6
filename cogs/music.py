@@ -173,7 +173,7 @@ class Song:
         return discord.Embed.from_dict(embed_dict)
 
 
-class SongQueue(asyncio.LifoQueue):
+class SongQueue(asyncio.Queue):
     def __getitem__(self, item):
         if isinstance(item, slice):
             return list(itertools.islice(self._queue, item.start, item.stop, item.step))
