@@ -23,10 +23,10 @@ if sys.argv[-1] == "debug" or sys.argv[-1] == "d":
 
 logging.basicConfig(
     level=DebuggingOpts["LogLevel"],
-    format="%(asctime)s %(message)s",
+    format="%(asctime)s [%(levelname)s]: %(message)s",
     handlers=[
         logging.FileHandler("log.txt", mode="w", encoding="utf-8"),
-        logging.StreamHandler(sys.stdout),
+        logging.StreamHandler(),
     ],
 )
 
