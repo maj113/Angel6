@@ -500,7 +500,7 @@ class Music(commands.Cog):
         If there are songs in the queue, this will be queued until the
         other songs finished playing.
         This command automatically searches from various sites if no URL is provided.
-        A list of these sites can be found here: https://rg3.github.io/youtube-dl/supportedsites.html
+        A list of these sites can be found here: https://github.com/yt-dlp/yt-dlp/blob/master/supportedsites.md
         """
         try:
             source = await YTDLSource.create_source(ctx, search, loop=self.bot.loop)
