@@ -340,7 +340,7 @@ async def ping(ctx):
         description=f"**Bot: {bot_latency:.2f}ms**\n**API: {api_latency:.2f}ms**",
         color=discord.Color.blurple(),
     )
-    await message.edit(embed=embed)
+    await message.edit(content="Ping:", embed=embed)
 
 
 @bot.command(aliases=["members"])
