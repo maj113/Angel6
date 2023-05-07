@@ -866,11 +866,11 @@ async def support(ctx, *, message: str = None):
 
     embed = discord.Embed(
         title="Support server",
-        description="Need help with the bot? https://discord.gg/ctsjpMQXEe \nWant to contribute to the bot? <https://github.com/maj113/Angel6>",
+        description="Need help with the bot? https://discord.gg/yVhHpP9hkc \nWant to contribute to the bot? https://github.com/maj113/Angel6",
         color=discord.Color.blurple(),
     )
     embed.set_image(
-        url="https://cdn.discordapp.com/attachments/1082901963718541354/1085636944639295568/paintdotnet_LFkzPDrQML.png"
+        url="https://cdn.discordapp.com/attachments/1102947594889609288/1104840082571145276/paintdotnet_LFkzPDrQML.png"
     )
     await ctx.reply(embed=embed)
 
