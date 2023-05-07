@@ -28,7 +28,7 @@ bot = commands.Bot(
 )
 
 
-async def set_env_var(env_var_name, prompt_text):
+async def set_env_var(env_var_name, prompt_text, forceresetenv):
     value = os.getenv(env_var_name)
     if value is None:
         value = int(input(prompt_text))
