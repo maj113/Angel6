@@ -46,21 +46,22 @@ async def set_env_var(env_var_name, prompt_text):
         return True
     return False
 
+async def checkenv():   
+    config_options = [
+    ("LOGGING_CHANNEL_ID", "Input logging channel ID "),
+    ("JOIN_LEAVE_CHANNEL_ID", "Input join/leave channel ID "),
+    ("GENERAL_CHANNEL_ID", "Input general channel ID "),
+]
+    for env_var_name, prompt_text in config_options:
+        restart = await set_env_var(env_var_name, prompt_text, False)
+    return restart
+    
 
 @bot.event
 async def on_ready():
     print(f"Logged in as:\n{bot.user.name}\n{bot.user.id}")
-    restartbot = False
-    config_options = [
-        ("LOGGING_CHANNEL_ID", "Input logging channel ID "),
-        ("JOIN_LEAVE_CHANNEL_ID", "Input join/leave channel ID "),
-        ("GENERAL_CHANNEL_ID", "Input general channel ID "),
-    ]
-    for env_var_name, prompt_text in config_options:
-        if await set_env_var(env_var_name, prompt_text):
-            restartbot = True
 
-    if restartbot is True:
+    if await checkenv() is True:
         print("Setup complete, Rebooting")
         os.execv(sys.executable, ["python3"] + sys.argv)
 
