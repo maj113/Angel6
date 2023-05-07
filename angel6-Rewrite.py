@@ -35,7 +35,7 @@ async def set_env_var(env_var_name, prompt_text, forceresetenv):
         with open(".env", "a") as envfile:
             envfile.write(f"\n{env_var_name}={value}")
         return True
-    if value == "":
+    if value == "" or forceresetenv==True:
         value = int(input(prompt_text))
         with open(".env", "r+") as envfile:
             content = envfile.read()
