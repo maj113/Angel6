@@ -401,7 +401,7 @@ class Music(commands.Cog):
             await ctx.reply("I am not currently connected to a voice channel.")
             return
 
-        if ctx.voice_state.is_playing() and ctx.voice_state.voice.is_paused():
+        if ctx.voice_state.is_playing and ctx.voice_state.voice.is_paused():
             ctx.voice_state.voice.resume()
             await ctx.message.add_reaction("⏯")
         elif ctx.voice_state.is_playing():
