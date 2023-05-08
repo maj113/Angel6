@@ -370,7 +370,7 @@ class Music(commands.Cog):
             await ctx.voice_state.voice.move_to(destination)
             return
 
-        ctx.voice_state.voice = await destination.connect()
+        ctx.voice_state.voice = await destination.connect(reconnect=False)
 
     @commands.command(name="leave", aliases=["disconnect", "quit"])
     @commands.has_permissions(manage_guild=True)
