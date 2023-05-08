@@ -1,13 +1,11 @@
 import logging
 import asyncio
-import math
-import random
-import sys
-import itertools
 import nextcord as discord
-import yt_dlp
+from random import shuffle
+from sys import argv
+from itertools import islice
 from nextcord.ext import commands
-from yt_dlp import utils
+from yt_dlp import utils, YoutubeDL
 
 utils.bug_reports_message = lambda: ""
 DebuggingOpts = {
