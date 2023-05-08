@@ -155,27 +155,33 @@ class Song:
         self.requester = source.requester
 
     def create_embed(self):
-        embed_dict = {
-            "title": "Now playing",
-            "description": f"```css\n{self.source.title}\n```",
-            "color": discord.Color.blurple().value,
-            "fields": [
-                {"name": "Duration", "value": self.source.duration},
-                {"name": "Requested by", "value": self.requester.mention},
-                {
-                    "name": "Uploader",
-                    "value": f"[{self.source.uploader}]({self.source.uploader_url})",
-                    "inline": True,
-                },
-                {"name": "URL", "value": f"[Click]({self.source.url})"},
-            ],
-            "thumbnail": {"url": self.source.thumbnail},
-            "author": {
-                "name": self.requester.name,
-                "icon_url": self.requester.avatar.url,
-            },
-        }
-        return discord.Embed.from_dict(embed_dict)
+        """Creates a `discord.Embed` object for the current song.
+
+        Returns:
+            A `discord.Embed` object with the title "Now playing", a code-formatted
+            description of the song title, and fields for the song duration, the
+            user who requested the song, the uploader of the video, the video URL,
+            and the video thumbnail. The embed also includes an author field with
+            the name and avatar of the user who requested the song.
+        """
+        embed = discord.Embed(
+            title="Now playing",
+            description=f"```css\n{self.source.title}\n```",
+            color=discord.Color.blurple(),
+        )
+        embed.add_field(name="Duration", value=self.source.duration)
+        embed.add_field(name="Requested by", value=self.requester.mention)
+        embed.add_field(
+            name="Uploader",
+            value=f"[{self.source.uploader}]({self.source.uploader_url})",
+            inline=True,
+        )
+        embed.add_field(name="URL", value=f"[Click]({self.source.url})")
+        embed.set_thumbnail(url=self.source.thumbnail)
+        embed.set_author(
+            name=self.requester.name, 
+            icon_url=self.requester.avatar.url)
+        return embed
 
 
 class SongQueue(asyncio.Queue):
