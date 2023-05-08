@@ -343,14 +343,14 @@ class Music(commands.Cog):
 
         destination = ctx.author.voice.channel
         if ctx.voice_state.voice:
-            await ctx.voice_state.voice.move_to(destination)
+            await destination.connect(reconnect=False)
             return
         if ctx.voice_client and ctx.voice_client.channel != destination:
             await ctx.send(
                 f"I'm already connected to a voice channel ({ctx.voice_client.channel.name})."
             )
             return
-        ctx.voice_state.voice = await destination.connect()
+        ctx.voice_state.voice = await destination.connect(reconnect=False)
 
     @commands.command(name="summon")
     async def _summon(
