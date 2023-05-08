@@ -273,11 +273,10 @@ class VoiceState:
             self.voice.play(self.now, after=self.play_next_song)
 
             await self.next.wait()
-
+   
     def play_next_song(self, error=None):
         if error:
             raise VoiceError(str(error))
-        self.voice.cleanup()
         self.next.set()
 
     def skip(self):
@@ -290,18 +289,8 @@ class VoiceState:
         self.songs.clear()
 
         if self.voice:
-            self.voice.cleanup()
             await self.voice.disconnect()
             self.voice = None
-
-
-async def checkloop(ctx):
-    should_disable_loop = ctx.voice_state.loop
-    print(ctx.voice_state.loop)
-    if should_disable_loop:
-        ctx.voice_state.loop = False
-        await ctx.message.add_reaction("⏭")
-    await ctx.voice_state.skip()
 
 
 class Music(commands.Cog):
@@ -336,6 +325,17 @@ class Music(commands.Cog):
         self, ctx: commands.Context, error: commands.CommandError
     ):
         await ctx.reply(f"An error occurred: {error}")
+        raise
+
+    async def checkloop(ctx, onlycheck=False):
+    #onlycheck will be used later CBA to implement later and convert everrything to this 
+        should_disable_loop = ctx.voice_state.loop
+        print(ctx.voice_state.loop)
+        if should_disable_loop:
+            ctx.voice_state.loop = False
+            await ctx.message.add_reaction("⏭")
+        ctx.voice_state.skip()
+
 
     @commands.command(name="join", invoke_without_subcommand=True)
     async def _join(self, ctx: commands.Context):
