@@ -256,19 +256,21 @@ class VoiceState:
             self.next.clear()  # FIXME: significant performance slowdowns here
             self.now = None
             self.current = await self.songs.get()  # FIXME: Readd timeout here
-            self.now = await discord.FFmpegOpusAudio.from_probe(
-                self.current.source.stream_url,
+            
+            tasks = [
+                asyncio.create_task(discord.FFmpegOpusAudio.from_probe(
+                    self.current.source.stream_url,
                     **YTDLSource.FFMPEG_OPTIONS
                 ))
             ]
             if not self.loop:
-                await self.current.source.channel.send(
-                    embed=self.current.create_embed()
-                )
-                self.voice.play(self.now, after=self.play_next_song)
-
-            elif self.loop:
-                self.voice.play(self.now, after=self.play_next_song)
+                tasks.append(asyncio.create_task(
+                    self.current.source.channel.send(embed=self.current.create_embed())
+                ))
+            
+            self.now, _ = await asyncio.gather(*tasks)
+            
+            self.voice.play(self.now, after=self.play_next_song)
 
             await self.next.wait()
 
