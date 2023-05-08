@@ -93,6 +93,21 @@ class YTDLSource(discord.FFmpegOpusAudio):
         *,
         loop: asyncio.AbstractEventLoop = None,
     ):
+        """
+        Creates a YTDLSource instance from a search query or URL.
+
+        Args:
+            cls (class): The class object of the YTDLSource.
+            ctx (commands.Context): The context object of the command.
+            search (str): The search query or URL to be processed.
+            loop (asyncio.AbstractEventLoop): The event loop to be used for async operations. Defaults to None.
+
+        Returns:
+            A YTDLSource instance.
+        
+        Raises:
+            YTDLError: If the search query or URL couldn't be processed.
+        """
         loop = loop or asyncio.get_event_loop()
         search = search.strip().replace("<", "").replace(">", "")
         data = await asyncio.to_thread(cls.ytdl.extract_info, search, False, False)
