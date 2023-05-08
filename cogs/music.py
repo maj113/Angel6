@@ -532,14 +532,16 @@ class Music(commands.Cog):
         A list of these sites can be found here: https://github.com/yt-dlp/yt-dlp/blob/master/supportedsites.md
         """
         try:
-            source = await YTDLSource.create_source(ctx, search, loop=self.bot.loop)
+            source_task = asyncio.create_task(YTDLSource.create_source(ctx, search, loop=self.bot.loop))
         except YTDLError as err:
             await ctx.reply(f"An error occurred while processing this request: {err}")
         else:
             if not ctx.voice_state.voice:
                 await ctx.invoke(
                     self._join
-                )  # FIXME: this should be optimized if possible otherwise remove this
+                )
+            await asyncio.gather(source_task)
+            source = source_task.result()
             song = Song(source)
             await ctx.voice_state.songs.put(song)
             await ctx.reply(f"Enqueued {source}")
