@@ -54,8 +54,8 @@ class YTDLSource(discord.FFmpegOpusAudio):
     }
 
     FFMPEG_OPTIONS = {
-        "before_options": "-re -reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 15",
-        "options": "-vn -sn -dn -c:a libopus -ar 48000 -b:a 512k -threads 16",
+        "before_options": "-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 15",
+        "options": "-loglevel quiet -vn -c:a libopus -ar 48000 -b:a 512k",
     }
 
     ytdl = YoutubeDL(YTDL_OPTIONS)
