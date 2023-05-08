@@ -246,6 +246,12 @@ class VoiceState:
         return self.voice and self.current
 
     async def audio_player_task(self):
+        """Plays audio from the queued songs continuously in the background until stopped.
+
+        Dequeues the next song from the queue, creates a playable audio stream from the song's source
+        URL using FFmpeg, and starts playing the audio through the voice connection. If looping is
+        disabled, sends an embed message to the channel indicating that the current song is playing.
+        """
         while True:
             self.next.clear()  # FIXME: significant performance slowdowns here
             self.now = None
