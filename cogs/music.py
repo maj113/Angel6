@@ -14,7 +14,7 @@ DebuggingOpts = {
     "ytdlquiet": True,
     "LogLevel": logging.INFO,
 }
-if sys.argv[-1] == "debug" or sys.argv[-1] == "d":
+if argv[-1] == "debug" or argv[-1] == "d":
     DebuggingOpts["ytdllogging"] = True
     DebuggingOpts["ytdlquiet"] = False
     DebuggingOpts["LogLevel"] = logging.DEBUG
@@ -58,7 +58,7 @@ class YTDLSource(discord.FFmpegOpusAudio):
         "options": "-vn -sn -dn -c:a libopus -ar 48000 -b:a 512k -threads 16",
     }
 
-    ytdl = yt_dlp.YoutubeDL(YTDL_OPTIONS)
+    ytdl = YoutubeDL(YTDL_OPTIONS)
 
     def __init__(
         self, ctx: commands.Context, source: discord.FFmpegOpusAudio, *, data: dict
@@ -114,8 +114,7 @@ class YTDLSource(discord.FFmpegOpusAudio):
             ctx,
             discord.FFmpegOpusAudio(
                 info["url"],
-                before_options=YTDLSource.FFMPEG_OPTIONS["before_options"],
-                options=YTDLSource.FFMPEG_OPTIONS["options"],
+                **YTDLSource.FFMPEG_OPTIONS
             ),
             data=info,
         )
@@ -228,10 +227,9 @@ class VoiceState:
             self.current = await self.songs.get()  # FIXME: Readd timeout here
             self.now = await discord.FFmpegOpusAudio.from_probe(
                 self.current.source.stream_url,
-                before_options=YTDLSource.FFMPEG_OPTIONS["before_options"],
-                options=YTDLSource.FFMPEG_OPTIONS["options"],
-            )
-
+                    **YTDLSource.FFMPEG_OPTIONS
+                ))
+            ]
             if not self.loop:
                 await self.current.source.channel.send(
                     embed=self.current.create_embed()
