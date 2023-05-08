@@ -88,10 +88,8 @@ class YTDLSource(discord.FFmpegOpusAudio):
 
     @classmethod
     async def create_source(
-        cls,
-        ctx: commands.Context,
-        search: str,
-        *,
+        cls, ctx: commands.Context,
+        search: str, *,
         loop: asyncio.AbstractEventLoop = None,
     ):
         """
