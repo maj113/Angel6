@@ -121,8 +121,16 @@ class YTDLSource(discord.FFmpegOpusAudio):
 
     @staticmethod
     def parse_duration(duration: int):
-        if duration == 0:
-            return "LIVE"
+        """Converts a duration in seconds to a human-readable string.
+
+        Args:
+            duration: The duration of the video in seconds.
+
+        Returns:
+            A string representing the duration in the format "Xd Xh Xm Xs",
+            where X is the number of days, hours, minutes, and seconds respectively.
+        """
+        
 
         minutes, seconds = divmod(duration, 60)
         hours, minutes = divmod(minutes, 60)
