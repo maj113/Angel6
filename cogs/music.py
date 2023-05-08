@@ -465,7 +465,7 @@ class Music(commands.Cog):
 
         items_per_page = 10
         try:
-            pages = math.ceil(len(ctx.voice_state.songs) / items_per_page)
+            pages = (len(ctx.voice_state.songs) + items_per_page - 1) // items_per_page
         except TypeError:
             return await ctx.reply("Invalid page number!")
 
