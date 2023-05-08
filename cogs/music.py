@@ -75,7 +75,8 @@ class YTDLSource(discord.FFmpegOpusAudio):
         self.title = data.get("title")
         self.thumbnail = data.get("thumbnail")
         self.description = data.get("description")
-        self.duration = self.parse_duration(int(data.get("duration")))
+        duration = data.get("duration")
+        self.duration = self.parse_duration(int(duration)) if duration is not None else "LIVE"
         self.tags = data.get("tags")
         self.url = data.get("webpage_url")
         self.views = data.get("view_count")
