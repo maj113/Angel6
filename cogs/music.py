@@ -346,7 +346,7 @@ class Music(commands.Cog):
             await destination.connect(reconnect=False)
             return
         if ctx.voice_client and ctx.voice_client.channel != destination:
-            await ctx.send(
+            await ctx.reply(
                 f"I'm already connected to a voice channel ({ctx.voice_client.channel.name})."
             )
             return
