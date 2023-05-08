@@ -536,7 +536,17 @@ class Music(commands.Cog):
         except YTDLError as err:
             await ctx.reply(f"An error occurred while processing this request: {err}")
         else:
-            if not ctx.voice_state.voice:
+            if ctx.voice_state.voice and not ctx.guild.voice_client: 
+                #  okay so comment time; this is how the bot will be set when its force disconnected (e.g. from discord) which leaves voice_state.voice in an unclean state
+                #  that not only messes with the fact that the bot still thinks it's connected, but also the playback is still in progress
+                #  we have to make sure playback is stopped and set voice_state.voice to None which should in theory fix the problem
+                await ctx.invoke(
+                    self._stop
+                ) 
+                ctx.voice_state.voice = None
+                logging.warning("experimental support for unclean voice_state.voice handling, might be unstable")
+                
+            if not ctx.guild.voice_client:
                 await ctx.invoke(
                     self._join
                 )
