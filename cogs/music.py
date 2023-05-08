@@ -61,9 +61,9 @@ class YTDLSource(discord.FFmpegOpusAudio):
     ytdl = YoutubeDL(YTDL_OPTIONS)
 
     def __init__(
-        self, ctx: commands.Context, source: discord.FFmpegOpusAudio, *, data: dict
+        self, ctx: commands.Context, source: str, *, data: dict
     ):
-        super().__init__
+        super().__init__(source, pipe=True)
 
         self.requester = ctx.author
         self.channel = ctx.channel
