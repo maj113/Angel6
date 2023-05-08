@@ -205,7 +205,7 @@ class SongQueue(asyncio.Queue):
         return self._queue[item]
 
     def shuffle(self):
-        random.shuffle(self._queue)
+        shuffle(self._queue)
 
     def __len__(self):
         return len(self._queue)
