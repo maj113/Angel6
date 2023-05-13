@@ -35,7 +35,7 @@ async def set_env_var(env_var_name, prompt_text, forceresetenv):
         with open(".env", "a") as envfile:
             envfile.write(f"\n{env_var_name}={value}")
         return True
-    if value == "" or forceresetenv==True:
+    if value == "" or forceresetenv:
         value = int(input(prompt_text))
         with open(".env", "r+") as envfile:
             content = envfile.read()
@@ -46,16 +46,17 @@ async def set_env_var(env_var_name, prompt_text, forceresetenv):
         return True
     return False
 
-async def checkenv():   
+
+async def checkenv():
     config_options = [
-    ("LOGGING_CHANNEL_ID", "Input logging channel ID "),
-    ("JOIN_LEAVE_CHANNEL_ID", "Input join/leave channel ID "),
-    ("GENERAL_CHANNEL_ID", "Input general channel ID "),
-]
+        ("LOGGING_CHANNEL_ID", "Input logging channel ID "),
+        ("JOIN_LEAVE_CHANNEL_ID", "Input join/leave channel ID "),
+        ("GENERAL_CHANNEL_ID", "Input general channel ID "),
+    ]
     for env_var_name, prompt_text in config_options:
         restart = await set_env_var(env_var_name, prompt_text, False)
     return restart
-    
+
 
 @bot.event
 async def on_ready():
@@ -119,10 +120,16 @@ async def on_message(message):
             # If there is at least one attachment, include the URLs of all attachments in the message string
             attachments = "\n".join(a.url for a in message.attachments)
             content = message.content if message.content else ""
-            msgcontent = f"{message.guild}/{message.channel}/{message.author.name}> {content}\n{attachments}"
+            msgcontent = (
+                f"{message.guild}/{message.channel}/{message.author.name}>"
+                f" {content}\n{attachments}"
+            )
         else:
             # If there are no attachments, simply include the text content of the message
-            msgcontent = f"{message.guild}/{message.channel}/{message.author.name}> {message.content}"
+            msgcontent = (
+                f"{message.guild}/{message.channel}/{message.author.name}>"
+                f" {message.content}"
+            )
         print(msgcontent)
         await bot.process_commands(message)
 
@@ -132,7 +139,9 @@ async def on_member_join(member):
     channel = bot.get_channel(int(JL_CHAN_ID))
     embed = discord.Embed(
         colour=discord.Colour.blurple(),
-        description=f"{member.mention} joined, Total Members: {len(list(member.guild.members))}",
+        description=(
+            f"{member.mention} joined, Total Members: {len(list(member.guild.members))}"
+        ),
     )
     embed.set_thumbnail(url=f"{member.avatar.url}")
     embed.set_footer(text=f"{member.guild}", icon_url=f"{member.guild.icon.url}")
@@ -149,7 +158,9 @@ async def on_member_join(member):
         mbed = discord.Embed(
             colour=(discord.Colour.blurple()),
             title="Glad you could find us!",
-            description=f"yo! im Mutiny's Personal Bot, proceed to <#{chanID}> to talk:)",
+            description=(
+                f"yo! im Mutiny's Personal Bot, proceed to <#{chanID}> to talk:)"
+            ),
         )
         await member.send(embed=mbed)
     """with open('muted.json', "r") as jsonmute:
@@ -167,7 +178,9 @@ async def on_member_remove(member):
     channel = bot.get_channel(int(JL_CHAN_ID))
     embed = discord.Embed(
         colour=discord.Colour.blurple(),
-        description=f"{member.mention} Left us, Total Members: {len(member.guild.members)}",
+        description=(
+            f"{member.mention} Left us, Total Members: {len(member.guild.members)}"
+        ),
     )
     embed.set_thumbnail(url=f"{member.avatar.url}")
     embed.set_footer(text=f"{member.guild}", icon_url=f"{member.guild.icon.url}")
@@ -294,7 +307,8 @@ async def on_guild_role_update(before, after):
         for perm, value in before.permissions:
             if getattr(after.permissions, perm) != value:
                 permission_changes.append(
-                    f"{perm.replace('_', ' ').title()}: {value} -> {getattr(after.permissions, perm)}"
+                    f"{perm.replace('_', ' ').title()}: {value} ->"
+                    f" {getattr(after.permissions, perm)}"
                 )
         if permission_changes:
             embed.add_field(
@@ -405,7 +419,10 @@ async def userinfo(ctx, *, user: discord.Member = None):
         )
 
     embed.set_footer(
-        text=f"Information last updated: {datetime.datetime.utcnow().strftime(date_format)}"
+        text=(
+            "Information last updated:"
+            f" {datetime.datetime.utcnow().strftime(date_format)}"
+        )
     )
 
     await ctx.reply(embed=embed)
@@ -498,7 +515,9 @@ async def mute(ctx, member: discord.Member, *, reason=None):
 
     embed = discord.Embed(
         title="Muted",
-        description=f"{member.mention} has been muted{' for ' + reason if reason else ''}",
+        description=(
+            f"{member.mention} has been muted{' for ' + reason if reason else ''}"
+        ),
         color=discord.Color.blurple(),
     )
     await ctx.reply(embed=embed)
@@ -550,12 +569,15 @@ async def ban(ctx, member: discord.Member = None, *, reason=None):
         await member.ban(reason=reason)
     except (discord.errors.Forbidden, discord.errors.HTTPException) as err:
         return await ctx.reply(
-            f"Failed to ban {member.mention}. Please check my permissions and role hierarchy. \nError: {err}"
+            f"Failed to ban {member.mention}. Please check my permissions and role"
+            f" hierarchy. \nError: {err}"
         )
 
     embed = discord.Embed(
         title="Bye Bye",
-        description=f"{member.mention} {'was banned.' if reason is None else 'was banned for ' + reason + '.'}",
+        description=(
+            f"{member.mention} {'was banned.' if reason is None else 'was banned for ' + reason + '.'}"
+        ),
         color=discord.Color.blurple(),
     )
     await ctx.send(embed=embed)
@@ -587,13 +609,19 @@ async def warn(ctx, member: discord.Member = None, *, reason=None):
 
     embed2 = discord.Embed(
         title="Warned🗡️",
-        description=f"You were warned.{' Now behave.' if reason is None else f' Reason: {reason}'}",
+        description=(
+            "You were"
+            f" warned.{' Now behave.' if reason is None else f' Reason: {reason}'}"
+        ),
         color=discord.Colour.blurple(),
     )
 
     embed = discord.Embed(
         title="Warned",
-        description=f"{member.mention} was warned{'.' if reason is None else f', reason: {reason}'}",
+        description=(
+            f"{member.mention} was"
+            f" warned{'.' if reason is None else f', reason: {reason}'}"
+        ),
         color=discord.Colour.blurple(),
     )
 
@@ -608,7 +636,10 @@ async def warn(ctx, member: discord.Member = None, *, reason=None):
         if log_channel is not None:
             log_embed = discord.Embed(
                 title="Member Warned",
-                description=f"{ctx.author.mention} warned {member.mention}{'.' if reason is None else f', reason: {reason}'}",
+                description=(
+                    f"{ctx.author.mention} warned"
+                    f" {member.mention}{'.' if reason is None else f', reason: {reason}'}"
+                ),
                 color=discord.Colour.blurple(),
             )
             await log_channel.send(embed=log_embed)
@@ -716,7 +747,10 @@ async def invites(ctx, user: discord.Member = None):
         if invite.inviter == user_name:
             totalInvites += invite.uses
     embed = discord.Embed(
-        title=f"{user_name} has invited {totalInvites} member{'' if totalInvites == 1 else 's'} to the server!",
+        title=(
+            f"{user_name} has invited"
+            f" {totalInvites} member{'' if totalInvites == 1 else 's'} to the server!"
+        ),
         color=discord.Colour.blurple(),
     )
     embed.set_author(name=user_name.display_name, icon_url=user_name.avatar.url)
@@ -770,7 +804,9 @@ async def roll(ctx, args: str = ""):
     if not 0 <= diceToRoll <= maxdicesize:
         embed = discord.Embed(
             title="Error",
-            description=f"Invalid dice amount. Dice amount must be between 0 and {maxdicesize}.",
+            description=(
+                f"Invalid dice amount. Dice amount must be between 0 and {maxdicesize}."
+            ),
             color=discord.Color.brand_red(),
         )
         await ctx.reply(embed=embed)
@@ -779,7 +815,10 @@ async def roll(ctx, args: str = ""):
     if not 0 <= numberOfSides <= maxsides:
         embed = discord.Embed(
             title="Error",
-            description=f"Invalid number of sides. The number of sides must be between 0 and {maxsides}.",
+            description=(
+                "Invalid number of sides. The number of sides must be between 0 and"
+                f" {maxsides}."
+            ),
             color=discord.Color.brand_red(),
         )
         await ctx.reply(embed=embed)
@@ -830,7 +869,10 @@ async def credit(ctx):
 
     embed = discord.Embed(
         title="Bot Creator",
-        description=f"{owner.mention}\nAsk them anything! 24/7. Feel free to add them as a friend.",
+        description=(
+            f"{owner.mention}\nAsk them anything! 24/7. Feel free to add them as a"
+            " friend."
+        ),
         color=discord.Color.blurple(),
     )
     embed.set_footer(text=f"Bot Maintainer: {maintainer}")
@@ -844,12 +886,60 @@ async def femboy(ctx):
     """Femboy Wisdom/Tutorial"""
     embed = discord.Embed(
         title="Chakal's Wisdom On Femboys",
-        description="How can you be a feminine looking boy? Simple. \nGrow your hair out, exercise regularly (I run/jog to remain slim, and I do squats/tap dance to exercise my thighs/butt), trim your facial hair, do whatever you can to help out your skin, and consider taking HRT.\n Learn how to do makeup, it is a fucking amazing tool. Experiment with different outfits, my favorite for andro people is just leggings beneath feminine jean shorts, it is common for females in the UK and looks feminine, but not so feminine that it will look weird in public.\nConsider taking speech therapy, or just watching some videos and working at getting a more feminine voice.\nAt the end of the day, though, you can practically look like a girl, with the most luscious hair, smallest eyebrows, red lips, and longest lashes; you can have the perfect body type, be an hourglass with a big ass, thick thighs/hips and a skinny waist; you can sound like the girliest woman in the world; you can wear booty shorts and a half shirt and look damn good in it; you can be a master at feminine makeup.\nBut it all means nothing if you fail to act feminine. For looks catch the eye, but personality catches the heart.\nThere comes a point when you must ask yourself if you want to be a femboy, or simply be a feminine looking man.\nSo, how can you be a femboy?\nAct feminine. Femboys are made, not born.  -Chakal",
+        description=(
+            "How can you be a feminine looking boy? Simple. \nGrow your hair out,"
+            " exercise regularly (I run/jog to remain slim, and I do squats/tap dance"
+            " to exercise my thighs/butt), trim your facial hair, do whatever you can"
+            " to help out your skin, and consider taking HRT.\n Learn how to do makeup,"
+            " it is a fucking amazing tool. Experiment with different outfits, my"
+            " favorite for andro people is just leggings beneath feminine jean shorts,"
+            " it is common for females in the UK and looks feminine, but not so"
+            " feminine that it will look weird in public.\nConsider taking speech"
+            " therapy, or just watching some videos and working at getting a more"
+            " feminine voice.\nAt the end of the day, though, you can practically look"
+            " like a girl, with the most luscious hair, smallest eyebrows, red lips,"
+            " and longest lashes; you can have the perfect body type, be an hourglass"
+            " with a big ass, thick thighs/hips and a skinny waist; you can sound like"
+            " the girliest woman in the world; you can wear booty shorts and a half"
+            " shirt and look damn good in it; you can be a master at feminine"
+            " makeup.\nBut it all means nothing if you fail to act feminine. For looks"
+            " catch the eye, but personality catches the heart.\nThere comes a point"
+            " when you must ask yourself if you want to be a femboy, or simply be a"
+            " feminine looking man.\nSo, how can you be a femboy?\nAct feminine."
+            " Femboys are made, not born.  -Chakal"
+        ),
         color=discord.Color.blurple(),
     )
     embed2 = discord.Embed(
         title="Miro's Wisdom On Femboys",
-        description="Hey, some guys like being cute and pastel, trans guys included, and some transgender people don’t really feel the need to change their bodies either. So that’s an option. Maybe you’re a really feminine guy who’s fine with having a female body.\n Or, maybe you just really like the femboy aesthetic. Or maybe you’re attracted to femboys. Idk, I’m not you. It’s gonna take a little experimentation to find out.\n 1) Get some clothes you feel comfortable in. Try out that femboy look. Do you feel cute? Does it feel right? Whether you are cis or trans, you should be able to wear clothes that make you feel good about yourself. So do that. Whatever the answers are to the other questions, this will almost certainly make you feel a little better.\n 2) Do some googling. Learn about fem trans boys, demiboys, and non-binary people. Read some things from their perspectives. Does any of it resonate with you?\n3) Try some things. It’s normal for us to question our identities and grow and change through the years, and it’s normal to not fully understand yourself right away. If you think you might be trans, maybe try a different name or pronouns. if you don’t have supportive people around willing to help you experiment, then you can introduce yourself the way you want online, with strangers you’ll never have to interact with again. It takes a lot of the pressure off, too, if you’re nervous. Maybe it’ll feel right and you’ll know. Maybe it’ll feel wrong and you’ll realize you’re a girl. Maybe you’ll still be confused and have to try some new things. Have patience, it can take time.\n4) Own it. Whatever your identity is, dress the way you like and be who you are and if anyone gives you shit about it, just show them how high you can kick their balls up their ass in your adorable little pink skirt -Miro.",
+        description=(
+            "Hey, some guys like being cute and pastel, trans guys included, and some"
+            " transgender people don’t really feel the need to change their bodies"
+            " either. So that’s an option. Maybe you’re a really feminine guy who’s"
+            " fine with having a female body.\n Or, maybe you just really like the"
+            " femboy aesthetic. Or maybe you’re attracted to femboys. Idk, I’m not you."
+            " It’s gonna take a little experimentation to find out.\n 1) Get some"
+            " clothes you feel comfortable in. Try out that femboy look. Do you feel"
+            " cute? Does it feel right? Whether you are cis or trans, you should be"
+            " able to wear clothes that make you feel good about yourself. So do that."
+            " Whatever the answers are to the other questions, this will almost"
+            " certainly make you feel a little better.\n 2) Do some googling. Learn"
+            " about fem trans boys, demiboys, and non-binary people. Read some things"
+            " from their perspectives. Does any of it resonate with you?\n3) Try some"
+            " things. It’s normal for us to question our identities and grow and change"
+            " through the years, and it’s normal to not fully understand yourself right"
+            " away. If you think you might be trans, maybe try a different name or"
+            " pronouns. if you don’t have supportive people around willing to help you"
+            " experiment, then you can introduce yourself the way you want online, with"
+            " strangers you’ll never have to interact with again. It takes a lot of the"
+            " pressure off, too, if you’re nervous. Maybe it’ll feel right and you’ll"
+            " know. Maybe it’ll feel wrong and you’ll realize you’re a girl. Maybe"
+            " you’ll still be confused and have to try some new things. Have patience,"
+            " it can take time.\n4) Own it. Whatever your identity is, dress the way"
+            " you like and be who you are and if anyone gives you shit about it, just"
+            " show them how high you can kick their balls up their ass in your adorable"
+            " little pink skirt -Miro."
+        ),
         color=discord.Color.blurple(),
     )
     await ctx.send(embed=embed)
@@ -867,7 +957,10 @@ async def support(ctx, *, message: str = None):
 
     embed = discord.Embed(
         title="Support server",
-        description="Need help with the bot? https://discord.gg/yVhHpP9hkc \nWant to contribute to the bot? https://github.com/maj113/Angel6",
+        description=(
+            "Need help with the bot? https://discord.gg/yVhHpP9hkc \nWant to contribute"
+            " to the bot? https://github.com/maj113/Angel6"
+        ),
         color=discord.Color.blurple(),
     )
     embed.set_image(
@@ -878,7 +971,10 @@ async def support(ctx, *, message: str = None):
 
 gif_links = {
     "violation": "https://tenor.com/view/that-one-there-was-a-violation-that1there-was-violation-violation-that-one-there-was-a-violation-personally-i-wouldnt-have-it-that1there-was-a-violation-personally-i-wouldnt-have-it-gif-20040456",
-    "germany": "https://giphy.com/gifs/fifa-Vd8wLaK3lNDNMuGaUL \n SHUT THE FUCK UP BAHZZ VIVA LA GERMANY AAJAJJAJAJAJA",
+    "germany": (
+        "https://giphy.com/gifs/fifa-Vd8wLaK3lNDNMuGaUL \n SHUT THE FUCK UP BAHZZ VIVA"
+        " LA GERMANY AAJAJJAJAJAJA"
+    ),
 }
 
 
@@ -963,7 +1059,10 @@ async def asbot(ctx, *, arg=None):
         await ctx.reply(
             embed=discord.Embed(
                 title=f"⚠️ Warning! Cannot {arg} the asbot extension",
-                description=f"The extension is already {'**running**' if asbotmain.is_running() else '**stopped**'}",
+                description=(
+                    "The extension is already"
+                    f" {'**running**' if asbotmain.is_running() else '**stopped**'}"
+                ),
                 color=discord.Color.yellow(),
             )
         )
@@ -1018,7 +1117,8 @@ async def main():
         await bot.start(TOKEN)
     except discord.errors.LoginFailure:
         print(
-            "NO TOKEN FOUND OR WRONG TOKEN SPECIFIED,\nmake sure that the env file is named '.env' and that there is a token present"
+            "NO TOKEN FOUND OR WRONG TOKEN SPECIFIED,\nmake sure that the env file is"
+            " named '.env' and that there is a token present"
         )
         await bot.close()
 
