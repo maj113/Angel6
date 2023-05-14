@@ -60,9 +60,7 @@ class YTDLSource(discord.FFmpegOpusAudio):
 
     ytdl = YoutubeDL(YTDL_OPTIONS)
 
-    def __init__(
-        self, ctx: commands.Context, source: str, *, data: dict
-    ):
+    def __init__(self, ctx: commands.Context, source: str, *, data: dict):
         super().__init__(source, pipe=True)
 
         self.requester = ctx.author
@@ -76,7 +74,9 @@ class YTDLSource(discord.FFmpegOpusAudio):
         self.thumbnail = data.get("thumbnail")
         self.description = data.get("description")
         duration = data.get("duration")
-        self.duration = self.parse_duration(int(duration)) if duration is not None else "LIVE"
+        self.duration = (
+            self.parse_duration(int(duration)) if duration is not None else "LIVE"
+        )
         self.tags = data.get("tags")
         self.url = data.get("webpage_url")
         self.views = data.get("view_count")
@@ -88,8 +88,10 @@ class YTDLSource(discord.FFmpegOpusAudio):
 
     @classmethod
     async def create_source(
-        cls, ctx: commands.Context,
-        search: str, *,
+        cls,
+        ctx: commands.Context,
+        search: str,
+        *,
         loop: asyncio.AbstractEventLoop = None,
     ):
         """
@@ -103,7 +105,7 @@ class YTDLSource(discord.FFmpegOpusAudio):
 
         Returns:
             A YTDLSource instance.
-        
+
         Raises:
             YTDLError: If the search query or URL couldn't be processed.
         """
@@ -126,10 +128,7 @@ class YTDLSource(discord.FFmpegOpusAudio):
         info = entries[0] if entries else processed_info
         return cls(
             ctx,
-            discord.FFmpegOpusAudio(
-                info["url"],
-                **YTDLSource.FFMPEG_OPTIONS
-            ),
+            discord.FFmpegOpusAudio(info["url"], **YTDLSource.FFMPEG_OPTIONS),
             data=info,
         )
 
@@ -144,7 +143,6 @@ class YTDLSource(discord.FFmpegOpusAudio):
             A string representing the duration in the format "Xd Xh Xm Xs",
             where X is the number of days, hours, minutes, and seconds respectively.
         """
-        
 
         minutes, seconds = divmod(duration, 60)
         hours, minutes = divmod(minutes, 60)
@@ -192,9 +190,7 @@ class Song:
         )
         embed.add_field(name="URL", value=f"[Click]({self.source.url})")
         embed.set_thumbnail(url=self.source.thumbnail)
-        embed.set_author(
-            name=self.requester.name, 
-            icon_url=self.requester.avatar.url)
+        embed.set_author(name=self.requester.name, icon_url=self.requester.avatar.url)
         return embed
 
 
@@ -327,8 +323,8 @@ class Music(commands.Cog):
         await ctx.reply(f"An error occurred: {error}")
         raise
 
-    async def checkloop(ctx, onlycheck=False):
-    #onlycheck will be used later CBA to implement later and convert everrything to this 
+    async def checkloop(ctx, onlycheck=False, stop=False):
+        # onlycheck will be used later CBA to implement later and convert everrything to this
         should_disable_loop = ctx.voice_state.loop
         print(ctx.voice_state.loop)
         if should_disable_loop:
@@ -347,7 +343,8 @@ class Music(commands.Cog):
             return
         if ctx.voice_client and ctx.voice_client.channel != destination:
             await ctx.reply(
-                f"I'm already connected to a voice channel ({ctx.voice_client.channel.name})."
+                "I'm already connected to a voice channel"
+                f" ({ctx.voice_client.channel.name})."
             )
             return
         ctx.voice_state.voice = await destination.connect(reconnect=False)
@@ -362,7 +359,8 @@ class Music(commands.Cog):
 
         if not channel and not ctx.author.voice:
             raise VoiceError(
-                "You are neither connected to a voice channel nor specified a channel to join."
+                "You are neither connected to a voice channel nor specified a channel"
+                " to join."
             )
 
         destination = channel or ctx.author.voice.channel
@@ -416,7 +414,7 @@ class Music(commands.Cog):
         """Stops playing song and clears the queue."""
 
         if ctx.voice_state.is_playing:
-            ctx.voice_state.voice.stop()
+            await Music.checkloop(ctx, False, True)
 
         ctx.voice_state.songs.clear()
         await ctx.message.add_reaction("⏹")
@@ -532,24 +530,25 @@ class Music(commands.Cog):
         A list of these sites can be found here: https://github.com/yt-dlp/yt-dlp/blob/master/supportedsites.md
         """
         try:
-            source_task = asyncio.create_task(YTDLSource.create_source(ctx, search, loop=self.bot.loop))
+            source_task = asyncio.create_task(
+                YTDLSource.create_source(ctx, search, loop=self.bot.loop)
+            )
         except YTDLError as err:
             await ctx.reply(f"An error occurred while processing this request: {err}")
         else:
-            if ctx.voice_state.voice and not ctx.guild.voice_client: 
+            if ctx.voice_state.voice and not ctx.guild.voice_client:
                 #  okay so comment time; this is how the bot will be set when its force disconnected (e.g. from discord) which leaves voice_state.voice in an unclean state
                 #  that not only messes with the fact that the bot still thinks it's connected, but also the playback is still in progress
                 #  we have to make sure playback is stopped and set voice_state.voice to None which should in theory fix the problem
-                await ctx.invoke(
-                    self._stop
-                ) 
+                await ctx.invoke(self._stop)
                 ctx.voice_state.voice = None
-                logging.warning("experimental support for unclean voice_state.voice handling, might be unstable")
-                
-            if not ctx.guild.voice_client:
-                await ctx.invoke(
-                    self._join
+                logging.warning(
+                    "experimental support for unclean voice_state.voice handling, might"
+                    " be unstable"
                 )
+
+            if not ctx.guild.voice_client:
+                await ctx.invoke(self._join)
             await asyncio.gather(source_task)
             source = source_task.result()
             song = Song(source)
