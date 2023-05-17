@@ -325,13 +325,16 @@ class Music(commands.Cog):
 
     async def checkloop(ctx, onlycheck=False, stop=False):
         # onlycheck will be used later CBA to implement later and convert everrything to this
+        # wait what the fuck was onlycheck supposed to be used for
         should_disable_loop = ctx.voice_state.loop
         print(ctx.voice_state.loop)
         if should_disable_loop:
             ctx.voice_state.loop = False
+        if not stop:
             await ctx.message.add_reaction("⏭")
         ctx.voice_state.skip()
-
+            return
+        ctx.voice_state.voice.stop()
 
     @commands.command(name="join", invoke_without_subcommand=True)
     async def _join(self, ctx: commands.Context):
