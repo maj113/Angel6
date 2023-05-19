@@ -28,30 +28,30 @@ To set up and run Angel$IX for the first time, follow these steps:
 
 2. Clone the repository and navigate to the project directory.
 
-3. Rename the `.env_example` file to `.env` and update the necessary values inside it. This file will store your environment variables.
+3. Rename the `.env_example` file to `.env`, make sure to add your `token`.
 
 4. Run the `angel6-rewrite.py` script using the following command: `python angel6-rewrite.py` (you may need to launch it with `python3`)
-
-   - The script will perform the first time setup, where you'll be prompted to input various channel IDs.
+   > **Note**
+   > The script will perform the first time setup, where you'll be prompted to input various channel IDs.
 
 5. Once the setup is complete, the bot will automatically reboot. You'll see the message "Setup complete, Rebooting" in the console.
     > **Warning**  
     > If the bot goes back to the input logging/join/leave/general channel ID restart the bot manually.  
-    > But if the shows `Input channel ID: ` this is okay as it's the channel selector for talking thru the bot
+    > But if it shows `Input channel ID: ` this is okay as it's the channel selector for talking thru the bot
 
 6. The bot is now ready to use. It will log in to Discord and display information about its settings and status.
 
-- The bot version will be displayed.
-- The logging channel, join/leave channel, and general channel will be mentioned.
-- The API latency will be shown.
-- Credits and additional information may also be sent to the logging channel.
+    - The bot version will be displayed.
+    - The logging channel, join/leave channel, and general channel will be mentioned.
+    - The API latency will be shown.
+    - Credits and additional information may also be sent to the logging channel.
 
-You can now interact with the bot using its available commands in Discord.
+7. You can now interact with the bot using its available commands in Discord.
 
 ## TO-DOs:
 
-- Add ytdl playlist support (not heavily requested/used).
-- ~~Support py-cord > 2.0.0b4 (fixed in V2.2 [RC1]).~~
+- [ ] Add ytdl playlist support (not heavily requested/used).
+- [x] Support py-cord > 2.0.0b4 (fixed in V2.2 [RC1]).
 
 ## Planned Changes by 2.4.0:
 
