@@ -37,7 +37,7 @@ To set up and run Angel$IX for the first time, follow these steps:
 
 4. Rename the `.env_example` file to `.env` and make sure to add your `token`.
 
-5. Run the `angel6-rewrite.py` script using the following command: `python angel6-rewrite.py` (you may need to launch it with `python3`)
+5. Run the `angel6-rewrite.py` script using the following command: `python angel6-rewrite.py` (depending on the OS you may need to launch it with `python3`)
    > **Note**  
    > The script will perform the first time setup, where you'll be prompted to input various channel IDs.
 
