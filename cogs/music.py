@@ -251,25 +251,38 @@ class VoiceState:
         while True:
             self.next.clear()  # FIXME: significant performance slowdowns here
             self.now = None
-            self.current = await self.songs.get()  # FIXME: Readd timeout here
-            
-            tasks = [
-                asyncio.create_task(discord.FFmpegOpusAudio.from_probe(
-                    self.current.source.stream_url,
-                    **YTDLSource.FFMPEG_OPTIONS
-                ))
-            ]
             if not self.loop:
-                tasks.append(asyncio.create_task(
-                    self.current.source.channel.send(embed=self.current.create_embed())
-                ))
-            
-            self.now, _ = await asyncio.gather(*tasks)
-            
-            self.voice.play(self.now, after=self.play_next_song)
+                # Try to get the next song within 3 minutes.
+                # If no song will be added to the queue in time,
+                # the player will disconnect due to performance
+                # reasons.
+                try:
+                    async with asyncio.timeout(180):  # 3 minutes
+                        self.current = (
+                            await self.songs.get()
+                        )  # NOTICE: this must not be called when looping is enabled
+                except asyncio.TimeoutError:
+                    asyncio.create_task(self.stop())
+                    self.exists = False
+                    return
+
+                self.now = await discord.FFmpegOpusAudio.from_probe(
+                    self.current.source.stream_url, **YTDLSource.FFMPEG_OPTIONS
+                )
+                self.voice.play(self.now, after=self.play_next_song)
+                await self.current.source.channel.send(
+                    embed=self.current.create_embed()
+                )
+            # Fix code duplication 
+            # If the song is looped
+            elif self.loop:
+                self.now = await discord.FFmpegOpusAudio.from_probe(
+                    self.current.source.stream_url, **YTDLSource.FFMPEG_OPTIONS
+                )
+                self.voice.play(self.now, after=self.play_next_song)
 
             await self.next.wait()
-   
+
     def play_next_song(self, error=None):
         if error:
             raise VoiceError(str(error))
@@ -324,15 +337,16 @@ class Music(commands.Cog):
         raise
 
     async def checkloop(ctx, onlycheck=False, stop=False):
+        """Check and handle loop skipping functionality for a Discord voice channel."""
+
         # onlycheck will be used later CBA to implement later and convert everrything to this
         # wait what the fuck was onlycheck supposed to be used for
         should_disable_loop = ctx.voice_state.loop
-        print(ctx.voice_state.loop)
         if should_disable_loop:
             ctx.voice_state.loop = False
         if not stop:
             await ctx.message.add_reaction("⏭")
-        ctx.voice_state.skip()
+            ctx.voice_state.skip()
             return
         ctx.voice_state.voice.stop()
 
@@ -370,7 +384,7 @@ class Music(commands.Cog):
         if ctx.voice_state.voice:
             await ctx.voice_state.voice.move_to(destination)
             return
-
+        # reconnect=False since we need to handle force disconnect without it trying to reconnect
         ctx.voice_state.voice = await destination.connect(reconnect=False)
 
     @commands.command(name="leave", aliases=["disconnect", "quit"])

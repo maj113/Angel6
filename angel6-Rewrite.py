@@ -971,10 +971,8 @@ async def support(ctx, *, message: str = None):
 
 gif_links = {
     "violation": "https://tenor.com/view/that-one-there-was-a-violation-that1there-was-violation-violation-that-one-there-was-a-violation-personally-i-wouldnt-have-it-that1there-was-a-violation-personally-i-wouldnt-have-it-gif-20040456",
-    "germany": (
-        "https://giphy.com/gifs/fifa-Vd8wLaK3lNDNMuGaUL \n SHUT THE FUCK UP BAHZZ VIVA"
-        " LA GERMANY AAJAJJAJAJAJA"
-    ),
+    "germany": "https://giphy.com/gifs/fifa-Vd8wLaK3lNDNMuGaUL \n SHUT THE FUCK UP BAHZZ VIVA LA GERMANY AAJAJJAJAJAJA"
+
 }
 
 
@@ -982,9 +980,9 @@ gif_links = {
 async def giflist(ctx):
     """List available gifs"""
     embed = discord.Embed(title="Available Gifs:", color=discord.Color.blurple())
-    for gif_type in gif_links.items():
-        command = f"`~gifsend {gif_type}`"
-        embed.add_field(name=gif_type, value=command, inline=False)
+    for key in gif_links.items():
+        command = f"`~gifsend {key[0]}`"
+        embed.add_field(name=key[0], value=command, inline=False)
     await ctx.reply(embed=embed)
 
 
@@ -999,11 +997,12 @@ async def gif(ctx, gif_type=""):
     gif_type = gif_type.lower()
 
     if gif_type in gif_links:
-        await ctx.reply(gif_links[gif_type])
+        await ctx.message.delete()
+        await ctx.send(gif_links[gif_type])
     else:
         gif_type = discord.utils.escape_mentions(gif_type)
         await ctx.reply(
-            f"Invalid GIF type '{gif_type}'. Use '~giflist' to see available options."
+            f"Invalid GIF '{gif_type}'. Use '~giflist' to see available options."
         )
 
 
