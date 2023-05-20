@@ -336,7 +336,7 @@ class Music(commands.Cog):
         await ctx.reply(f"An error occurred: {error}")
         
 
-    async def checkloop(ctx, onlycheck=False, stop=False):
+    async def checkloop(self, ctx, onlycheck=False, stop=False):
         """Check and handle loop skipping functionality for a Discord voice channel."""
 
         # onlycheck will be used later CBA to implement later and convert everrything to this
