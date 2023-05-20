@@ -942,8 +942,8 @@ async def femboy(ctx):
         ),
         color=discord.Color.blurple(),
     )
-    await ctx.send(embed=embed)
-    await ctx.reply(embed=embed2)
+    await ctx.reply(embed=embed)
+    await ctx.send(embed=embed2)
 
 
 @bot.command()
