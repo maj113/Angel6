@@ -1,13 +1,13 @@
 # Angel$IX
 
+![](assets/image.png)
+
 [![CodeQL](https://github.com/maj113/Angel6/actions/workflows/codeql.yml/badge.svg)](https://github.com/maj113/Angel6/actions/workflows/codeql.yml) 
 [![Pylint](https://github.com/maj113/Angel6/actions/workflows/pylint.yml/badge.svg)](https://github.com/maj113/Angel6/actions/workflows/pylint.yml)
 
-![](assets/image.png)
 ## Introduction
 
 Discord bot written in Python, works with NextCord and PyCord, does **not** use slash commands, invoked with "~" 
-
 
 **Mostly usable as of v2.2.2, with ongoing improvements.**
 
@@ -34,8 +34,8 @@ To set up and run Angel$IX for the first time, follow these steps:
 2. Clone the repository and navigate to the project directory.
 
 3. Install the required dependencies by running the following command:
-    `pip install -r requirements.txt`
-
+    > `pip install -r requirements.txt`
+    
 4. Rename the `.env_example` file to `.env` and make sure to add your `token`.
 
 5. Run the `angel6-rewrite.py` script using the following command: `python angel6-rewrite.py` (depending on the OS you may need to launch it with `python3`)
