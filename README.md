@@ -3,6 +3,7 @@
 [![CodeQL](https://github.com/maj113/Angel6/actions/workflows/codeql.yml/badge.svg)](https://github.com/maj113/Angel6/actions/workflows/codeql.yml) 
 [![Pylint](https://github.com/maj113/Angel6/actions/workflows/pylint.yml/badge.svg)](https://github.com/maj113/Angel6/actions/workflows/pylint.yml)
 
+![](assets/image.png)
 ## Introduction
 
 Discord bot written in Python, works with NextCord and PyCord, does **not** use slash commands, invoked with "~" 
