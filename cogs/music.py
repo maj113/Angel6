@@ -1,9 +1,9 @@
 import logging
 import asyncio
-import nextcord as discord
 from random import shuffle
 from sys import argv
 from itertools import islice
+import nextcord as discord
 from nextcord.ext import commands
 from yt_dlp import utils, YoutubeDL
 
