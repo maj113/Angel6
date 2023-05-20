@@ -5,7 +5,7 @@
 
 ## Introduction
 
-Discord bot Written in Python, works with NextCord and PyCord, does **not** use `slash` commands, invoked with "~" 
+Discord bot written in Python, works with NextCord and PyCord, does **not** use slash commands, invoked with "~" 
 
 
 **Mostly usable as of v2.2.2, with ongoing improvements.**
@@ -53,7 +53,7 @@ To set up and run Angel$IX for the first time, follow these steps:
     - The API latency will be shown.
     - Credits and additional information may also be sent to the logging channel.
 
-8. You can now interact with the bot using its available commands in Discord.
+8. You should now be able to interact with the bot using its available commands in Discord.
 
 </details>
 
@@ -64,8 +64,8 @@ To set up and run Angel$IX for the first time, follow these steps:
 
 ## Planned Changes by 2.4.0:
 
-- [x] Fix and optimize first time setup (`.env` file setup).
-- [ ] Add logging to the bot:
+- [x] Fix and optimize the first time setup (`.env` file setup).
+- [ ] Add logging functionality to the bot:
   - [x] On message delete logging.
   - [ ] On channel create/delete logging.
   - [ ] On user AV change logging.
@@ -81,6 +81,6 @@ To set up and run Angel$IX for the first time, follow these steps:
 
 Follow me on [Twitter](https://twitter.com/may113_Mutiny) for the latest news and announcements. 
 
-Feel free to explore these links and stay connected with us!
+Feel free to explore these links to stay updated with the latest news and announcements!
 
 </details>
