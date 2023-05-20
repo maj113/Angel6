@@ -78,7 +78,7 @@ To set up and run Angel$IX for the first time, follow these steps:
 
 ### Here are some useful links related to Angel$IX or me:
 
- Join the official [Discord](https://discord.com/invite/yVhHpP9hkc) server for support related to Angel$IX.
+ Join the official [Discord](https://discord.gg/Ry2HqGqT2K) server for support related to Angel$IX.
 
 Follow me on [Twitter](https://twitter.com/may113_Mutiny) for the latest news and announcements. 
 
