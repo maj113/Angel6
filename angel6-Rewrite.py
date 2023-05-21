@@ -1090,7 +1090,7 @@ async def asbotmain():
     try:
         channel1 = bot.get_channel(int(chanID2))
         if not isinstance(channel1, discord.TextChannel):
-            print("Selected channel is a Voice channel, try again")
+            print("Selected channel does not exist or isn't a text channel")
             return
     except ValueError:
         print("Error; Wrong ID provided or an unexpected exception occurred, try again")
