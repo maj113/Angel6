@@ -54,7 +54,7 @@ async def checkenv():
         ("GENERAL_CHANNEL_ID", "Input general channel ID "),
     ]
     for env_var_name, prompt_text in config_options:
-        restart = await set_env_var(env_var_name, prompt_text, False)
+        restart = await set_env_var(env_var_name, prompt_text, True if sys.argv[-1] == "reset" else False)
     return restart
 
 
@@ -335,9 +335,11 @@ async def reload(ctx):
 @commands.has_permissions(ban_members=True)
 async def restart(ctx, arg=""):
     """restarts the bot"""
+    sys.argv.append(arg)
     if arg == "debug":
-        sys.argv.append("debug")
         await ctx.send("Debug on!")
+    if arg == "reset":
+        await ctx.send("Reseting environment, check console!")
     await ctx.reply(" Restarting, please allow 5 seconds for this. ")
     os.execv(sys.executable, ["python3"] + sys.argv)
 
@@ -964,7 +966,7 @@ async def support(ctx, *, message: str = None):
         color=discord.Color.blurple(),
     )
     embed.set_image(
-        url="https://cdn.discordapp.com/attachments/1102947594889609288/1104840082571145276/paintdotnet_LFkzPDrQML.png"
+        url="https://media.discordapp.net/attachments/736563784318976040/1087089496450928650/paintdotnet_LFkzPDrQML.png"
     )
     await ctx.reply(embed=embed)
 
@@ -1090,7 +1092,7 @@ async def asbotmain():
         if not isinstance(channel1, discord.TextChannel):
             print("Selected channel is a Voice channel, try again")
             return
-    except Exception:
+    except ValueError:
         print("Error; Wrong ID provided or an unexpected exception occurred, try again")
         return
     while True:
