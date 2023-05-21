@@ -1,15 +1,16 @@
 import asyncio
 import datetime
+import os
 import random
 import sys
-import os
-import psutil
-import nextcord as discord
+
 import aioconsole
+import nextcord as discord
+import psutil
 import requests
+from dotenv import load_dotenv
 from nextcord import __version__ as d_version
 from nextcord.ext import commands, tasks
-from dotenv import load_dotenv
 from yt_dlp import version as ytver
 
 load_dotenv()
