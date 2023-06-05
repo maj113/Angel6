@@ -1039,7 +1039,7 @@ async def img(ctx, type="cat"):
         embed = discord.Embed(color=discord.Color.blurple())
         embed.set_image(url=catimg)
         await ctx.reply(embed=embed)
-    except HTTPException as err:
+    except requests.Timeout as err:
         error_embed = discord.Embed(title="Error:",
                                     description=f"Failed to fetch image. Please try again later.\nError: {err}",
                                     color=discord.Color.red())
