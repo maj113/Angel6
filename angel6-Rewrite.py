@@ -869,7 +869,7 @@ def rolladice(sides):
 @bot.command(pass_context=True, aliases=["cred", "credits", "about"])
 async def credit(ctx):
     """Shows bot credits"""
-    owner = await bot.fetch_user(978854415786184745)
+    owner = await bot.fetch_user(1082831541400518737)
     maintainer = await bot.fetch_user(347387857574428676)
 
     embed = discord.Embed(
