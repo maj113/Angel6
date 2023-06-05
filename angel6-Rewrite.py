@@ -799,10 +799,9 @@ async def roll(ctx, args: str = ""):
             numberOfSides = 6
     except ValueError:
         await ctx.reply(
-            "I didn't understand your input: `"
-            + args
-            + "`.\n try `~roll help` for supported options"
+            f"I didn't understand your input: `{args}`.\nTry `~roll help` for supported options."
         )
+        
         return
 
     maxdicesize = 150
