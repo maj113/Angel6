@@ -1144,6 +1144,6 @@ except discord.errors.LoginFailure:
         "NO TOKEN FOUND OR WRONG TOKEN SPECIFIED,\nmake sure that the env file is"
         " named '.env' and that there is a token present"
     )
-    bot.close()
+    quit(0)
 
 
