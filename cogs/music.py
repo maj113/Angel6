@@ -4,8 +4,8 @@ from itertools import islice
 from random import shuffle
 from sys import argv
 
-import nextcord as discord
-from nextcord.ext import commands
+import discord
+from discord.ext import commands
 from yt_dlp import YoutubeDL, utils
 
 utils.bug_reports_message = lambda: ""
