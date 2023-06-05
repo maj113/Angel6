@@ -781,9 +781,7 @@ async def roll(ctx, args: str = ""):
     """Rolls a dice in user specified format"""
 
     # sanitize input - remove trailing spaces
-    args = args.strip()
-
-    args = args.replace(" ", "")
+    args = args.strip().replace(" ", "")
 
     if args == "help":
         await ctx.reply(
