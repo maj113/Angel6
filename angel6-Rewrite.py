@@ -329,8 +329,8 @@ async def reload(ctx):
     try:
         bot.reload_extension("cogs.music")
         await ctx.reply("Cogs successfully reloaded!")
-    except commands.ExtensionError as e:
-        await ctx.reply(f"An error occurred while reloading the cog: {e}")
+    except commands.ExtensionError as err:
+        await ctx.reply(f"An error occurred while reloading the cog: {err}")
 
 
 @bot.command(aliases=["reboot"])
