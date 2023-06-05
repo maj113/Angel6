@@ -165,14 +165,14 @@ async def on_member_join(member):
             ),
         )
         await member.send(embed=mbed)
-    """with open('muted.json', "r") as jsonmute:
-        datamute = json.load(jsonmute)
-        if member.id in datamute["muted"]:
-            for guild in bot.guilds:
-                guildid=(guild.id)
-            getguild = bot.get_guild(guildid)
-            mutedRole = discord.utils.get(getguild.roles, name="Muted")
-            await member.add_roles(mutedRole)"""
+    #with open('muted.json', "r") as jsonmute:
+    #    datamute = json.load(jsonmute)
+    #    if member.id in datamute["muted"]:
+    #        for guild in bot.guilds:
+    #            guildid=(guild.id)
+    #        getguild = bot.get_guild(guildid)
+    #        mutedRole = discord.utils.get(getguild.roles, name="Muted")
+    #        await member.add_roles(mutedRole)
 
 
 @bot.event
