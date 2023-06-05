@@ -377,7 +377,10 @@ async def users(ctx):
 
 @bot.command(aliases=["AV", "avatar", "pfp"])
 async def av(ctx, user: discord.Member = None):
-    """grabs user's avatar"""
+    """Grabs the avatar of a user.
+
+    If no user is mentioned, it retrieves the avatar of the command invoker.
+    """
     if user is None:
         user = ctx.message.author
 
