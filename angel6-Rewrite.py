@@ -1136,16 +1136,14 @@ async def asbotmain():
             await channel1.send("⠀")
 
 
-async def main():
-    try:
-        await bot.start(TOKEN)
-    except discord.errors.LoginFailure:
-        print(
-            "NO TOKEN FOUND OR WRONG TOKEN SPECIFIED,\nmake sure that the env file is"
-            " named '.env' and that there is a token present"
-        )
-        await bot.close()
+
+try:
+    bot.run(TOKEN)
+except discord.errors.LoginFailure:
+    print(
+        "NO TOKEN FOUND OR WRONG TOKEN SPECIFIED,\nmake sure that the env file is"
+        " named '.env' and that there is a token present"
+    )
+    bot.close()
 
 
-if __name__ == "__main__":
-    asyncio.get_event_loop().run_until_complete(main())
