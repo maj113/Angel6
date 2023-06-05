@@ -1012,18 +1012,38 @@ async def gif(ctx, gif_type=""):
 
 
 @bot.command(pass_context=True)
-async def cat(ctx):
-    """sends a random cat image"""
+async def img(ctx, type="cat"):
+    """Sends a random image based on the specified type.
+    
+    Parameters:
+    - type (str): The type of image to send. Default is "cat".
+    
+    Possible types:
+    - "cat": Sends a random cat image.
+    - "anime" or "neko": Sends a random SFW anime or neko image.
+    """
+
     try:
-        caturl = requests.get("https://api.thecatapi.com/v1/images/search", timeout=5)
-        catimg = caturl.json()[0]["url"]
-        embed = discord.Embed(title="🐱 Catto :D", color=discord.Color.blurple())
+        if type == "cat":
+            caturl = requests.get("https://api.thecatapi.com/v1/images/search", timeout=1)
+            catimg = caturl.json()[0]["url"]
+        elif type in ["anime", "neko"]:
+            caturl = requests.get("https://api.nekosapi.com/v2/images/random?filter[ageRating]=sfw", timeout=2)
+            catimg = caturl.json()["data"]["attributes"]["file"]
+        else: 
+            error_embed = discord.Embed(title="Error:",
+                                        description=f"Invalid argument. supported image API's are: 'cat', 'anime",
+                                        color=discord.Color.red())
+            await ctx.reply(embed=error_embed)
+            return
+        embed = discord.Embed(color=discord.Color.blurple())
         embed.set_image(url=catimg)
         await ctx.reply(embed=embed)
-    except Exception as e:
-        print(e)
-        await ctx.reply("Failed to fetch cat image. Please try again later.")
-
+    except HTTPException as err:
+        error_embed = discord.Embed(title="Error:",
+                                    description=f"Failed to fetch image. Please try again later.\nError: {err}",
+                                    color=discord.Color.red())
+        await ctx.reply(embed=error_embed)
 
 def clsscr():
     os.system("cls" if os.name == "nt" else "clear")
