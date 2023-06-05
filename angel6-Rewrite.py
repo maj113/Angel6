@@ -479,7 +479,7 @@ async def kick(ctx, member: discord.Member, *, reason=None):
     if member == ctx.author:
         await ctx.reply("Can't kick yourself! ...baka!!")
     elif member.top_role >= ctx.author.top_role:
-        await ctx.reply("Yo, you can only kick members lower than yourself lmao ")
+        await ctx.reply("Yo, you can only kick members lower than yourself lmao")
     else:
         await member.kick(reason=reason)
         embed = discord.Embed(
