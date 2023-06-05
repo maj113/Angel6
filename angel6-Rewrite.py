@@ -5,12 +5,13 @@ import random
 import sys
 
 import aioconsole
-import nextcord as discord
+import discord
 import psutil
 import requests
 from dotenv import load_dotenv
-from nextcord import __version__ as d_version
-from nextcord.ext import commands, tasks
+from discord import __version__ as d_version
+from discord import __title__ as d_name
+from discord.ext import commands, tasks
 from yt_dlp import version as ytver
 
 load_dotenv()
