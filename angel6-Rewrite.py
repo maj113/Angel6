@@ -533,11 +533,11 @@ async def mute(ctx, member: discord.Member, *, reason=None):
         await member.send(f"You were muted{' for ' + reason if reason else ''}")
     except discord.errors.Forbidden:
         pass
-    """with open('muted.json', "r") as jsonmute:
-        datamute = json.load(jsonmute)
-        datamute["muted"].append(member.id)
-    with open('muted.json', "w") as jsonmuteafter:
-        json.dump(datamute, jsonmuteafter)"""
+    #with open('muted.json', "r") as jsonmute:
+    #    datamute = json.load(jsonmute)
+    #    datamute["muted"].append(member.id)
+    #with open('muted.json', "w") as jsonmuteafter:
+    #    json.dump(datamute, jsonmuteafter)
 
 
 @bot.command()
