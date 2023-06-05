@@ -724,7 +724,7 @@ async def uptime(ctx):
 meminfo = psutil.Process(os.getpid())
 totmem = psutil.virtual_memory().total / float(2**20)
 mem = meminfo.memory_info()[0] / float(2**20)
-
+wrapper_used = d_name.capitalize()
 
 @bot.command(pass_context=True, aliases=["info", "debug"])
 async def stats(ctx):
@@ -739,9 +739,10 @@ async def stats(ctx):
     embed.add_field(
         name="Memory Usage", value=f"`{mem:.0f}MB/{totmem:.0f}MB`", inline=True
     )
-    embed.add_field(name="Discord.py Version", value=f"`{d_version}`", inline=True)
+    embed.add_field(name="API wrapper:", value=f"`{wrapper_used}`", inline=True)
     embed.add_field(name="Python Version", value=f"`{sys.version}`", inline=False)
-    embed.add_field(name="YTdl Version", value=f"`{ytver.__version__}`", inline=False)
+    embed.add_field(name="YTdl Version", value=f"`{ytver.__version__}`", inline=True)
+    embed.add_field(name=f"{wrapper_used} Version", value=f"`{d_version}`", inline=True)
     await ctx.reply(embed=embed)
 
 
