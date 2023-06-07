@@ -80,7 +80,7 @@ async def checkenv():
 async def on_ready():
     print(f"Logged in as:\n{bot.user.name}\n{bot.user.id}")
 
-    if await checkenv() is True:
+    if await checkenv():
         print("Setup complete, Rebooting")
         os.execv(sys.executable, ["python3"] + sys.argv)
 
