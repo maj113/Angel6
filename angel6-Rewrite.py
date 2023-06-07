@@ -127,8 +127,8 @@ async def on_ready():
     if not asbotmain.is_running():
         await asbotmain.start()
 
-
-bot.load_extension("cogs.music")
+# NextCord doesn't support recursive
+bot.load_extension("cogs", recursive=True)
 
 
 @bot.event
