@@ -60,6 +60,12 @@ async def set_env_var(env_var_name : str, prompt_text : str, force_reset_env : b
 
 
 async def checkenv():
+    """
+    Checks the environment variables and prompts the user to set them if necessary.
+
+    Returns:
+        - bool: True if the environment variables were set or reset, False otherwise.
+    """
     config_options = [
         ("LOGGING_CHANNEL_ID", "Input logging channel ID "),
         ("JOIN_LEAVE_CHANNEL_ID", "Input join/leave channel ID "),
