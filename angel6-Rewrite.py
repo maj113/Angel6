@@ -380,15 +380,16 @@ async def ping(ctx):
 
 @bot.command(aliases=["members"])
 async def users(ctx):
-    """shows total amount of members (excluding bots)"""
-    member_count = len([m for m in ctx.guild.members if not m.bot])
-    bot_count = len([m for m in ctx.guild.members if m.bot])
-    b = discord.Embed(
-        title=f"Total members in {ctx.guild.name}", color=discord.Color.blurple()
+    """Shows the total number of members (excluding bots)"""
+    member_count = len([member for member in ctx.guild.members if not member.bot])
+    bot_count = len([member for member in ctx.guild.members if member.bot])
+    embed = discord.Embed(
+        title=f"Total members in {ctx.guild.name}",
+        color=discord.Color.blurple()
     )
-    b.add_field(name="Members", value=str(member_count))
-    b.add_field(name="Bots", value=str(bot_count))
-    await ctx.reply(embed=b)
+    embed.add_field(name="Members", value=str(member_count))
+    embed.add_field(name="Bots", value=str(bot_count))
+    await ctx.reply(embed=embed)
 
 
 @bot.command(aliases=["AV", "avatar", "pfp"])
