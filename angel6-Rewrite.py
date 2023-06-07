@@ -29,7 +29,18 @@ bot = commands.Bot(
 )
 
 
-async def set_env_var(env_var_name, prompt_text, forceresetenv):
+async def set_env_var(env_var_name : str, prompt_text : str, force_reset_env : bool):
+    """
+    Sets an environment variable if it is not already set or if `force_reset_env` is True.
+
+    Parameters:
+        - env_var_name (str): The name of the environment variable.
+        - prompt_text (str): The prompt text displayed when the environment variable needs to be set.
+        - force_reset_env (bool): If True, the environment variable will be reset even if it is already set.
+
+    Returns:
+        - bool: True if the environment variable was set or reset, False otherwise.
+    """
     value = os.getenv(env_var_name)
     if value is None:
         value = int(input(prompt_text))
