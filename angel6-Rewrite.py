@@ -1,7 +1,8 @@
 import os
 from random import randint
 from datetime import datetime
-from sys import argv, executable, version
+from sys import argv, executable, version, exit 
+
 
 import discord
 import psutil
@@ -1156,6 +1157,6 @@ except discord.errors.LoginFailure:
         " named '.env' and that there is a token present"
     )
     # gracefully exit, don't quit with error code 1
-    quit(0)
+    exit
 
 
