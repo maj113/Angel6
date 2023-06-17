@@ -72,7 +72,7 @@ async def checkenv():
         ("GENERAL_CHANNEL_ID", "Input general channel ID "),
     ]
     for env_var_name, prompt_text in config_options:
-        restart = await set_env_var(env_var_name, prompt_text, True if argv[-1] == "reset" else False)
+        restart = await set_env_var(env_var_name, prompt_text, argv[-1] == "reset")
     return restart
 
 
