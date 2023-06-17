@@ -1157,6 +1157,6 @@ except discord.errors.LoginFailure:
         " named '.env' and that there is a token present"
     )
     # gracefully exit, don't quit with error code 1
-    exit
+    exit()
 
 
