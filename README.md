@@ -30,7 +30,8 @@ Please note that this is not an exhaustive list, and the bot may have additional
 To set up and run Angel$IX for the first time, follow these steps:
 
 1. Make sure you have **Python 3.11+** installed.
-
+    > it may work with older python versions however I offer **no** support for those nor do I guarantee compatibility
+    
 2. Clone the repository and navigate to the project directory.
 
 3. Install the required dependencies by running the following command:
