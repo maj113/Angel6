@@ -1,7 +1,7 @@
 import os
 from random import randint
 from datetime import datetime
-from sys import argv, executable, version 
+from sys import argv, executable, version
 
 
 import discord
@@ -19,8 +19,8 @@ TOKEN = os.getenv("DISCORD_TOKEN")
 LOG_CHAN_ID = os.getenv("LOGGING_CHANNEL_ID")
 JL_CHAN_ID = os.getenv("JOIN_LEAVE_CHANNEL_ID")
 GEN_CHAN_ID = os.getenv("GENERAL_CHANNEL_ID")
-BotVer = "**2.3.1-Rewrite** <https://github.com/maj113/Angel6/releases/latest>"
-creditsimage = "https://cdn.discordapp.com/attachments/1083114844875669604/1083121342150361118/1676492485892.png"
+BOT_VER = "**2.3.1-Rewrite** <https://github.com/maj113/Angel6/releases/latest>"
+CREDITS_IMAGE = "https://cdn.discordapp.com/attachments/1083114844875669604/1083121342150361118/1676492485892.png"
 
 intents = discord.Intents.all()
 bot = commands.Bot(
@@ -45,12 +45,12 @@ async def set_env_var(env_var_name : str, prompt_text : str, force_reset_env : b
     value = os.getenv(env_var_name)
     if value is None:
         value = int(input(prompt_text))
-        with open(".env", "a") as envfile:
+        with open(".env", "a", encoding='utf-8') as envfile:
             envfile.write(f"\n{env_var_name}={value}")
         return True
     if value == "" or force_reset_env:
         value = int(input(prompt_text))
-        with open(".env", "r+") as envfile:
+        with open(".env", "r+", encoding='utf-8') as envfile:
             content = envfile.read()
             changed = content.replace(f"{env_var_name}=", f"{env_var_name}={value}")
             envfile.seek(0)
@@ -73,12 +73,16 @@ async def checkenv():
         ("GENERAL_CHANNEL_ID", "Input general channel ID "),
     ]
     for env_var_name, prompt_text in config_options:
-        restart = await set_env_var(env_var_name, prompt_text, argv[-1] == "reset")
-    return restart
+        restart_bot = await set_env_var(env_var_name, prompt_text, argv[-1] == "reset")
+    return restart_bot
 
 
 @bot.event
 async def on_ready():
+    """
+    Executes when the bot is ready and connected to the Discord server.
+    Performs setup tasks and sends a bot status message to the logging channel.
+    """
     print(f"Logged in as:\n{bot.user.name}\n{bot.user.id}")
 
     if await checkenv():
@@ -92,7 +96,7 @@ async def on_ready():
     )
 
     # Add information about the bot version
-    embed.add_field(name="Bot Version:", value="Angel$IX " + BotVer, inline=False)
+    embed.add_field(name="Bot Version:", value="Angel$IX " + BOT_VER, inline=False)
 
     # Add information about the logging channel
     log_channel = bot.get_channel(int(LOG_CHAN_ID))
@@ -124,7 +128,7 @@ async def on_ready():
 
     # Send the message to the logging channel
     await log_channel.send(embed=embed)
-    await log_channel.send(creditsimage)
+    await log_channel.send(CREDITS_IMAGE)
     if not asbotmain.is_running():
         await asbotmain.start()
 
@@ -173,12 +177,12 @@ async def on_member_join(member):
         )
         await member.send(embed=mbed)
     else:
-        chanID = int(GEN_CHAN_ID)
+        chan_id = int(GEN_CHAN_ID)
         mbed = discord.Embed(
             colour=(discord.Colour.blurple()),
             title="Glad you could find us!",
             description=(
-                f"yo! im Mutiny's Personal Bot, proceed to <#{chanID}> to talk:)"
+                f"yo! im Mutiny's Personal Bot, proceed to <#{chan_id}> to talk:)"
             ),
         )
         await member.send(embed=mbed)
@@ -396,8 +400,8 @@ async def users(ctx):
     await ctx.reply(embed=embed)
 
 
-@bot.command(aliases=["AV", "avatar", "pfp"])
-async def av(ctx, user: discord.Member = None):
+@bot.command(aliases=["AV", "av", "pfp"])
+async def avatar(ctx, user: discord.Member = None):
     """Grabs the avatar of a user.
 
     If no user is mentioned, it retrieves the avatar of the command invoker.
@@ -463,7 +467,7 @@ async def serverinfo(ctx):
     description = f"Official {ctx.guild.name} server"
     owner = str(ctx.guild.owner)
     servid = str(ctx.guild.id)
-    memberCount = str(ctx.guild.member_count)
+    member_count = str(ctx.guild.member_count)
     channels = (
         f"Text: {len(ctx.guild.text_channels)}\nVoice: {len(ctx.guild.voice_channels)}"
     )
@@ -482,7 +486,7 @@ async def serverinfo(ctx):
     embed.add_field(name="Server ID", value=servid, inline=True)
     embed.add_field(name="Channels", value=channels, inline=True)
     embed.add_field(name="Roles", value=roles, inline=True)
-    embed.add_field(name="Member Count", value=memberCount, inline=True)
+    embed.add_field(name="Member Count", value=member_count, inline=True)
     embed.add_field(name="Created", value=created, inline=True)
 
     embed.set_footer(
@@ -565,17 +569,17 @@ async def mute(ctx, member: discord.Member, *, reason=None):
 @commands.has_permissions(kick_members=True)
 async def unmute(ctx, member: discord.Member):
     """Unmutes a user"""
-    mutedRole = discord.utils.get(ctx.guild.roles, name="Muted")
+    muted_role = discord.utils.get(ctx.guild.roles, name="Muted")
 
-    if not mutedRole:
+    if not muted_role:
         await ctx.reply("Muted role not found.")
         return
 
-    if mutedRole not in member.roles:
+    if muted_role not in member.roles:
         await ctx.reply(f"{member.name} is not muted.")
         return
 
-    await member.remove_roles(mutedRole)
+    await member.remove_roles(muted_role)
     await ctx.reply(f"Unmuted {member.mention}")
     await member.send(f"Unmuted in {ctx.guild.name}. Welcome back!")
 
@@ -611,14 +615,14 @@ async def ban(ctx, member: discord.Member = None, *, reason: str = None):
 
 @bot.command()
 @commands.has_permissions(ban_members=True)
-async def unban(ctx, ID: int):
+async def unban(ctx, user_id: int):
     """Unbans a user."""
     try:
-        user = await bot.fetch_user(ID)
+        user = await bot.fetch_user(user_id)
         await ctx.guild.unban(user)
         await ctx.reply(f"{user} has been unbanned.")
     except discord.errors.Forbidden:
-        await ctx.reply(f"I don't have permissions to unban that user.")
+        await ctx.reply("I don't have permissions to unban that user.")
     except discord.errors.NotFound:
         await ctx.reply("I couldn't find that user in the ban list.")
     except commands.BadArgument:
@@ -742,7 +746,7 @@ async def uptime(ctx):
 mem_info = psutil.Process(os.getpid())
 total_mem = psutil.virtual_memory().total / float(2 ** 20)
 mem = mem_info.memory_info()[0] / float(2 ** 20)
-wrapper_used = d_name.capitalize()
+WRAPPER_USED = d_name.capitalize()
 
 
 @bot.command(pass_context=True, aliases=["info", "debug"])
@@ -753,15 +757,15 @@ async def stats(ctx):
         description="See bot host statistics.",
         color=discord.Color.blurple(),
     )
-    embed.add_field(name="Angel$IX version", value=BotVer, inline=False)
+    embed.add_field(name="Angel$IX version", value=BOT_VER, inline=False)
     embed.add_field(name="CPU Usage", value=f"`{psutil.cpu_percent()}%`", inline=True)
     embed.add_field(
         name="Memory Usage", value=f"`{mem:.0f}MB/{total_mem:.0f}MB`", inline=True
     )
-    embed.add_field(name="API Wrapper:", value=f"`{wrapper_used}`", inline=True)
+    embed.add_field(name="API Wrapper:", value=f"`{WRAPPER_USED}`", inline=True)
     embed.add_field(name="Python Version", value=f"`{version}`", inline=False)
     embed.add_field(name="YTdl Version", value=f"`{ytver.__version__}`", inline=True)
-    embed.add_field(name=f"{wrapper_used} Version", value=f"`{_version.__version__}`", inline=True)
+    embed.add_field(name=f"{WRAPPER_USED} Version", value=f"`{_version.__version__}`", inline=True)
     await ctx.reply(embed=embed)
 
 
@@ -894,7 +898,7 @@ async def credit(ctx):
     )
     embed.set_footer(text=f"Bot Maintainer: {maintainer}")
 
-    await ctx.reply(creditsimage)
+    await ctx.reply(CREDITS_IMAGE)
     await ctx.send(embed=embed)
 
 
@@ -1024,11 +1028,11 @@ async def gif(ctx, gif_type=""):
 
 
 @bot.command(pass_context=True)
-async def img(ctx, type="cat"):
+async def img(ctx, img_type="cat"):
     """Sends a random image based on the specified type.
     
     Parameters:
-    - type (str): The type of image to send. Default is "cat".
+    - img_type (str): The type of image to send. Default is "cat".
     
     Possible types:
     - "cat": Sends a random cat image.
@@ -1036,15 +1040,15 @@ async def img(ctx, type="cat"):
     """
 
     try:
-        if type == "cat":
+        if img_type == "cat":
             caturl = get("https://api.thecatapi.com/v1/images/search", timeout=1)
             catimg = caturl.json()[0]["url"]
-        elif type in ["anime", "neko"]:
+        elif img_type in ["anime", "neko"]:
             caturl = get("https://api.nekosapi.com/v2/images/random?filter[ageRating]=sfw", timeout=2)
             catimg = caturl.json()["data"]["attributes"]["file"]
-        else: 
+        else:
             error_embed = discord.Embed(title="Error:",
-                                        description=f"Invalid argument. supported image API's are: 'cat', 'anime",
+                                        description="Invalid argument. supported image API's are: 'cat', 'anime",
                                         color=discord.Color.brand_red())
             await ctx.reply(embed=error_embed)
             return
@@ -1058,10 +1062,23 @@ async def img(ctx, type="cat"):
         await ctx.reply(embed=error_embed)
 
 def clsscr():
+    """
+    Clears the console screen.
+
+    Uses the appropriate command based on the operating system:
+    - On Windows (nt), it uses 'cls' to clear the console screen.
+    - On other systems, it uses 'clear' to clear the console screen.
+    """
     os.system("cls" if os.name == "nt" else "clear")
 
 
 async def helperasbot():
+    """
+    Prints the names and IDs of text channels in the first guild.
+
+    Retrieves the first guild from the bot instance.
+    For each text channel, prints the channel name and its corresponding ID.
+    """
     server = bot.guilds[0]
     text_channels = server.text_channels
     for channel in text_channels:
@@ -1116,14 +1133,14 @@ async def asbotmain():
     Prints error messages if the input is invalid or the channel is a voice channel.
     """
 
-    chanID2 = await ainput("Input channel ID: ")
-    if chanID2 == "show":
+    chan_id_alt = await ainput("Input channel ID: ")
+    if chan_id_alt == "show":
         clsscr()
         await helperasbot()
         return
     clsscr()
     try:
-        channel1 = bot.get_channel(int(chanID2))
+        channel1 = bot.get_channel(int(chan_id_alt))
         if not isinstance(channel1, discord.TextChannel):
             print("Selected channel does not exist or isn't a text channel")
             return
@@ -1158,5 +1175,3 @@ except discord.errors.LoginFailure:
     )
     # gracefully exit, don't quit with error code 1
     exit()
-
-
