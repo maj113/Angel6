@@ -1,12 +1,12 @@
-import datetime
 import os
-import random
-import sys
+from random import randint
+from datetime import datetime
+from sys import argv, executable, version
 
-import aioconsole
 import discord
 import psutil
-import requests
+from aioconsole import ainput
+from requests import get, Timeout
 from dotenv import load_dotenv
 from discord import __version__ as d_version
 from discord import __title__ as d_name
@@ -72,7 +72,7 @@ async def checkenv():
         ("GENERAL_CHANNEL_ID", "Input general channel ID "),
     ]
     for env_var_name, prompt_text in config_options:
-        restart = await set_env_var(env_var_name, prompt_text, True if sys.argv[-1] == "reset" else False)
+        restart = await set_env_var(env_var_name, prompt_text, True if argv[-1] == "reset" else False)
     return restart
 
 
@@ -82,7 +82,7 @@ async def on_ready():
 
     if await checkenv():
         print("Setup complete, Rebooting")
-        os.execv(sys.executable, ["python3"] + sys.argv)
+        os.execv(executable, ["python3"] + argv)
 
     embed = discord.Embed(
         title="Bot Settings",
@@ -343,39 +343,42 @@ async def on_guild_role_update(before, after):
 async def reload(ctx):
     """Reload Bot cog"""
     try:
+        # will need to make this work with more cogs once i get that working
         bot.reload_extension("cogs.music")
         await ctx.reply("Cogs successfully reloaded!")
     except commands.ExtensionError as err:
-        await ctx.reply(f"An error occurred while reloading the cog: {err}")
+        await ctx.reply(f"An error occurred while reloading the cog: `{err}`")
 
 
 @bot.command(aliases=["reboot"])
 @commands.has_permissions(ban_members=True)
 async def restart(ctx, arg=""):
     """restarts the bot"""
-    sys.argv.append(arg)
+    argv.append(arg)
     if arg == "debug":
         await ctx.send("Debug on!")
     if arg == "reset":
         await ctx.send("Reseting environment, check console!")
     await ctx.reply(" Restarting, please allow 5 seconds for this. ")
-    os.execv(sys.executable, ["python3"] + sys.argv)
+    os.execv(executable, ["python3"] + argv)
 
 
 @bot.command(aliases=["latency"])
 async def ping(ctx):
     """shows the bot and Discord API latency"""
-    start_time = datetime.datetime.now()
-    message = await ctx.reply("Pinging...")
-    end_time = datetime.datetime.now()
+    start_time = datetime.now()
+    embed = discord.Embed(
+        title="Pinging...",
+        color=discord.Color.brand_red()
+    )
+    message = await ctx.reply(embed=embed)
+    end_time = datetime.now()
     bot_latency = (end_time - start_time).total_seconds() * 1000
     api_latency = bot.latency * 1000
-    embed = discord.Embed(
-        title="Bot and API latency:",
-        description=f"**Bot: {bot_latency:.2f}ms**\n**API: {api_latency:.2f}ms**",
-        color=discord.Color.blurple(),
-    )
-    await message.edit(content="Ping:", embed=embed)
+    embed.title = "Ping"
+    embed.description = f"**Bot: {bot_latency:.2f}ms**\n**API: {api_latency:.2f}ms**"
+    embed.color = discord.Color.brand_green()
+    await message.edit(embed=embed)
 
 
 @bot.command(aliases=["members"])
@@ -445,7 +448,7 @@ async def userinfo(ctx, *, user: discord.Member = None):
     embed.set_footer(
         text=(
             "Information last updated:"
-            f" {datetime.datetime.utcnow().strftime(date_format)}"
+            f" {datetime.utcnow().strftime(date_format)}"
         )
     )
 
@@ -578,7 +581,7 @@ async def unmute(ctx, member: discord.Member):
 
 @bot.command()
 @commands.has_permissions(ban_members=True)
-async def ban(ctx, member: discord.Member = None, *, reason=None):
+async def ban(ctx, member: discord.Member = None, *, reason: str = None):
     """Bans the specified user"""
     if member is None:
         return await ctx.reply("You need to specify who to ban.")
@@ -593,15 +596,13 @@ async def ban(ctx, member: discord.Member = None, *, reason=None):
         await member.ban(reason=reason)
     except (discord.errors.Forbidden, discord.errors.HTTPException) as err:
         return await ctx.reply(
-            f"Failed to ban {member.mention}. Please check my permissions and role"
-            f" hierarchy. \nError: {err}"
+            f"Failed to ban {member.mention}. Please check my permissions and role hierarchy.\nError: {err}"
         )
 
+    ban_reason = 'was banned' if reason is None else f"was banned for {reason}"
     embed = discord.Embed(
         title="Bye Bye",
-        description=(
-            f"{member.mention} {'was banned.' if reason is None else 'was banned for ' + reason + '.'}"
-        ),
+        description=f"{member.mention} {ban_reason}.",
         color=discord.Color.blurple(),
     )
     await ctx.send(embed=embed)
@@ -615,8 +616,8 @@ async def unban(ctx, ID: int):
         user = await bot.fetch_user(ID)
         await ctx.guild.unban(user)
         await ctx.reply(f"{user} has been unbanned.")
-    except discord.errors.Forbidden as err:
-        await ctx.reply(f"I don't have permissions to unban that user. Error: {err}")
+    except discord.errors.Forbidden:
+        await ctx.reply(f"I don't have permissions to unban that user.")
     except discord.errors.NotFound:
         await ctx.reply("I couldn't find that user in the ban list.")
     except commands.BadArgument:
@@ -635,7 +636,7 @@ async def warn(ctx, member: discord.Member = None, *, reason=None):
         title="Warned🗡️",
         description=(
             "You were"
-            f" warned.{' Now behave.' if reason is None else f' Reason: {reason}'}"
+            f" warned.{' Now behave.' if not reason else f' Reason: {reason}'}"
         ),
         color=discord.Colour.blurple(),
     )
@@ -644,7 +645,7 @@ async def warn(ctx, member: discord.Member = None, *, reason=None):
         title="Warned",
         description=(
             f"{member.mention} was"
-            f" warned{'.' if reason is None else f', reason: {reason}'}"
+            f" warned{'.' if not reason else f', reason: {reason}'}"
         ),
         color=discord.Colour.blurple(),
     )
@@ -655,18 +656,17 @@ async def warn(ctx, member: discord.Member = None, *, reason=None):
     except discord.errors.HTTPException:
         pass
 
-    if LOG_CHAN_ID is not None:
+    if not LOG_CHAN_ID:
         log_channel = bot.get_channel(int(LOG_CHAN_ID))
-        if log_channel is not None:
-            log_embed = discord.Embed(
-                title="Member Warned",
-                description=(
-                    f"{ctx.author.mention} warned"
-                    f" {member.mention}{'.' if reason is None else f', reason: {reason}'}"
-                ),
-                color=discord.Colour.blurple(),
-            )
-            await log_channel.send(embed=log_embed)
+        log_embed = discord.Embed(
+            title="Member Warned",
+            description=(
+                f"{ctx.author.mention} warned"
+                f" {member.mention}{'.' if not reason else f', reason: {reason}'}"
+            ),
+            color=discord.Colour.blurple(),
+        )
+        await log_channel.send(embed=log_embed)
 
 
 @bot.command(aliases=["clear"])
@@ -689,7 +689,7 @@ async def role(ctx, action: str, user: discord.Member, role: discord.Role):
 
     if role >= ctx.author.top_role:
         await ctx.reply(
-            f"Can't give {role} since it's higher than {ctx.author.top_role}."
+            f"Can't {action} {role} since it's higher than {ctx.author.top_role}."
         )
         return
 
@@ -717,13 +717,13 @@ async def role(ctx, action: str, user: discord.Member, role: discord.Role):
         )
 
 
-bot_uptime = datetime.datetime.now()
+bot_uptime = datetime.now()
 
 
 @bot.command(pass_context=True)
 async def uptime(ctx):
     """shows bot uptime"""
-    current_time = datetime.datetime.now()
+    current_time = datetime.now()
     difference = current_time - bot_uptime
     hours, remainder = divmod(int(difference.total_seconds()), 3600)
     minutes, seconds = divmod(remainder, 60)
@@ -738,26 +738,27 @@ async def uptime(ctx):
 
 
 # im proud of this
-meminfo = psutil.Process(os.getpid())
-totmem = psutil.virtual_memory().total / float(2**20)
-mem = meminfo.memory_info()[0] / float(2**20)
+mem_info = psutil.Process(os.getpid())
+total_mem = psutil.virtual_memory().total / float(2 ** 20)
+mem = mem_info.memory_info()[0] / float(2 ** 20)
 wrapper_used = d_name.capitalize()
+
 
 @bot.command(pass_context=True, aliases=["info", "debug"])
 async def stats(ctx):
-    """shows bot stats"""
+    """Shows bot stats"""
     embed = discord.Embed(
-        title="System Resource Usage and statistics",
+        title="System Resource Usage and Statistics",
         description="See bot host statistics.",
         color=discord.Color.blurple(),
     )
     embed.add_field(name="Angel$IX version", value=BotVer, inline=False)
     embed.add_field(name="CPU Usage", value=f"`{psutil.cpu_percent()}%`", inline=True)
     embed.add_field(
-        name="Memory Usage", value=f"`{mem:.0f}MB/{totmem:.0f}MB`", inline=True
+        name="Memory Usage", value=f"`{mem:.0f}MB/{total_mem:.0f}MB`", inline=True
     )
-    embed.add_field(name="API wrapper:", value=f"`{wrapper_used}`", inline=True)
-    embed.add_field(name="Python Version", value=f"`{sys.version}`", inline=False)
+    embed.add_field(name="API Wrapper:", value=f"`{wrapper_used}`", inline=True)
+    embed.add_field(name="Python Version", value=f"`{version}`", inline=False)
     embed.add_field(name="YTdl Version", value=f"`{ytver.__version__}`", inline=True)
     embed.add_field(name=f"{wrapper_used} Version", value=f"`{d_version}`", inline=True)
     await ctx.reply(embed=embed)
@@ -766,7 +767,7 @@ async def stats(ctx):
 @bot.command()
 async def invites(ctx, user: discord.Member = None):
     """Shows how many people someone has invited"""
-    user_name = ctx.author if user is None else user
+    user_name = user or ctx.author
     totalInvites = 0
     for invite in await ctx.guild.invites():
         if invite.inviter == user_name:
@@ -787,7 +788,7 @@ async def IQ(ctx):
     """Average server IQ"""
     embed = discord.Embed(
         title=f"Average {ctx.guild.name} IQ",
-        description=f"{random.randint(-10 , 130 )}",
+        description=f"{randint(-10 , 130 )}",
         color=discord.Color.blurple(),
     )
     await ctx.reply(embed=embed)
@@ -795,52 +796,46 @@ async def IQ(ctx):
 
 @bot.command("roll")
 async def roll(ctx, args: str = ""):
-    """Rolls a dice in user specified format"""
+    """Rolls a dice in the user-specified format"""
 
-    # sanitize input - remove trailing spaces
+    # Sanitize input - remove trailing spaces
     args = args.strip().replace(" ", "")
 
     if args == "help":
         await ctx.reply(
-            "`~roll` - rolls a 6 sided dice\n"
-            "`~roll 4` - rolls a 4 sided dice\n"
+            "`~roll` - rolls a 6-sided dice\n"
+            "`~roll 4` - rolls a 4-sided dice\n"
             "`~roll 2d6` - rolls two 6-sided dice\n"
         )
         return
 
     try:
         if args != "":
-            diceToRoll, numberOfSides = parseInput(args)
+            dice_to_roll, number_of_sides = parse_input(args)
         else:
-            diceToRoll = 1
-            numberOfSides = 6
+            dice_to_roll = 1
+            number_of_sides = 6
     except ValueError:
         await ctx.reply(
             f"I didn't understand your input: `{args}`.\nTry `~roll help` for supported options."
         )
-        
         return
 
-    maxdicesize = 150
-    maxsides = 100000000
-    if not 0 <= diceToRoll <= maxdicesize:
+    max_dice_size = 150
+    max_sides = 100000000
+    if not 0 <= dice_to_roll <= max_dice_size:
         embed = discord.Embed(
             title="Error",
-            description=(
-                f"Invalid dice amount. Dice amount must be between 0 and {maxdicesize}."
-            ),
+            description=f"Invalid dice amount. Dice amount must be between 0 and {max_dice_size}.",
             color=discord.Color.brand_red(),
         )
         await ctx.reply(embed=embed)
         return
 
-    if not 0 <= numberOfSides <= maxsides:
+    if not 0 <= number_of_sides <= max_sides:
         embed = discord.Embed(
             title="Error",
-            description=(
-                "Invalid number of sides. The number of sides must be between 0 and"
-                f" {maxsides}."
-            ),
+            description=f"Invalid number of sides. The number of sides must be between 0 and {max_sides}.",
             color=discord.Color.brand_red(),
         )
         await ctx.reply(embed=embed)
@@ -848,39 +843,38 @@ async def roll(ctx, args: str = ""):
 
     results = []
 
-    for _ in range(diceToRoll):
-        results.append(rolladice(numberOfSides))
+    for _ in range(dice_to_roll):
+        results.append(roll_a_dice(number_of_sides))
 
-    resultString = ", ".join([f"`{result}`" for result in results])
+    result_string = ", ".join([f"`{result}`" for result in results])
 
     embed = discord.Embed(
-        title=f"{ctx.author.name} rolled {diceToRoll}d{numberOfSides}!",
-        description=resultString,
+        title=f"{ctx.author.name} rolled {dice_to_roll}d{number_of_sides}!",
+        description=result_string,
         color=discord.Color.blurple(),
     )
 
     await ctx.reply(embed=embed)
 
 
-def parseInput(prased_input):
-    split = prased_input.split("d")
+def parse_input(parsed_input):
+    split = parsed_input.split("d")
 
-    # remove empty items
+    # Remove empty items
     split = [x for x in split if x]
 
     if len(split) == 1:
-        diceToRoll = 1
-        sidedDice = int(split[0])
-
+        dice_to_roll = 1
+        sided_dice = int(split[0])
     else:
-        diceToRoll = int(split[0])
-        sidedDice = int(split[1])
+        dice_to_roll = int(split[0])
+        sided_dice = int(split[1])
 
-    return diceToRoll, sidedDice
+    return dice_to_roll, sided_dice
 
 
-def rolladice(sides):
-    return random.randint(1, sides)
+def roll_a_dice(sides):
+    return randint(1, sides)
 
 
 @bot.command(pass_context=True, aliases=["cred", "credits", "about"])
@@ -1042,24 +1036,24 @@ async def img(ctx, type="cat"):
 
     try:
         if type == "cat":
-            caturl = requests.get("https://api.thecatapi.com/v1/images/search", timeout=1)
+            caturl = get("https://api.thecatapi.com/v1/images/search", timeout=1)
             catimg = caturl.json()[0]["url"]
         elif type in ["anime", "neko"]:
-            caturl = requests.get("https://api.nekosapi.com/v2/images/random?filter[ageRating]=sfw", timeout=2)
+            caturl = get("https://api.nekosapi.com/v2/images/random?filter[ageRating]=sfw", timeout=2)
             catimg = caturl.json()["data"]["attributes"]["file"]
         else: 
             error_embed = discord.Embed(title="Error:",
                                         description=f"Invalid argument. supported image API's are: 'cat', 'anime",
-                                        color=discord.Color.red())
+                                        color=discord.Color.brand_red())
             await ctx.reply(embed=error_embed)
             return
         embed = discord.Embed(color=discord.Color.blurple())
         embed.set_image(url=catimg)
         await ctx.reply(embed=embed)
-    except requests.Timeout as err:
+    except Timeout as err:
         error_embed = discord.Embed(title="Error:",
                                     description=f"Failed to fetch image. Please try again later.\nError: {err}",
-                                    color=discord.Color.red())
+                                    color=discord.Color.brand_red())
         await ctx.reply(embed=error_embed)
 
 def clsscr():
@@ -1121,7 +1115,7 @@ async def asbotmain():
     Prints error messages if the input is invalid or the channel is a voice channel.
     """
 
-    chanID2 = await aioconsole.ainput("Input channel ID: ")
+    chanID2 = await ainput("Input channel ID: ")
     if chanID2 == "show":
         clsscr()
         await helperasbot()
@@ -1136,7 +1130,7 @@ async def asbotmain():
         print("Error; Wrong ID provided or an unexpected exception occurred, try again")
         return
     while True:
-        message = await aioconsole.ainput(f"[{channel1}] Message: ")
+        message = await ainput(f"[{str(channel1).strip()}] Message: ")
         if message == "show":
             clsscr()
             await helperasbot()
@@ -1145,7 +1139,7 @@ async def asbotmain():
             asbotmain.cancel()
             clsscr()
             print("Stopped task")
-            return
+            break
         try:
             await channel1.send(message)
         except discord.errors.HTTPException:
@@ -1161,6 +1155,7 @@ except discord.errors.LoginFailure:
         "NO TOKEN FOUND OR WRONG TOKEN SPECIFIED,\nmake sure that the env file is"
         " named '.env' and that there is a token present"
     )
+    # gracefully exit, don't quit with error code 1
     quit(0)
 
 
