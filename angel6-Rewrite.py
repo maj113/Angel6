@@ -138,22 +138,23 @@ bot.load_extension("cogs", recursive=True)
 
 @bot.event
 async def on_message(message):
+    """
+    Event handler for incoming messages.
+
+    Prints the message content, including attachments if present.
+    Then, processes the message for bot commands.
+
+    Parameters:
+    - message: The received message object.
+    """
     if message.author.id != bot.user.id:
         if message.attachments:
-            # If there is at least one attachment, include the URLs of all attachments in the message string
             attachments = "\n".join(a.url for a in message.attachments)
-            content = message.content if message.content else ""
-            msgcontent = (
-                f"{message.guild}/{message.channel}/{message.author.name}>"
-                f" {content}\n{attachments}"
-            )
+            msgcontent = f"{message.guild}/{message.channel}/{message.author.name}> {message.content}\n{attachments}"
         else:
-            # If there are no attachments, simply include the text content of the message
-            msgcontent = (
-                f"{message.guild}/{message.channel}/{message.author.name}>"
-                f" {message.content}"
-            )
-        print(msgcontent)
+            msgcontent = f"{message.guild}/{message.channel}/{message.author.name}> {message.content}"
+
+        (msgcontent)
         await bot.process_commands(message)
 
 
