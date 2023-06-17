@@ -761,7 +761,7 @@ async def stats(ctx):
     embed.add_field(name="API Wrapper:", value=f"`{wrapper_used}`", inline=True)
     embed.add_field(name="Python Version", value=f"`{version}`", inline=False)
     embed.add_field(name="YTdl Version", value=f"`{ytver.__version__}`", inline=True)
-    embed.add_field(name=f"{wrapper_used} Version", value=f"`{d_version}`", inline=True)
+    embed.add_field(name=f"{wrapper_used} Version", value=f"`{_version.__version__}`", inline=True)
     await ctx.reply(embed=embed)
 
 
