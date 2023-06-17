@@ -686,37 +686,37 @@ async def wipe(ctx, amount: int = 20):
 
 @bot.command(pass_context=True)
 @commands.has_permissions(ban_members=True)
-async def role(ctx, action: str, user: discord.Member, role: discord.Role):
+async def role(ctx, action: str, user: discord.Member, user_role: discord.Role):
     """Add or remove a role from a user."""
     if action not in ["add", "remove"]:
         await ctx.reply("Invalid action specified. Use 'add' or 'remove'.")
         return
 
-    if role >= ctx.author.top_role:
+    if user_role >= ctx.author.top_role:
         await ctx.reply(
-            f"Can't {action} {role} since it's higher than {ctx.author.top_role}."
+            f"Can't {action} {user_role} since it's higher than {ctx.author.top_role}."
         )
         return
 
     if action == "add":
-        await user.add_roles(role)
+        await user.add_roles(user_role)
         await ctx.reply(
             embed=discord.Embed(
                 title="Role Added",
-                description=f"{user.mention} was given the {role.mention} role.",
+                description=f"{user.mention} was given the {user_role.mention} role.",
                 color=discord.Color.green(),
             )
         )
     elif action == "remove":
-        if role == ctx.author.top_role and user == ctx.author:
-            await ctx.reply(f"Can't remove role \"{role}\" as it's your highest role.")
+        if user_role == ctx.author.top_role and user == ctx.author:
+            await ctx.reply(f"Can't remove role \"{user_role}\" as it's your highest role.")
             return
 
-        await user.remove_roles(role)
+        await user.remove_roles(user_role)
         await ctx.reply(
             embed=discord.Embed(
                 title="Role Removed",
-                description=f"{user.mention} was removed from the {role.mention} role.",
+                description=f"{user.mention} was removed from the {user_role.mention} role.",
                 color=discord.Color.red(),
             )
         )
@@ -773,14 +773,14 @@ async def stats(ctx):
 async def invites(ctx, user: discord.Member = None):
     """Shows how many people someone has invited"""
     user_name = user or ctx.author
-    totalInvites = 0
+    total_invites = 0
     for invite in await ctx.guild.invites():
         if invite.inviter == user_name:
-            totalInvites += invite.uses
+            total_invites += invite.uses
     embed = discord.Embed(
         title=(
             f"{user_name} has invited"
-            f" {totalInvites} member{'' if totalInvites == 1 else 's'} to the server!"
+            f" {total_invites} member{'' if total_invites == 1 else 's'} to the server!"
         ),
         color=discord.Colour.blurple(),
     )
@@ -788,8 +788,8 @@ async def invites(ctx, user: discord.Member = None):
     await ctx.reply(embed=embed)
 
 
-@bot.command(aliases=["iq"])
-async def IQ(ctx):
+@bot.command(aliases=["IQ"])
+async def iq(ctx):
     """Average server IQ"""
     embed = discord.Embed(
         title=f"Average {ctx.guild.name} IQ",
@@ -991,7 +991,7 @@ async def support(ctx, *, message: str = None):
 
 
 gif_links = {
-    "violation": "https://tenor.com/view/that-one-there-was-a-violation-that1there-was-violation-violation-that-one-there-was-a-violation-personally-i-wouldnt-have-it-that1there-was-a-violation-personally-i-wouldnt-have-it-gif-20040456",
+    "violation": "https://tenor.com/view/violation-gif-24043912",
     "germany": "https://giphy.com/gifs/fifa-Vd8wLaK3lNDNMuGaUL \n SHUT THE FUCK UP BAHZZ VIVA LA GERMANY AAJAJJAJAJAJA"
 
 }
