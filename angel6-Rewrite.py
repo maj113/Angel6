@@ -9,7 +9,7 @@ import psutil
 from aioconsole import ainput
 from requests import get, Timeout
 from dotenv import load_dotenv
-from discord import __version__ as d_version
+from discord import _version
 from discord import __title__ as d_name
 from discord.ext import commands, tasks
 from yt_dlp import version as ytver
