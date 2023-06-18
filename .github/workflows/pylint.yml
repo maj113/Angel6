@@ -6,7 +6,7 @@ on:
     #  - '**.py'
 
 jobs:
-  lint-linux:
+  Pylint-Linux:
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -25,12 +25,7 @@ jobs:
     - name: Analysing the code with pylint
       run: |
         find . -name '*.py' -exec pylint {} \;
-    - name: Analysing the code with ruff
-      uses: chartboost/ruff-action@v1
-      with:
-        args: --exit-zero
-
-  lint-windows:
+  Pylint-Windows:
     runs-on: windows-latest
     strategy:
       matrix:
@@ -44,8 +39,25 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
+          pip install pylint
           pip install -r requirements.txt
-      - name: Analyzing the code with ruff
-        uses: chartboost/ruff-action@v1
+      - name: Analyzing the code with pylint
+        run: |
+          Get-ChildItem -Recurse -Filter '*.py' | ForEach-Object { pylint $_.FullName --exit-zero}
+
+  Ruff-Windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: chartboost/ruff-action@v1
+        with:
+          args: --exit-zero
+
+
+  Ruff-Linux:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: chartboost/ruff-action@v1
         with:
           args: --exit-zero
