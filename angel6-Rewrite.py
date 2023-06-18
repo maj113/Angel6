@@ -1031,7 +1031,16 @@ def parse_input(parsed_input: str):
     return dice_to_roll, sided_dice
 
 
-def roll_a_dice(sides):
+def roll_a_dice(sides: int):
+    """
+    Roll a dice with the specified number of sides.
+
+    Args:
+        sides (int): The number of sides on the dice.
+
+    Returns:
+        int: The result of the dice roll, a random number between 1 and the number of sides.
+    """
     return randint(1, sides)
 
 
