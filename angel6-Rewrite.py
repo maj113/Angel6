@@ -396,6 +396,13 @@ async def on_guild_channel_update(before, after):
 
 @bot.event
 async def on_guild_role_update(before, after):
+    """
+    Triggered when a role is updated in a guild.
+
+    Parameters:
+        before (discord.Role): The role object representing the role before the update.
+        after (discord.Role): The role object representing the role after the update.
+    """
     log_channel = bot.get_channel(int(LOG_CHAN_ID))
 
     embed = discord.Embed(
