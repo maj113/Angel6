@@ -242,12 +242,18 @@ async def on_message_delete(message):
     """
     deleted = discord.Embed(
         description=f"Message deleted in {message.channel.mention}",
-        color=discord.Color.blurple(),
+        color=discord.Color.brand_red(),
     ).set_author(name=message.author, icon_url=message.author.avatar.url)
+
     if message.author.id == bot.user.id:
         return
+
     channel = bot.get_channel(int(LOG_CHAN_ID))
-    deleted.add_field(name="Message", value=message.content)
+    if channel is None:
+        # LOG_CHAN_ID is not valid or channel is not available
+        return
+
+    deleted.add_field(name="Message", value=message.content or "*No content*")
     deleted.timestamp = message.created_at
     await channel.send(embed=deleted)
 
