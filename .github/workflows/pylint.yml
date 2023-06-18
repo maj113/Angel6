@@ -25,6 +25,7 @@ jobs:
     - name: Analysing the code with pylint
       run: |
         find . -name '*.py' -exec pylint {} \;
+
   Pylint-Windows:
     runs-on: windows-latest
     strategy:
@@ -45,19 +46,12 @@ jobs:
         run: |
           Get-ChildItem -Recurse -Filter '*.py' | ForEach-Object { pylint $_.FullName --exit-zero}
 
-  Ruff-Windows:
-    runs-on: windows-latest
+  Ruff:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [windows-latest, ubuntu-latest]
     steps:
       - uses: actions/checkout@v3
       - uses: chartboost/ruff-action@v1
-        with:
-          args: --exit-zero
-
-
-  Ruff-Linux:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: chartboost/ruff-action@v1
-        with:
-          args: --exit-zero
+        name: Lint with Ruff on ${{ matrix.os }}
