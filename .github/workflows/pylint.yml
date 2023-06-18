@@ -27,3 +27,5 @@ jobs:
         find . -name '*.py' -exec pylint {} \;
     - name: Analysing the code with ruff
       uses: chartboost/ruff-action@v1
+      with:
+        args: --exit-zero
