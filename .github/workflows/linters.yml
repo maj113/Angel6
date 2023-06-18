@@ -6,11 +6,30 @@ on:
     #  - '**.py'
 
 jobs:
-  pylint:
-    runs-on: ${{ matrix.os }}
+  Pylint-Linux:
+    runs-on: ubuntu-latest
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest]
+        python-version: ["3.10", "3.11"]
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v4.6.1
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install pylint
+        pip install -r requirements.txt
+    - name: Analysing the code with pylint
+      run: |
+        find . -name '*.py' -exec pylint {} \;
+
+  Pylint-Windows:
+    runs-on: windows-latest
+    strategy:
+      matrix:
         python-version: ["3.10", "3.11"]
     steps:
       - uses: actions/checkout@v3
@@ -25,12 +44,7 @@ jobs:
           pip install -r requirements.txt
       - name: Analyzing the code with pylint
         run: |
-          if [ "${{ matrix.os }}" = "ubuntu-latest" ]; then
-            find . -name '*.py' -exec pylint {} \;
-          else
-            Get-ChildItem -Recurse -Filter '*.py' | ForEach-Object { pylint $_.FullName --exit-zero }
-          fi
-    
+          Get-ChildItem -Recurse -Filter '*.py' | ForEach-Object { pylint $_.FullName --exit-zero}
 
   Ruff:
     runs-on: ${{ matrix.os }}
