@@ -339,6 +339,18 @@ async def on_guild_channel_delete(channel):
 
 @bot.event
 async def on_user_update(before, after):
+    """
+    Event handler for when a user updates their profile (including avatar).
+    Sends a log message to the logging channel if the avatar is changed.
+
+    Parameters:
+    - before (discord.User): The user before the update.
+    - after (discord.User): The user after the update.
+
+    Note:
+    - Requires a valid logging channel ID in LOG_CHAN_ID constant.
+    """
+
     if before.avatar != after.avatar:
         logging_channel = bot.get_channelint(int(LOG_CHAN_ID))
         if logging_channel:
