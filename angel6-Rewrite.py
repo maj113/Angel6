@@ -219,12 +219,13 @@ async def on_member_remove(member):
     channel = bot.get_channel(int(JL_CHAN_ID))
     embed = discord.Embed(
         colour=discord.Colour.blurple(),
-        description=(
-            f"{member.mention} Left us, Total Members: {len(member.guild.members)}"
-        ),
+        description=f"{member.mention} Left us, Total Members: {len(member.guild.members)}",
     )
-    embed.set_thumbnail(url=f"{member.avatar.url}")
-    embed.set_footer(text=f"{member.guild}", icon_url=f"{member.guild.icon.url}")
+    embed.set_thumbnail(url=member.avatar.url)
+    embed.set_footer(
+        text=member.guild,
+        icon_url=member.guild.icon.url if member.guild.icon else None
+    )
     await channel.send(embed=embed)
 
 
