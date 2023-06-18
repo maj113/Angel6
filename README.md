@@ -3,7 +3,7 @@
 ![](assets/image.png)
 
 [![CodeQL](https://github.com/maj113/Angel6/actions/workflows/codeql.yml/badge.svg)](https://github.com/maj113/Angel6/actions/workflows/codeql.yml) 
-[![Pylint](https://github.com/maj113/Angel6/actions/workflows/pylint.yml/badge.svg)](https://github.com/maj113/Angel6/actions/workflows/pylint.yml)
+[![Linting](https://github.com/maj113/Angel6/actions/workflows/linters.yml/badge.svg)](https://github.com/maj113/Angel6/actions/workflows/linters.yml)
 
 ## Introduction
 
