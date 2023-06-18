@@ -174,30 +174,27 @@ async def on_member_join(member):
     channel = bot.get_channel(int(JL_CHAN_ID))
     embed = discord.Embed(
         colour=discord.Colour.blurple(),
-        description=(
-            f"{member.mention} joined, Total Members: {len(list(member.guild.members))}"
-        ),
+        description=f"{member.mention} joined, Total Members: {len(list(member.guild.members))}",
     )
-    embed.set_thumbnail(url=f"{member.avatar.url}")
-    embed.set_footer(text=f"{member.guild}", icon_url=f"{member.guild.icon.url}")
+    embed.set_thumbnail(url=member.avatar.url)
+    embed.set_footer(
+        text=member.guild,
+        icon_url=member.guild.icon.url if member.guild.icon else None
+    )
     await channel.send(embed=embed)
-    if os.getenv("GENERAL_CHANNEL_ID") is None or os.getenv("GENERAL_CHANNEL_ID") == "":
-        mbed = discord.Embed(
-            colour=(discord.Colour.blurple()),
-            title="Glad you could find us!",
-            description="yo! im Mutiny's Personal Bot, proceed to General to talk:)",
-        )
-        await member.send(embed=mbed)
-    else:
-        chan_id = int(GEN_CHAN_ID)
-        mbed = discord.Embed(
-            colour=(discord.Colour.blurple()),
-            title="Glad you could find us!",
-            description=(
-                f"yo! im Mutiny's Personal Bot, proceed to <#{chan_id}> to talk:)"
-            ),
-        )
-        await member.send(embed=mbed)
+
+    general_channel_id = os.getenv("GENERAL_CHANNEL_ID")
+    description = (
+        "yo! I'm Mutiny's Personal Bot, proceed to General to talk:)"
+        if general_channel_id is None or general_channel_id == ""
+        else f"yo! I'm Mutiny's Personal Bot, proceed to <#{int(GEN_CHAN_ID)}> to talk:)"
+    )
+    mbed = discord.Embed(
+        colour=discord.Colour.blurple(),
+        title="Glad you could find us!",
+        description=description,
+    )
+    await member.send(embed=mbed)
     #with open('muted.json', "r") as jsonmute:
     #    datamute = json.load(jsonmute)
     #    if member.id in datamute["muted"]:
