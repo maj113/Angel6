@@ -33,7 +33,7 @@ bot = commands.Bot(
 )
 
 
-async def set_env_var(env_var_name : str, prompt_text : str, force_reset_env : bool):
+async def set_env_var(env_var_name: str, prompt_text: str, force_reset_env: bool):
     """
     Sets an environment variable if it is not already set or if `force_reset_env` is True.
 
@@ -48,12 +48,12 @@ async def set_env_var(env_var_name : str, prompt_text : str, force_reset_env : b
     value = os.getenv(env_var_name)
     if value is None:
         value = int(input(prompt_text))
-        with open(".env", "a", encoding='utf-8') as envfile:
+        with open(".env", "a", encoding="utf-8") as envfile:
             envfile.write(f"\n{env_var_name}={value}")
         return True
     if value == "" or force_reset_env:
         value = int(input(prompt_text))
-        with open(".env", "r+", encoding='utf-8') as envfile:
+        with open(".env", "r+", encoding="utf-8") as envfile:
             content = envfile.read()
             changed = content.replace(f"{env_var_name}=", f"{env_var_name}={value}")
             envfile.seek(0)
@@ -135,6 +135,7 @@ async def on_ready():
     if not asbotmain.is_running():
         await asbotmain.start()
 
+
 # NextCord doesn't support recursive
 bot.load_extension("cogs", recursive=True)
 
@@ -182,12 +183,13 @@ async def on_member_join(member):
     channel = bot.get_channel(int(JL_CHAN_ID))
     embed = discord.Embed(
         colour=discord.Colour.blurple(),
-        description=f"{member.mention} joined, Total Members: {len(list(member.guild.members))}",
+        description=(
+            f"{member.mention} joined, Total Members: {len(list(member.guild.members))}"
+        ),
     )
     embed.set_thumbnail(url=member.avatar.url)
     embed.set_footer(
-        text=member.guild,
-        icon_url=member.guild.icon.url if member.guild.icon else None
+        text=member.guild, icon_url=member.guild.icon.url if member.guild.icon else None
     )
     await channel.send(embed=embed)
 
@@ -195,7 +197,9 @@ async def on_member_join(member):
     description = (
         "yo! I'm Mutiny's Personal Bot, proceed to General to talk:)"
         if general_channel_id is None or general_channel_id == ""
-        else f"yo! I'm Mutiny's Personal Bot, proceed to <#{int(GEN_CHAN_ID)}> to talk:)"
+        else (
+            f"yo! I'm Mutiny's Personal Bot, proceed to <#{int(GEN_CHAN_ID)}> to talk:)"
+        )
     )
     mbed = discord.Embed(
         colour=discord.Colour.blurple(),
@@ -203,7 +207,7 @@ async def on_member_join(member):
         description=description,
     )
     await member.send(embed=mbed)
-    #with open('muted.json', "r") as jsonmute:
+    # with open('muted.json', "r") as jsonmute:
     #    datamute = json.load(jsonmute)
     #    if member.id in datamute["muted"]:
     #        for guild in bot.guilds:
@@ -227,12 +231,13 @@ async def on_member_remove(member):
     channel = bot.get_channel(int(JL_CHAN_ID))
     embed = discord.Embed(
         colour=discord.Colour.blurple(),
-        description=f"{member.mention} Left us, Total Members: {len(member.guild.members)}",
+        description=(
+            f"{member.mention} Left us, Total Members: {len(member.guild.members)}"
+        ),
     )
     embed.set_thumbnail(url=member.avatar.url)
     embed.set_footer(
-        text=member.guild,
-        icon_url=member.guild.icon.url if member.guild.icon else None
+        text=member.guild, icon_url=member.guild.icon.url if member.guild.icon else None
     )
     await channel.send(embed=embed)
 
@@ -330,9 +335,7 @@ async def on_guild_channel_delete(channel):
                 title="Channel Deleted", color=discord.Colour.brand_red()
             )
             embed.add_field(name="Name", value=channel.name, inline=True)
-            embed.add_field(
-                name="Type", value=str(channel.type).title(), inline=True
-            )
+            embed.add_field(name="Type", value=str(channel.type).title(), inline=True)
             embed.add_field(
                 name="Category",
                 value=channel.category.name if channel.category else "None",
@@ -403,14 +406,14 @@ async def on_guild_channel_update(before, after):
                 embed.add_field(
                     name="Name",
                     value=f"`{before.name}` -> `{after.name}`",
-                    inline=False
+                    inline=False,
                 )
             # Does type ever change?
             if before.type != after.type:
                 embed.add_field(
                     name="Type",
                     value=f"`{before.type}` -> `{after.type}`",
-                    inline=False
+                    inline=False,
                 )
             if before.category != after.category:
                 before_category = before.category.name if before.category else "None"
@@ -418,8 +421,8 @@ async def on_guild_channel_update(before, after):
                 embed.add_field(
                     name="Category",
                     value=f"`{before_category}` -> `{after_category}`",
-                    inline=False
-    )
+                    inline=False,
+                )
             embed.set_footer(text=f"Updated by: {author}", icon_url=author.avatar.url)
 
             await log_channel.send(embed=embed)
@@ -462,6 +465,7 @@ async def on_guild_role_update(before, after):
 
     await log_channel.send(embed=embed)
 
+
 @bot.event
 async def on_guild_role_create(created_role):
     """
@@ -486,11 +490,12 @@ async def on_guild_role_create(created_role):
         embed = discord.Embed(
             title=f"Role Created: `{created_role.name}`",
             description=f"New role created with ID: {created_role.id}",
-            color=discord.Color.brand_green()
+            color=discord.Color.brand_green(),
         )
         embed.set_footer(text=f"Created by: {creator}")
 
         await log_channel.send(embed=embed)
+
 
 @bot.event
 async def on_guild_role_delete(deleted_role):
@@ -516,11 +521,12 @@ async def on_guild_role_delete(deleted_role):
         embed = discord.Embed(
             title=f"Role Deleted: `{deleted_role.name}`",
             description=f"Role ID: {deleted_role.id}",
-            color=discord.Color.brand_red()
+            color=discord.Color.brand_red(),
         )
         embed.set_footer(text=f"Deleted by: {deleter}")
 
         await log_channel.send(embed=embed)
+
 
 @bot.command()
 @commands.has_permissions(ban_members=True)
@@ -551,10 +557,7 @@ async def restart(ctx, arg=""):
 async def ping(ctx):
     """shows the bot and Discord API latency"""
     start_time = datetime.now()
-    embed = discord.Embed(
-        title="Pinging...",
-        color=discord.Color.brand_red()
-    )
+    embed = discord.Embed(title="Pinging...", color=discord.Color.brand_red())
     message = await ctx.reply(embed=embed)
     end_time = datetime.now()
     bot_latency = (end_time - start_time).total_seconds() * 1000
@@ -573,7 +576,7 @@ async def users(ctx):
     embed = discord.Embed(
         title=f"Total members in {ctx.guild.name}",
         description=f"**Members: {member_count}**\n**Bots: {bot_count}**",
-        color=discord.Color.blurple()
+        color=discord.Color.blurple(),
     )
     await ctx.reply(embed=embed)
 
@@ -629,10 +632,7 @@ async def userinfo(ctx, *, user: discord.Member = None):
         )
 
     embed.set_footer(
-        text=(
-            "Information last updated:"
-            f" {datetime.utcnow().strftime(date_format)}"
-        )
+        text=f"Information last updated: {datetime.utcnow().strftime(date_format)}"
     )
 
     await ctx.reply(embed=embed)
@@ -736,10 +736,10 @@ async def mute(ctx, member: discord.Member, *, reason=None):
         await member.send(f"You were muted{' for ' + reason if reason else ''}")
     except discord.errors.Forbidden:
         pass
-    #with open('muted.json', "r") as jsonmute:
+    # with open('muted.json', "r") as jsonmute:
     #    datamute = json.load(jsonmute)
     #    datamute["muted"].append(member.id)
-    #with open('muted.json', "w") as jsonmuteafter:
+    # with open('muted.json', "w") as jsonmuteafter:
     #    json.dump(datamute, jsonmuteafter)
 
 
@@ -783,7 +783,7 @@ async def ban(ctx, member: discord.Member = None, *, reason: str = None):
             f"Please check my permissions and role hierarchy.\nError: {err}"
         )
 
-    ban_reason = 'was banned' if reason is None else f"was banned for {reason}"
+    ban_reason = "was banned" if reason is None else f"was banned for {reason}"
     embed = discord.Embed(
         title="Bye Bye",
         description=f"{member.mention} {ban_reason}.",
@@ -819,8 +819,7 @@ async def warn(ctx, member: discord.Member = None, *, reason=None):
     embed2 = discord.Embed(
         title="Warned🗡️",
         description=(
-            "You were"
-            f" warned.{' Now behave.' if not reason else f' Reason: {reason}'}"
+            f"You were warned.{' Now behave.' if not reason else f' Reason: {reason}'}"
         ),
         color=discord.Colour.blurple(),
     )
@@ -828,8 +827,7 @@ async def warn(ctx, member: discord.Member = None, *, reason=None):
     embed = discord.Embed(
         title="Warned",
         description=(
-            f"{member.mention} was"
-            f" warned{'.' if not reason else f', reason: {reason}'}"
+            f"{member.mention} was warned{'.' if not reason else f', reason: {reason}'}"
         ),
         color=discord.Colour.blurple(),
     )
@@ -888,14 +886,18 @@ async def role(ctx, action: str, user: discord.Member, user_role: discord.Role):
         )
     elif action == "remove":
         if user_role == ctx.author.top_role and user == ctx.author:
-            await ctx.reply(f"Can't remove role \"{user_role}\" as it's your highest role.")
+            await ctx.reply(
+                f"Can't remove role \"{user_role}\" as it's your highest role."
+            )
             return
 
         await user.remove_roles(user_role)
         await ctx.reply(
             embed=discord.Embed(
                 title="Role Removed",
-                description=f"{user.mention} was removed from the {user_role.mention} role.",
+                description=(
+                    f"{user.mention} was removed from the {user_role.mention} role."
+                ),
                 color=discord.Color.red(),
             )
         )
@@ -923,8 +925,8 @@ async def uptime(ctx):
 
 # im proud of this
 mem_info = psutil.Process(os.getpid())
-total_mem = psutil.virtual_memory().total / float(2 ** 20)
-mem = mem_info.memory_info()[0] / float(2 ** 20)
+total_mem = psutil.virtual_memory().total / float(2**20)
+mem = mem_info.memory_info()[0] / float(2**20)
 WRAPPER_USED = d_name.capitalize()
 
 
@@ -944,7 +946,9 @@ async def stats(ctx):
     embed.add_field(name="API Wrapper:", value=f"`{WRAPPER_USED}`", inline=True)
     embed.add_field(name="Python Version", value=f"`{version}`", inline=False)
     embed.add_field(name="YTdl Version", value=f"`{ytver.__version__}`", inline=True)
-    embed.add_field(name=f"{WRAPPER_USED} Version", value=f"`{_version.__version__}`", inline=True)
+    embed.add_field(
+        name=f"{WRAPPER_USED} Version", value=f"`{_version.__version__}`", inline=True
+    )
     await ctx.reply(embed=embed)
 
 
@@ -1001,7 +1005,8 @@ async def roll(ctx, args: str = ""):
             number_of_sides = 6
     except ValueError:
         await ctx.reply(
-            f"I didn't understand your input: `{args}`.\nTry `~roll help` for supported options."
+            f"I didn't understand your input: `{args}`.\nTry `~roll help` for supported"
+            " options."
         )
         return
 
@@ -1010,7 +1015,10 @@ async def roll(ctx, args: str = ""):
     if not 0 <= dice_to_roll <= max_dice_size:
         embed = discord.Embed(
             title="Error",
-            description=f"Invalid dice amount. Dice amount must be between 0 and {max_dice_size}.",
+            description=(
+                "Invalid dice amount. Dice amount must be between 0 and"
+                f" {max_dice_size}."
+            ),
             color=discord.Color.brand_red(),
         )
         await ctx.reply(embed=embed)
@@ -1020,7 +1028,8 @@ async def roll(ctx, args: str = ""):
         embed = discord.Embed(
             title="Error",
             description=(
-                f"Invalid number of sides. The number of sides must be between 0 and {max_sides}."
+                "Invalid number of sides. The number of sides must be between 0 and"
+                f" {max_sides}."
             ),
             color=discord.Color.brand_red(),
         )
@@ -1098,7 +1107,7 @@ async def credit(ctx):
         color=discord.Color.blurple(),
     )
 
-    #await ctx.reply(CREDITS_IMAGE) server no longer exists
+    # await ctx.reply(CREDITS_IMAGE) server no longer exists
     await ctx.send(embed=embed)
 
 
@@ -1185,17 +1194,20 @@ async def support(ctx, *, message: str = None):
         color=discord.Color.blurple(),
     )
     embed.set_image(
-        url="https://media.discordapp.net/attachments/736563784318976040/"
-        "1087089496450928650/paintdotnet_LFkzPDrQML.png"
+        url=(
+            "https://media.discordapp.net/attachments/736563784318976040/"
+            "1087089496450928650/paintdotnet_LFkzPDrQML.png"
+        )
     )
     await ctx.reply(embed=embed)
 
 
 gif_links = {
     "violation": "https://tenor.com/view/violation-gif-24043912",
-    "germany": "https://giphy.com/gifs/fifa-Vd8wLaK3lNDNMuGaUL \n"
-    " SHUT THE FUCK UP BAHZZ VIVA LA GERMANY AAJAJJAJAJAJA"
-
+    "germany": (
+        "https://giphy.com/gifs/fifa-Vd8wLaK3lNDNMuGaUL \n"
+        " SHUT THE FUCK UP BAHZZ VIVA LA GERMANY AAJAJJAJAJAJA"
+    ),
 }
 
 
@@ -1232,10 +1244,10 @@ async def gif(ctx, gif_type=""):
 @bot.command(pass_context=True)
 async def img(ctx, img_type="cat"):
     """Sends a random image based on the specified type.
-    
+
     Parameters:
     - img_type (str): The type of image to send. Default is "cat".
-    
+
     Possible types:
     - "cat": Sends a random cat image.
     - "anime" or "neko": Sends a random SFW anime or neko image.
@@ -1248,14 +1260,16 @@ async def img(ctx, img_type="cat"):
         elif img_type in ["anime", "neko"]:
             caturl = get(
                 "https://api.nekosapi.com/v2/images/random?filter[ageRating]=sfw",
-                timeout=3
+                timeout=3,
             )
             catimg = caturl.json()["data"]["attributes"]["file"]
         else:
             error_embed = discord.Embed(
                 title="Error:",
-                description="Invalid argument. Supported image APIs are: 'cat', 'anime'",
-                color=discord.Color.brand_red()
+                description=(
+                    "Invalid argument. Supported image APIs are: 'cat', 'anime'"
+                ),
+                color=discord.Color.brand_red(),
             )
             await ctx.reply(embed=error_embed)
             return
@@ -1268,9 +1282,10 @@ async def img(ctx, img_type="cat"):
         error_embed = discord.Embed(
             title="Error:",
             description=f"Failed to fetch image. Please try again later.\nError: {err}",
-            color=discord.Color.brand_red()
+            color=discord.Color.brand_red(),
         )
         await ctx.reply(embed=error_embed)
+
 
 def clsscr():
     """
@@ -1374,7 +1389,6 @@ async def asbotmain():
         except discord.errors.HTTPException:
             # This is a Unicode "U+2800/Braille Pattern Blank" character
             await channel1.send("⠀")
-
 
 
 try:
