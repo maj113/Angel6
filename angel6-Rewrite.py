@@ -309,29 +309,32 @@ async def on_guild_channel_delete(channel):
     """
 
     logging_channel = bot.get_channel(int(LOG_CHAN_ID))
-    if logging_channel:
-        async for entry in channel.guild.audit_logs(
-            limit=1, action=discord.AuditLogAction.channel_delete
-        ):
-            if entry.target.id == channel.id:
-                embed = discord.Embed(
-                    title="Channel deleted", color=discord.Colour.brand_red()
-                )
-                embed.add_field(name="Name", value=channel.name, inline=True)
-                embed.add_field(
-                    name="Type", value=str(channel.type).title(), inline=True
-                )
-                embed.add_field(
-                    name="Category",
-                    value=channel.category.name if channel.category else "None",
-                    inline=True,
-                )
-                embed.set_footer(
-                    text=f"ID: {channel.id} • Deleted by {entry.user}",
-                    icon_url=entry.user.avatar.url,
-                )
-                await logging_channel.send(embed=embed)
-                break
+
+    if not logging_channel:
+        # LOG_CHAN_ID is not valid or channel is not available
+        return
+
+    async for entry in channel.guild.audit_logs(
+        limit=1, action=discord.AuditLogAction.channel_delete
+    ):
+        if entry.target.id == channel.id:
+            embed = discord.Embed(
+                title="Channel Deleted", color=discord.Colour.brand_red()
+            )
+            embed.add_field(name="Name", value=channel.name, inline=True)
+            embed.add_field(
+                name="Type", value=str(channel.type).title(), inline=True
+            )
+            embed.add_field(
+                name="Category",
+                value=channel.category.name if channel.category else "None",
+                inline=True,
+            )
+            embed.set_footer(
+                text=f"ID: {channel.id} • Deleted by {entry.user}",
+                icon_url=entry.user.avatar.url if entry.user.avatar else discord.Embed.Empty,
+            )
+            await logging_channel.send(embed=embed)
 
 
 @bot.event
