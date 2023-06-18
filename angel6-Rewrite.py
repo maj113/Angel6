@@ -779,7 +779,8 @@ async def ban(ctx, member: discord.Member = None, *, reason: str = None):
         await member.ban(reason=reason)
     except (discord.errors.Forbidden, discord.errors.HTTPException) as err:
         return await ctx.reply(
-            f"Failed to ban {member.mention}. Please check my permissions and role hierarchy.\nError: {err}"
+            f"Failed to ban {member.mention}."
+            f"Please check my permissions and role hierarchy.\nError: {err}"
         )
 
     ban_reason = 'was banned' if reason is None else f"was banned for {reason}"
@@ -1018,7 +1019,9 @@ async def roll(ctx, args: str = ""):
     if not 0 <= number_of_sides <= max_sides:
         embed = discord.Embed(
             title="Error",
-            description=f"Invalid number of sides. The number of sides must be between 0 and {max_sides}.",
+            description=(
+                f"Invalid number of sides. The number of sides must be between 0 and {max_sides}."
+            ),
             color=discord.Color.brand_red(),
         )
         await ctx.reply(embed=embed)
