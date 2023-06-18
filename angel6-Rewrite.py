@@ -1046,21 +1046,17 @@ def roll_a_dice(sides: int):
 
 @bot.command(pass_context=True, aliases=["cred", "credits", "about"])
 async def credit(ctx):
-    """Shows bot credits"""
+    """Shows bot credits."""
     owner = await bot.fetch_user(1082831541400518737)
     maintainer = await bot.fetch_user(347387857574428676)
 
     embed = discord.Embed(
-        title="Bot Creator",
-        description=(
-            f"{owner.mention}\nAsk them anything! 24/7. Feel free to add them as a"
-            " friend."
-        ),
+        title="Bot Credits:",
+        description=f"Owner: {owner.mention}\nBot maintainer: {maintainer.mention}\nAsk them anything! 24/7. Feel free to add them as a friend.",
         color=discord.Color.blurple(),
     )
-    embed.set_footer(text=f"Bot Maintainer: {maintainer}")
 
-    await ctx.reply(CREDITS_IMAGE)
+    #await ctx.reply(CREDITS_IMAGE) server no longer exists
     await ctx.send(embed=embed)
 
 
