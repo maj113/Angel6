@@ -352,7 +352,7 @@ async def on_user_update(before, after):
     """
 
     if before.avatar != after.avatar:
-        logging_channel = bot.get_channelint(int(LOG_CHAN_ID))
+        logging_channel = bot.get_channel(int(LOG_CHAN_ID))
         if logging_channel:
             embed = discord.Embed(
                 title="User avatar changed", color=discord.Colour.blurple()
