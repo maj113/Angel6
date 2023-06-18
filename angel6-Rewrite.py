@@ -298,7 +298,7 @@ async def on_guild_channel_create(channel):
             )
             embed.set_footer(
                 text=f"ID: {channel.id} • Created by {entry.user}",
-                icon_url=entry.user.avatar.url if entry.user.avatar else discord.Embed.Empty,
+                icon_url=entry.user.avatar.url if entry.user.avatar else None,
             )
             await logging_channel.send(embed=embed)
 
@@ -340,7 +340,7 @@ async def on_guild_channel_delete(channel):
             )
             embed.set_footer(
                 text=f"ID: {channel.id} • Deleted by {entry.user}",
-                icon_url=entry.user.avatar.url if entry.user.avatar else discord.Embed.Empty,
+                icon_url=entry.user.avatar.url if entry.user.avatar else None,
             )
             await logging_channel.send(embed=embed)
 
@@ -1248,7 +1248,7 @@ async def img(ctx, img_type="cat"):
         elif img_type in ["anime", "neko"]:
             caturl = get(
                 "https://api.nekosapi.com/v2/images/random?filter[ageRating]=sfw",
-                timeout=2
+                timeout=3
             )
             catimg = caturl.json()["data"]["attributes"]["file"]
         else:
