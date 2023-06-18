@@ -270,7 +270,7 @@ async def on_guild_channel_create(channel):
     - channel: The created channel object.
     """
     logging_channel = bot.get_channel(int(LOG_CHAN_ID))
-    if logging_channel is None:
+    if not logging_channel:
         # LOG_CHAN_ID is not valid or channel is not available
         return
 
