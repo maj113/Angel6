@@ -160,6 +160,17 @@ async def on_message(message):
 
 @bot.event
 async def on_member_join(member):
+    """
+    Event handler for when a member joins a guild.
+
+    Sends a welcome message to the designated join/leave channel, including the member's mention,
+    the total number of members in the guild, the member's avatar, and the guild's name and icon.
+    If a general channel is specified, sends a direct message to the member with an invitation to that channel.
+    Otherwise, sends a default welcome message as a direct message to the member.
+
+    Parameters:
+    - member: The member who joined the guild.
+    """
     channel = bot.get_channel(int(JL_CHAN_ID))
     embed = discord.Embed(
         colour=discord.Colour.blurple(),
