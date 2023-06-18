@@ -967,8 +967,8 @@ async def invites(ctx, user: discord.Member = None):
     await ctx.reply(embed=embed)
 
 
-@bot.command(aliases=["IQ"])
-async def iq(ctx):
+@bot.command(aliases=["IQ", "iq"])
+async def smart(ctx):
     """Average server IQ"""
     embed = discord.Embed(
         title=f"Average {ctx.guild.name} IQ",
