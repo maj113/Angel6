@@ -1,7 +1,7 @@
 import os
 from random import randint
 from datetime import datetime
-from sys import argv, executable, version
+from sys import argv, executable, version, exit as sysexit
 
 
 import discord
