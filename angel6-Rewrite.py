@@ -231,6 +231,15 @@ async def on_member_remove(member):
 
 @bot.event
 async def on_message_delete(message):
+    """
+    Event handler for when a message is deleted.
+
+    Sends a notification to the designated logging channel,
+    including details about the deleted message.
+
+    Parameters:
+    - message: The deleted message object.
+    """
     deleted = discord.Embed(
         description=f"Message deleted in {message.channel.mention}",
         color=discord.Color.blurple(),
