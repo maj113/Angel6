@@ -478,7 +478,9 @@ async def on_guild_role_create(created_role):
     log_channel = bot.get_channel(int(LOG_CHAN_ID))
 
     # Fetch the audit log entries for role creation
-    async for entry in created_role.guild.audit_logs(limit=1, action=discord.AuditLogAction.role_create):
+    async for entry in created_role.guild.audit_logs(
+        limit=1, action=discord.AuditLogAction.role_create
+    ):
         creator = entry.user
 
         embed = discord.Embed(
@@ -506,7 +508,9 @@ async def on_guild_role_delete(deleted_role):
     log_channel = bot.get_channel(int(LOG_CHAN_ID))
 
     # Fetch the audit log entries for role deletion
-    async for entry in deleted_role.guild.audit_logs(limit=1, action=discord.AuditLogAction.role_delete):
+    async for entry in deleted_role.guild.audit_logs(
+        limit=1, action=discord.AuditLogAction.role_delete
+    ):
         deleter = entry.user
 
         embed = discord.Embed(
