@@ -364,14 +364,31 @@ async def on_guild_channel_update(before, after):
     """
 
     log_channel = bot.get_channel(int(LOG_CHAN_ID))
+
     async for entry in before.guild.audit_logs(
         limit=1, action=discord.AuditLogAction.channel_update
     ):
         if entry.target.id == before.id:
             author = entry.user
+
+            # Check if the channel names are the same
+            if before.name == after.name and before.category == after.category:
+                return
+
             embed = discord.Embed(title="Channel Update", color=discord.Color.blurple())
-            embed.add_field(name="Before", value=before.name)
-            embed.add_field(name="After", value=after.name)
+            embed.add_field(name="Channel", value=before.mention, inline=False)
+
+            # Compare channel attributes and add changed fields to the embed
+            if before.name != after.name:
+                embed.add_field(name="Name", value=f"`{before.name}` -> `{after.name}`", inline=False)
+            # Does type ever change?
+            if before.type != after.type:
+                embed.add_field(name="Type", value=f"`{before.type}` -> `{after.type}`", inline=False)
+            if before.category != after.category:
+                before_category = before.category.name if before.category else "None"
+                after_category = after.category.name if after.category else "None"
+                embed.add_field(name="Category", value=f"`{before_category}` -> `{after_category}`", inline=False)
+
             embed.set_footer(text=f"Updated by: {author}", icon_url=author.avatar.url)
 
             await log_channel.send(embed=embed)
