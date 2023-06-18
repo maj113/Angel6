@@ -1005,7 +1005,17 @@ async def roll(ctx, args: str = ""):
     await ctx.reply(embed=embed)
 
 
-def parse_input(parsed_input):
+def parse_input(parsed_input: str):
+    """
+    Parse the input string to extract the number of dice to roll and the number of sides on each dice.
+
+    Args:
+        parsed_input (str): The input string to parse. It should be in the format 'NdM', where N is the
+                            number of dice and M is the number of sides on each dice.
+
+    Returns:
+        tuple: A tuple containing the number of dice to roll and the number of sides on each dice.
+    """
     split = parsed_input.split("d")
 
     # Remove empty items
