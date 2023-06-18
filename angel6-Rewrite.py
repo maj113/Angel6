@@ -219,7 +219,7 @@ async def on_member_remove(member):
     Event handler for when a member leaves a guild.
 
     Sends a farewell message to the designated join/leave channel, including the member's mention,
-    the updated total number of members in the guild, the member's avatar, and the guild's name and icon.
+    the updated total number of members, the member's avatar, and the guild's name and icon.
 
     Parameters:
     - member: The member who left the guild.
@@ -400,15 +400,26 @@ async def on_guild_channel_update(before, after):
 
             # Compare channel attributes and add changed fields to the embed
             if before.name != after.name:
-                embed.add_field(name="Name", value=f"`{before.name}` -> `{after.name}`", inline=False)
+                embed.add_field(
+                    name="Name",
+                    value=f"`{before.name}` -> `{after.name}`",
+                    inline=False
+                )
             # Does type ever change?
             if before.type != after.type:
-                embed.add_field(name="Type", value=f"`{before.type}` -> `{after.type}`", inline=False)
+                embed.add_field(
+                    name="Type",
+                    value=f"`{before.type}` -> `{after.type}`",
+                    inline=False
+                )
             if before.category != after.category:
                 before_category = before.category.name if before.category else "None"
                 after_category = after.category.name if after.category else "None"
-                embed.add_field(name="Category", value=f"`{before_category}` -> `{after_category}`", inline=False)
-
+                embed.add_field(
+                    name="Category",
+                    value=f"`{before_category}` -> `{after_category}`",
+                    inline=False
+    )
             embed.set_footer(text=f"Updated by: {author}", icon_url=author.avatar.url)
 
             await log_channel.send(embed=embed)
