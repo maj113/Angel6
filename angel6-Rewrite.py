@@ -355,6 +355,14 @@ async def on_user_update(before, after):
 
 @bot.event
 async def on_guild_channel_update(before, after):
+    """
+    Logs channel updates when a guild channel is modified.
+
+    Parameters:
+    - before (discord.abc.GuildChannel): The channel before the update.
+    - after (discord.abc.GuildChannel): The channel after the update.
+    """
+
     log_channel = bot.get_channel(int(LOG_CHAN_ID))
     async for entry in before.guild.audit_logs(
         limit=1, action=discord.AuditLogAction.channel_update
