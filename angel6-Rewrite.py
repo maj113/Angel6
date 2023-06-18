@@ -153,8 +153,7 @@ async def on_message(message):
             msgcontent = f"{message.guild}/{message.channel}/{message.author.name}> {message.content}\n{attachments}"
         else:
             msgcontent = f"{message.guild}/{message.channel}/{message.author.name}> {message.content}"
-
-        (msgcontent)
+        print(msgcontent)
         await bot.process_commands(message)
 
 
