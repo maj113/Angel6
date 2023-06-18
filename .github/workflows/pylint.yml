@@ -2,8 +2,8 @@ name: Pylint
 
 on: 
   push:
-    paths:
-      - '**.py'
+    #paths:
+    #  - '**.py'
 
 jobs:
   build:
@@ -25,3 +25,5 @@ jobs:
     - name: Analysing the code with pylint
       run: |
         find . -name '*.py' -exec pylint {} \;
+    - name: Analysing the code with ruff
+      uses: chartboost/ruff-action@v1
