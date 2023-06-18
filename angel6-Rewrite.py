@@ -297,6 +297,17 @@ async def on_guild_channel_create(channel):
 
 @bot.event
 async def on_guild_channel_delete(channel):
+    """
+    Event handler for when a guild channel is deleted.
+    Sends a log message to the logging channel.
+
+    Parameters:
+    - channel (discord.abc.GuildChannel): The deleted guild channel.
+
+    Note:
+    - Requires a valid logging channel ID in LOG_CHAN_ID constant.
+    """
+
     logging_channel = bot.get_channel(int(LOG_CHAN_ID))
     if logging_channel:
         async for entry in channel.guild.audit_logs(
