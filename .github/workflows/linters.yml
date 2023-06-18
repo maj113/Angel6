@@ -53,7 +53,7 @@ jobs:
         os: [windows-latest, ubuntu-latest]
     steps:
       - uses: actions/checkout@v3
-      - uses: chartboost/ruff-action@v1
+      - uses: chartboost/ruff-action@v1.0.0
         with:
           args: --exit-zero
         name: Lint with Ruff on ${{ matrix.os }}
