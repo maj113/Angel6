@@ -371,6 +371,33 @@ async def on_guild_role_create(role):
 
         await log_channel.send(embed=embed)
 
+@bot.event
+async def on_guild_role_delete(role):
+    """
+    Event handler for when a role is deleted in a guild.
+
+    Args:
+        role (discord.Role): The role that was deleted.
+
+    This event sends a log message to the designated log channel
+    when a role is deleted in the guild. It fetches the audit log
+    entries for role deletion and includes the deleter's information
+    in the log message.
+    """
+    log_channel = bot.get_channel(int(LOG_CHAN_ID))
+
+    # Fetch the audit log entries for role deletion
+    async for entry in role.guild.audit_logs(limit=1, action=discord.AuditLogAction.role_delete):
+        deleter = entry.user
+
+        embed = discord.Embed(
+            title=f"Role Deleted: `{role.name}`",
+            description=f"Role ID: {role.id}",
+            color=discord.Color.brand_red()
+        )
+        embed.set_footer(text=f"Deleted by: {deleter}")
+
+        await log_channel.send(embed=embed)
 
 @bot.command()
 @commands.has_permissions(ban_members=True)
