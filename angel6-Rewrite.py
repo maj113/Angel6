@@ -1045,10 +1045,10 @@ async def roll(ctx, args: str = ""):
 
 def parse_input(parsed_input: str):
     """
-    Parse the input string to extract the number of dice to roll and the number of sides on each dice.
+    Parse the input to extract the number of dice to roll and the number of sides on each dice.
 
     Args:
-        parsed_input (str): The input string to parse. It should be in the format 'NdM', where N is the
+        parsed_input (str): The input to parse. It should be in the format 'NdM', where N is the
                             number of dice and M is the number of sides on each dice.
 
     Returns:
@@ -1090,7 +1090,11 @@ async def credit(ctx):
 
     embed = discord.Embed(
         title="Bot Credits:",
-        description=f"Owner: {owner.mention}\nBot maintainer: {maintainer.mention}\nAsk them anything! 24/7. Feel free to add them as a friend.",
+        description=(
+            f"Owner: {owner.mention}\n"
+            f"Bot maintainer: {maintainer.mention}\n"
+            "Ask them anything! 24/7. Feel free to add them as a friend."
+        ),
         color=discord.Color.blurple(),
     )
 
@@ -1181,14 +1185,16 @@ async def support(ctx, *, message: str = None):
         color=discord.Color.blurple(),
     )
     embed.set_image(
-        url="https://media.discordapp.net/attachments/736563784318976040/1087089496450928650/paintdotnet_LFkzPDrQML.png"
+        url="https://media.discordapp.net/attachments/736563784318976040/"
+        "1087089496450928650/paintdotnet_LFkzPDrQML.png"
     )
     await ctx.reply(embed=embed)
 
 
 gif_links = {
     "violation": "https://tenor.com/view/violation-gif-24043912",
-    "germany": "https://giphy.com/gifs/fifa-Vd8wLaK3lNDNMuGaUL \n SHUT THE FUCK UP BAHZZ VIVA LA GERMANY AAJAJJAJAJAJA"
+    "germany": "https://giphy.com/gifs/fifa-Vd8wLaK3lNDNMuGaUL \n"
+    " SHUT THE FUCK UP BAHZZ VIVA LA GERMANY AAJAJJAJAJAJA"
 
 }
 
