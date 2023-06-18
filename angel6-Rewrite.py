@@ -1246,21 +1246,30 @@ async def img(ctx, img_type="cat"):
             caturl = get("https://api.thecatapi.com/v1/images/search", timeout=1)
             catimg = caturl.json()[0]["url"]
         elif img_type in ["anime", "neko"]:
-            caturl = get("https://api.nekosapi.com/v2/images/random?filter[ageRating]=sfw", timeout=2)
+            caturl = get(
+                "https://api.nekosapi.com/v2/images/random?filter[ageRating]=sfw",
+                timeout=2
+            )
             catimg = caturl.json()["data"]["attributes"]["file"]
         else:
-            error_embed = discord.Embed(title="Error:",
-                                        description="Invalid argument. supported image API's are: 'cat', 'anime",
-                                        color=discord.Color.brand_red())
+            error_embed = discord.Embed(
+                title="Error:",
+                description="Invalid argument. Supported image APIs are: 'cat', 'anime'",
+                color=discord.Color.brand_red()
+            )
             await ctx.reply(embed=error_embed)
             return
+
         embed = discord.Embed(color=discord.Color.blurple())
         embed.set_image(url=catimg)
         await ctx.reply(embed=embed)
+
     except Timeout as err:
-        error_embed = discord.Embed(title="Error:",
-                                    description=f"Failed to fetch image. Please try again later.\nError: {err}",
-                                    color=discord.Color.brand_red())
+        error_embed = discord.Embed(
+            title="Error:",
+            description=f"Failed to fetch image. Please try again later.\nError: {err}",
+            color=discord.Color.brand_red()
+        )
         await ctx.reply(embed=error_embed)
 
 def clsscr():
