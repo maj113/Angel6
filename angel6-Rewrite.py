@@ -444,7 +444,7 @@ async def on_guild_role_update(before, after):
     await log_channel.send(embed=embed)
 
 @bot.event
-async def on_guild_role_create(role):
+async def on_guild_role_create(created_role):
     """
     Event handler for when a role is created in a guild.
 
@@ -459,12 +459,12 @@ async def on_guild_role_create(role):
     log_channel = bot.get_channel(int(LOG_CHAN_ID))
 
     # Fetch the audit log entries for role creation
-    async for entry in role.guild.audit_logs(limit=1, action=discord.AuditLogAction.role_create):
+    async for entry in created_role.guild.audit_logs(limit=1, action=discord.AuditLogAction.role_create):
         creator = entry.user
 
         embed = discord.Embed(
-            title=f"Role Created: `{role.name}`",
-            description=f"New role created with ID: {role.id}",
+            title=f"Role Created: `{created_role.name}`",
+            description=f"New role created with ID: {created_role.id}",
             color=discord.Color.brand_green()
         )
         embed.set_footer(text=f"Created by: {creator}")
