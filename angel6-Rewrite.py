@@ -260,6 +260,15 @@ async def on_message_delete(message):
 
 @bot.event
 async def on_guild_channel_create(channel):
+    """
+    Event handler for when a channel is created in a guild.
+
+    Sends a notification to the designated logging channel,
+    including details about the created channel.
+
+    Parameters:
+    - channel: The created channel object.
+    """
     logging_channel = bot.get_channel(int(LOG_CHAN_ID))
     if logging_channel:
         async for entry in channel.guild.audit_logs(
