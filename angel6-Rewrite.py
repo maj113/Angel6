@@ -1384,5 +1384,8 @@ except discord.errors.LoginFailure:
         "NO TOKEN FOUND OR WRONG TOKEN SPECIFIED,\nmake sure that the env file is"
         " named '.env' and that there is a token present"
     )
+    sysexit(1)
+except TypeError:
+    print("Malformed Token!!!\nPlease check the DISCORD_TOKEN environment variable")
     # gracefully exit, don't quit with error code 1
-    exit()
+    sysexit(1)
