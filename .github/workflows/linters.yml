@@ -2,8 +2,8 @@ name: Linting
 
 on: 
   push:
-    #paths:
-    #  - '**.py'
+    paths:
+      - '**.py'
 
 jobs:
   Pylint-Linux:
