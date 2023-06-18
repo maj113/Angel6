@@ -207,6 +207,15 @@ async def on_member_join(member):
 
 @bot.event
 async def on_member_remove(member):
+    """
+    Event handler for when a member leaves a guild.
+
+    Sends a farewell message to the designated join/leave channel, including the member's mention,
+    the updated total number of members in the guild, the member's avatar, and the guild's name and icon.
+
+    Parameters:
+    - member: The member who left the guild.
+    """
     channel = bot.get_channel(int(JL_CHAN_ID))
     embed = discord.Embed(
         colour=discord.Colour.blurple(),
