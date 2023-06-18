@@ -20,7 +20,10 @@ LOG_CHAN_ID = os.getenv("LOGGING_CHANNEL_ID")
 JL_CHAN_ID = os.getenv("JOIN_LEAVE_CHANNEL_ID")
 GEN_CHAN_ID = os.getenv("GENERAL_CHANNEL_ID")
 BOT_VER = "**2.3.1-Rewrite** <https://github.com/maj113/Angel6/releases/latest>"
-CREDITS_IMAGE = "https://cdn.discordapp.com/attachments/1083114844875669604/1083121342150361118/1676492485892.png"
+CREDITS_IMAGE = (
+    "https://cdn.discordapp.com/attachments/1083114844875669604/"
+    "1083121342150361118/1676492485892.png"
+)
 
 intents = discord.Intents.all()
 bot = commands.Bot(
@@ -36,8 +39,8 @@ async def set_env_var(env_var_name : str, prompt_text : str, force_reset_env : b
 
     Parameters:
         - env_var_name (str): The name of the environment variable.
-        - prompt_text (str): The prompt text displayed when the environment variable needs to be set.
-        - force_reset_env (bool): If True, the environment variable will be reset even if it is already set.
+        - prompt_text (str): The text displayed when the environment variable needs to be set.
+        - force_reset_env (bool): If True, reset variables even if they are set.
 
     Returns:
         - bool: True if the environment variable was set or reset, False otherwise.
@@ -150,9 +153,15 @@ async def on_message(message):
     if message.author.id != bot.user.id:
         if message.attachments:
             attachments = "\n".join(a.url for a in message.attachments)
-            msgcontent = f"{message.guild}/{message.channel}/{message.author.name}> {message.content}\n{attachments}"
+            msgcontent = (
+                f"{message.guild}/{message.channel}/{message.author.name}> "
+                f"{message.content}\n{attachments}"
+            )
         else:
-            msgcontent = f"{message.guild}/{message.channel}/{message.author.name}> {message.content}"
+            msgcontent = (
+                f"{message.guild}/{message.channel}/{message.author.name}> "
+                f"{message.content}"
+            )
         print(msgcontent)
         await bot.process_commands(message)
 
@@ -162,10 +171,10 @@ async def on_member_join(member):
     """
     Event handler for when a member joins a guild.
 
-    Sends a welcome message to the designated join/leave channel, including the member's mention,
-    the total number of members in the guild, the member's avatar, and the guild's name and icon.
-    If a general channel is specified, sends a direct message to the member with an invitation to that channel.
-    Otherwise, sends a default welcome message as a direct message to the member.
+    Sends a welcome message to the designated join/leave channel, the total number of members,
+    the member's avatar, and the guild's name and icon.
+    If a general channel is specified, sends a DM to the member with an invite to that channel.
+    Otherwise, sends a default welcome message as a DM to the member.
 
     Parameters:
     - member: The member who joined the guild.
