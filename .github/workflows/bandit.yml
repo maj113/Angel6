@@ -2,8 +2,8 @@ name: Bandit Security Scan
 
 on:
   push:
-    #paths:
-    #  - '**.py'
+    paths:
+      - '**.py'
 
 jobs:
   bandit:
