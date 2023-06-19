@@ -274,7 +274,7 @@ class VoiceState:
                 await self.current.source.channel.send(
                     embed=self.current.create_embed()
                 )
-            # Fix code duplication 
+            # Fix code duplication
             # If the song is looped
             elif self.loop:
                 self.now = await discord.FFmpegOpusAudio.from_probe(
@@ -335,7 +335,6 @@ class Music(commands.Cog):
         self, ctx: commands.Context, error: commands.CommandError
     ):
         await ctx.reply(f"An error occurred: {error}")
-        
 
     async def checkloop(self, ctx, onlycheck=False, stop=False):
         """Check and handle loop skipping functionality for a Discord voice channel."""
