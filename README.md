@@ -2,8 +2,12 @@
 
 ![](assets/image.png)
 
-[![CodeQL](https://github.com/maj113/Angel6/actions/workflows/codeql.yml/badge.svg)](https://github.com/maj113/Angel6/actions/workflows/codeql.yml) 
+[![CodeQL](https://github.com/maj113/Angel6/actions/workflows/codeql.yml/badge.svg)](https://github.com/maj113/Angel6/actions/workflows/codeql.yml)
 [![Linting](https://github.com/maj113/Angel6/actions/workflows/linters.yml/badge.svg)](https://github.com/maj113/Angel6/actions/workflows/linters.yml)
+[![Bandit Security Scan](https://github.com/maj113/Angel6/actions/workflows/bandit.yml/badge.svg)](https://github.com/maj113/Angel6/actions/workflows/bandit.yml)  
+[![security: bandit](https://img.shields.io/badge/security-bandit-yellow.svg)](https://github.com/PyCQA/bandit)
+![Linters](https://img.shields.io/badge/Linters:-Pylint,_Ruff-pink)
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
 ## Introduction
 
