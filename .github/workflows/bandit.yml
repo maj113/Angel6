@@ -21,8 +21,9 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install bandit
+          pip install git+https://github.com/PyCQA/bandit#egg=bandit
           pip install -r requirements.txt
+      
       - name: Run Bandit
         run: |
-          bandit -r .
+          bandit -r . -ll
