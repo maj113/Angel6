@@ -52,10 +52,6 @@ jobs:
           codeql/python-all@0.9.3,
           codeql/python-queries@0.7.3 # it didn't work work with python-all
         queries: security-and-quality
-    # Autobuild attempts to build any compiled languages  (C/C++, C#, Go, or Java).
-    # If this step fails, then you should remove it and run the build manually (see below)
-    - name: Autobuild
-      uses: github/codeql-action/autobuild@v2.20.0
 
     # Perform CodeQL Analysis
     - name: Perform CodeQL Analysis
