@@ -50,7 +50,7 @@ jobs:
         languages: ${{ matrix.language }}
         queries: security-and-quality
         packs:
-          codeql/python-all
+          codeql/python-all@0.9.3
     # Autobuild attempts to build any compiled languages  (C/C++, C#, Go, or Java).
     # If this step fails, then you should remove it and run the build manually (see below)
     - name: Autobuild
