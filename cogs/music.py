@@ -431,7 +431,7 @@ class Music(commands.Cog):
         """Stops playing song and clears the queue."""
 
         if ctx.voice_state.is_playing:
-            await Music.checkloop(ctx, False, True)
+            await Music.checkloop(self, ctx, False, True)
 
         ctx.voice_state.songs.clear()
         await ctx.message.add_reaction("⏹")
