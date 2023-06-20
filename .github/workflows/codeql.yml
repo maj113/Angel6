@@ -55,7 +55,7 @@ jobs:
         config: |
           query-filters:
             - exclude:
-              id: py/mixed-returns
+                id: py/mixed-returns
 
     # Perform CodeQL Analysis
     - name: Perform CodeQL Analysis
