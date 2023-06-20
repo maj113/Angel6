@@ -9,8 +9,6 @@ import psutil
 from aioconsole import ainput
 from requests import get, Timeout
 from dotenv import load_dotenv
-from discord import _version
-from discord import __title__ as d_name
 from discord.ext import commands, tasks
 from yt_dlp import version as ytver
 
@@ -735,6 +733,7 @@ async def mute(ctx, member: discord.Member, *, reason=None):
     try:
         await member.send(f"You were muted{' for ' + reason if reason else ''}")
     except discord.errors.Forbidden:
+        # If member has DMs disaled, we don't want to error out
         pass
     # with open('muted.json', "r") as jsonmute:
     #    datamute = json.load(jsonmute)
@@ -835,7 +834,8 @@ async def warn(ctx, member: discord.Member = None, *, reason=None):
     await ctx.reply(embed=embed)
     try:
         await member.send(embed=embed2)
-    except discord.errors.HTTPException:
+    except discord.errors.Forbidden:
+        # If member has DMs disaled, we don't want to error out
         pass
 
     if not LOG_CHAN_ID:
@@ -927,7 +927,7 @@ async def uptime(ctx):
 mem_info = psutil.Process(os.getpid())
 total_mem = psutil.virtual_memory().total / float(2**20)
 mem = mem_info.memory_info()[0] / float(2**20)
-WRAPPER_USED = d_name.capitalize()
+WRAPPER_USED = discord.__title__.capitalize()
 
 
 @bot.command(pass_context=True, aliases=["info", "debug"])
@@ -947,7 +947,7 @@ async def stats(ctx):
     embed.add_field(name="Python Version", value=f"`{version}`", inline=False)
     embed.add_field(name="YTdl Version", value=f"`{ytver.__version__}`", inline=True)
     embed.add_field(
-        name=f"{WRAPPER_USED} Version", value=f"`{_version.__version__}`", inline=True
+        name=f"{WRAPPER_USED} Version", value=f"`{discord._version.__version__}`", inline=True
     )
     await ctx.reply(embed=embed)
 
