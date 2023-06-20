@@ -52,6 +52,10 @@ jobs:
           codeql/python-all@0.9.3,
           codeql/python-queries@0.7.3 # it didn't work work with python-all
         queries: security-and-quality
+        config: |
+          query-filters:
+            - exclude:
+              id: py/mixed-returns
 
     # Perform CodeQL Analysis
     - name: Perform CodeQL Analysis

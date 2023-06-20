@@ -110,7 +110,7 @@ class YTDLSource(discord.FFmpegOpusAudio):
         Raises:
             YTDLError: If the search query or URL couldn't be processed.
         """
-        loop = loop or asyncio.get_event_loop()
+
         search = search.strip().replace("<", "").replace(">", "")
         data = await asyncio.to_thread(cls.ytdl.extract_info, search, False, False)
         if data is None:
