@@ -31,10 +31,20 @@ logging.basicConfig(
 
 
 class VoiceError(Exception):
+    """Exception raised for errors related to voice operations.
+
+    This exception is used to handle errors specifically related to voice operations in the bot.
+    Examples include errors during voice connection, voice playback, or voice state management.
+    """
     pass
 
 
 class YTDLError(Exception):
+    """Exception raised for errors related to YouTube-DL operations.
+
+    This exception is used to handle errors specifically related to YouTube-DL operations in the bot.
+    Examples include errors during YouTube-DL source creation, video extraction, or download processes.
+    """
     pass
 
 
@@ -92,8 +102,6 @@ class YTDLSource(discord.FFmpegOpusAudio):
         cls,
         ctx: commands.Context,
         search: str,
-        *,
-        loop: asyncio.AbstractEventLoop = None,
     ):
         """
         Creates a YTDLSource instance from a search query or URL.
@@ -102,7 +110,8 @@ class YTDLSource(discord.FFmpegOpusAudio):
             cls (class): The class object of the YTDLSource.
             ctx (commands.Context): The context object of the command.
             search (str): The search query or URL to be processed.
-            loop (asyncio.AbstractEventLoop): The event loop to be used for async operations. Defaults to None.
+            loop (asyncio.AbstractEventLoop): The event loop to be used for async operations. 
+            Defaults to None.
 
         Returns:
             A YTDLSource instance.
@@ -548,7 +557,7 @@ class Music(commands.Cog):
         """
         try:
             source_task = asyncio.create_task(
-                YTDLSource.create_source(ctx, search, loop=self.bot.loop)
+                YTDLSource.create_source(ctx, search)
             )
         except YTDLError as err:
             await ctx.reply(f"An error occurred while processing this request: {err}")
