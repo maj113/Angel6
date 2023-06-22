@@ -23,5 +23,5 @@ typing_extensions==4.6.3
 urllib3==2.0.3
 websockets==11.0.3
 yarl==1.9.2
-yt-dlp==2023.6.21
+yt-dlp==2023.6.22
 requests==2.31.0
