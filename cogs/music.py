@@ -60,7 +60,7 @@ class YTDLSource(discord.FFmpegOpusAudio):
         "logtostderr": DebuggingOpts["ytdllogging"],
         "quiet": DebuggingOpts["ytdlquiet"],
         "no_warnings": True,
-        "default_search": "auto",
+        "default_search": "ytsearch",
     }
 
     FFMPEG_OPTIONS = {
