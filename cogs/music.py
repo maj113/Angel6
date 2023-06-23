@@ -460,7 +460,7 @@ class Music(commands.Cog):
         ):
             await ctx.message.add_reaction("⏭")
             # Check if loop is enabled and temporarily disable it to allow the skip command to work
-            await Music.checkloop(ctx)
+            await Music.checkloop(self, ctx)
 
         elif voter.id not in ctx.voice_state.skip_votes:
             ctx.voice_state.skip_votes.add(voter.id)
@@ -468,7 +468,7 @@ class Music(commands.Cog):
 
             if total_votes >= 3:
                 await ctx.message.add_reaction("⏭")
-                await Music.checkloop(ctx)
+                await Music.checkloop(self, ctx)
             else:
                 await ctx.reply(f"Skip vote added, currently at **{total_votes}/3**")
         else:
