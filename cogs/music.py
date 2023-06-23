@@ -584,6 +584,20 @@ class Music(commands.Cog):
     @_join.before_invoke
     @_play.before_invoke
     async def ensure_voice_state(self, ctx: commands.Context):
+        """
+        Ensures the voice state before invoking the command.
+
+        This function checks if the command invoker is connected to a voice channel
+        and if the bot is not already in a voice channel.
+        If the conditions are not met, it raises a `commands.CommandError`.
+
+        Parameters:
+        - ctx (commands.Context): The context object representing the command invocation.
+
+        Raises:
+        - commands.CommandError: If the invoker is not connected to a voice channel
+        - commands.CommandError: If the bot is already in a voice channel.
+        """
         if not ctx.author.voice or not ctx.author.voice.channel:
             raise commands.CommandError("You are not connected to any voice channel.")
 
