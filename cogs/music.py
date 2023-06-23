@@ -327,7 +327,7 @@ class Music(commands.Cog):
 
     def cog_unload(self):
         for state in self.voice_states.values():
-            self.bot.loop.create_task(state.stop())
+            asyncio.create_task(state.stop())
 
     def cog_check(self, ctx: commands.Context):
         if not ctx.guild:
