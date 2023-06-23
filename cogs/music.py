@@ -356,7 +356,9 @@ class Music(commands.Cog):
             await ctx.message.add_reaction("⏭")
             ctx.voice_state.skip()
             return
-        ctx.voice_state.voice.stop()
+        # onlycheck will be used more later
+        if not onlycheck:
+            ctx.voice_state.voice.stop()
 
     @commands.command(name="join", invoke_without_subcommand=True)
     async def _join(self, ctx: commands.Context):
