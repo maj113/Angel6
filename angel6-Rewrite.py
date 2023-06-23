@@ -1289,14 +1289,9 @@ async def img(ctx, img_type="cat"):
 
 def clsscr():
     """
-    Clears the console screen.
-
-    Uses the appropriate command based on the operating system:
-    - On Windows (nt), it uses 'cls' to clear the console screen.
-    - On other systems, it uses 'clear' to clear the console screen.
+    Clears the console screen using an escape sequence.
     """
-    os.system("cls" if os.name == "nt" else "clear")
-
+    print("\033[H\033[J", end="", flush=True)
 
 async def helperasbot():
     """
