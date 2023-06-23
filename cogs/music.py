@@ -344,11 +344,15 @@ class Music(commands.Cog):
     ):
         await ctx.reply(f"An error occurred: {error}")
 
-    async def checkloop(self, ctx, onlycheck=False, stop=False):
-        """Check and handle loop skipping functionality for a Discord voice channel."""
+    async def checkloop(self, ctx, stop=False):
+        """
+        Check and handle loop skipping functionality for a Discord voice channel.
 
-        # onlycheck will be used later CBA to implement later and convert everrything to this
-        # wait what the fuck was onlycheck supposed to be used for
+        Args:
+            ctx (commands.Context): The context object of the command.
+            stop (bool, optional): Whether to stop playback entirely. Defaults to False.
+        """
+
         should_disable_loop = ctx.voice_state.loop
         if should_disable_loop:
             ctx.voice_state.loop = False
@@ -356,9 +360,7 @@ class Music(commands.Cog):
             await ctx.message.add_reaction("⏭")
             ctx.voice_state.skip()
             return
-        # onlycheck will be used more later
-        if not onlycheck:
-            ctx.voice_state.voice.stop()
+        ctx.voice_state.voice.stop()
 
     @commands.command(name="join", invoke_without_subcommand=True)
     async def _join(self, ctx: commands.Context):
