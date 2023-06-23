@@ -8,8 +8,11 @@ name: DevSkim
 on:
   push:
     branches: [ "master" ]
+    paths:
+      - '**.py'
   pull_request:
-    branches: [ "master" ]
+    paths:
+      - '**.py'
   schedule:
     - cron: '00 00 * * *'
 
