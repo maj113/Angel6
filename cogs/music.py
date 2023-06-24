@@ -43,7 +43,8 @@ class YTDLError(Exception):
     """Exception raised for errors related to YouTube-DL operations.
 
     This exception is used to handle errors specifically related to YouTube-DL operations in the bot.
-    Examples include errors during YouTube-DL source creation, video extraction, or download processes.
+    Examples include errors during YouTube-DL source creation, 
+    video extraction, or download processes.
     """
     pass
 
