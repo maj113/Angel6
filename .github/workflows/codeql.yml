@@ -16,6 +16,10 @@ on:
     branches: [ "master" ]
     paths:
       - '**.py'
+  pull_request:
+    paths:
+      - '**.py'
+
     
   schedule:
     - cron: '00 00 * * *'
@@ -43,7 +47,7 @@ jobs:
     - name: Set up Python "${{ matrix.python_version }}"
       uses: actions/setup-python@v4.6.1
       with:
-        python-version: 
+        python-version: ${{ matrix.python_version }}
         allow-prereleases: true
 
     # Initializes the CodeQL tools for scanning.
@@ -54,7 +58,8 @@ jobs:
         packs:
           codeql/python-all@0.9.3,
           codeql/python-queries@0.7.3 # it didn't work work with python-all
-        queries: security-and-quality
+        queries:
+          security-and-quality
         config: |
           query-filters:
             - exclude:
