@@ -253,9 +253,11 @@ class VoiceState:
     async def audio_player_task(self):
         """Plays audio from the queued songs continuously in the background until stopped.
 
-        Dequeues the next song from the queue, creates a playable audio stream from the song's source
-        URL using FFmpeg, and starts playing the audio through the voice connection. If looping is
-        disabled, sends an embed message to the channel indicating that the current song is playing.
+        Dequeues the next song from the queue, 
+        creates a playable audio stream from the song's source
+        URL using FFmpeg, and starts playing the audio through the voice connection.
+        If looping is disabled, sends an embed message to the channel 
+        indicating that the current song is playing.
         """
         while True:
             self.next.clear()  # FIXME: significant performance slowdowns here
@@ -556,7 +558,8 @@ class Music(commands.Cog):
         If there are songs in the queue, this will be queued until the
         other songs finished playing.
         This command automatically searches from various sites if no URL is provided.
-        A list of these sites can be found here: https://github.com/yt-dlp/yt-dlp/blob/master/supportedsites.md
+        A list of these sites can be found here: 
+        https://github.com/yt-dlp/yt-dlp/blob/master/supportedsites.md
         """
         try:
             source_task = asyncio.create_task(
