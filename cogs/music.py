@@ -86,7 +86,7 @@ class YTDLSource(discord.FFmpegOpusAudio):
         self.description = data.get("description")
         duration = data.get("duration")
         self.duration = (
-            self.parse_duration(int(duration)) if duration is not None else "LIVE"
+            self.parse_duration(int(duration)) if duration else "LIVE"
         )
         self.tags = data.get("tags")
         self.url = data.get("webpage_url")
