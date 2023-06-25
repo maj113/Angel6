@@ -31,7 +31,7 @@ bot = commands.Bot(
 )
 
 
-async def set_env_var(env_var_name: str, prompt_text: str, force_reset_env: bool):
+async def set_env_var(env_var_name: str, prompt_text: str, force_reset_env: bool = False):
     """
     Sets an environment variable if it is not already set or if `force_reset_env` is True.
 
