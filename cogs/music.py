@@ -278,21 +278,14 @@ class VoiceState:
                     self.exists = False
                     return
 
-                self.now = await discord.FFmpegOpusAudio.from_probe(
-                    self.current.source.stream_url, **YTDLSource.FFMPEG_OPTIONS
-                )
-                self.voice.play(self.now, after=self.play_next_song)
                 await self.current.source.channel.send(
                     embed=self.current.create_embed()
                 )
-            # Fix code duplication
-            # If the song is looped
-            elif self.loop:
-                self.now = await discord.FFmpegOpusAudio.from_probe(
-                    self.current.source.stream_url, **YTDLSource.FFMPEG_OPTIONS
-                )
-                self.voice.play(self.now, after=self.play_next_song)
 
+            self.now = await discord.FFmpegOpusAudio.from_probe(
+                self.current.source.stream_url, **YTDLSource.FFMPEG_OPTIONS
+            )
+            self.voice.play(self.now, after=self.play_next_song)
             await self.next.wait()
 
     def play_next_song(self, error=None):
