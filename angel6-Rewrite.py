@@ -187,14 +187,14 @@ async def on_member_join(member):
     )
     embed.set_thumbnail(url=member.avatar.url)
     embed.set_footer(
-        text=member.guild, icon_url=member.guild.icon.url if member.guild.icon else None
+        text=member.guild, icon_url=member.guild.icon.url or None
     )
     await channel.send(embed=embed)
 
     general_channel_id = os.getenv("GENERAL_CHANNEL_ID")
     description = (
         "yo! I'm Mutiny's Personal Bot, proceed to General to talk:)"
-        if general_channel_id is None or general_channel_id == ""
+        if general_channel_id
         else (
             f"yo! I'm Mutiny's Personal Bot, proceed to <#{int(GEN_CHAN_ID)}> to talk:)"
         )
@@ -235,7 +235,7 @@ async def on_member_remove(member):
     )
     embed.set_thumbnail(url=member.avatar.url)
     embed.set_footer(
-        text=member.guild, icon_url=member.guild.icon.url if member.guild.icon else None
+ 
     )
     await channel.send(embed=embed)
 
@@ -260,7 +260,7 @@ async def on_message_delete(message):
         return
 
     channel = bot.get_channel(int(LOG_CHAN_ID))
-    if channel is None:
+    if not channel:
         # LOG_CHAN_ID is not valid or channel is not available
         return
 
@@ -296,12 +296,12 @@ async def on_guild_channel_create(channel):
             embed.add_field(name="Type", value=str(channel.type).title(), inline=True)
             embed.add_field(
                 name="Category",
-                value=channel.category.name if channel.category else "None",
+                value=channel.category.name or "None",
                 inline=True,
             )
             embed.set_footer(
                 text=f"ID: {channel.id} • Created by {entry.user}",
-                icon_url=entry.user.avatar.url if entry.user.avatar else None,
+                icon_url=entry.user.avatar.url or None,
             )
             await logging_channel.send(embed=embed)
 
@@ -336,12 +336,12 @@ async def on_guild_channel_delete(channel):
             embed.add_field(name="Type", value=str(channel.type).title(), inline=True)
             embed.add_field(
                 name="Category",
-                value=channel.category.name if channel.category else "None",
+                value=channel.category.name or "None",
                 inline=True,
             )
             embed.set_footer(
                 text=f"ID: {channel.id} • Deleted by {entry.user}",
-                icon_url=entry.user.avatar.url if entry.user.avatar else None,
+                icon_url=entry.user.avatar.url or None,
             )
             await logging_channel.send(embed=embed)
 
@@ -414,8 +414,8 @@ async def on_guild_channel_update(before, after):
                     inline=False,
                 )
             if before.category != after.category:
-                before_category = before.category.name if before.category else "None"
-                after_category = after.category.name if after.category else "None"
+                before_category = before.category.name or "None"
+                after_category = after.category.name or "None"
                 embed.add_field(
                     name="Category",
                     value=f"`{before_category}` -> `{after_category}`",
@@ -649,7 +649,7 @@ async def serverinfo(ctx):
     )
     roles = str(len(ctx.guild.roles))
     created = f"{ctx.guild.created_at:%B %d, %Y, %I:%M %p}"
-    icon = str(ctx.guild.icon.url) if ctx.guild.icon else None
+    icon = str(ctx.guild.icon.url) or None
 
     embed = discord.Embed(
         title=name + " <3", description=description, color=discord.Color.blurple()
@@ -765,7 +765,7 @@ async def unmute(ctx, member: discord.Member):
 @commands.has_permissions(ban_members=True)
 async def ban(ctx, member: discord.Member = None, *, reason: str = None):
     """Bans the specified user"""
-    if member is None:
+    if not member:
         return await ctx.reply("You need to specify who to ban.")
 
     if member == ctx.author:
@@ -782,7 +782,7 @@ async def ban(ctx, member: discord.Member = None, *, reason: str = None):
             f"Please check my permissions and role hierarchy.\nError: {err}"
         )
 
-    ban_reason = "was banned" if reason is None else f"was banned for {reason}"
+    ban_reason = "was banned" if not reason else f"was banned for {reason}"
     embed = discord.Embed(
         title="Bye Bye",
         description=f"{member.mention} {ban_reason}.",
@@ -811,7 +811,7 @@ async def unban(ctx, user_id: int):
 @commands.has_permissions(kick_members=True)
 async def warn(ctx, member: discord.Member = None, *, reason=None):
     """Warns a user and logs the warning to a specified channel"""
-    if member is None or member == ctx.author:
+    if not member or member == ctx.author:
         await ctx.reply("You need to specify someone to warn!")
         return
 
@@ -1224,7 +1224,7 @@ async def giflist(ctx):
 @bot.command(pass_context=True, aliases=["GIF", "gifsend", "jiff"])
 async def gif(ctx, gif_type=""):
     """Sends a gif thats in the the GIF list"""
-    if gif_type == "":
+    if not gif_type:
         await ctx.reply(
             "Please provide a GIF name. Use '~giflist' to see available options."
         )
@@ -1321,7 +1321,7 @@ async def asbot(ctx, *, arg=None):
         await ctx.reply("Started task **`asbotmain()`** successfully")
         print(f"Warning: asbotmain() was started externally by {ctx.author} !!!")
         asbotmain.start()
-    elif arg is None:
+    elif not arg:
         await ctx.reply(
             embed=discord.Embed(
                 title="`asbotmain()` state:"
