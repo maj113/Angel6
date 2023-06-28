@@ -6,7 +6,6 @@ from sys import argv
 
 import discord
 from discord.ext import commands
-from numpy import source
 from yt_dlp import YoutubeDL, utils
 
 utils.bug_reports_message = lambda: ""
