@@ -49,7 +49,7 @@ class YTDLError(Exception):
     pass
 
 
-class YTDLSource(discord.FFmpegOpusAudio):
+class YTDLSource(discord.FFmpegOpusAudio.__init__):
     YTDL_OPTIONS = {
         "extractaudio": True,
         "format": "bestaudio[ext=opus]/bestaudio[ext=webm]/bestaudio/best",
