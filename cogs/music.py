@@ -6,6 +6,7 @@ from sys import argv
 
 import discord
 from discord.ext import commands
+from numpy import source
 from yt_dlp import YoutubeDL, utils
 
 utils.bug_reports_message = lambda: ""
@@ -72,15 +73,15 @@ class YTDLSource(discord.FFmpegOpusAudio):
     ytdl = YoutubeDL(YTDL_OPTIONS)
 
     def __init__(self, ctx: commands.Context, source: str, *, data: dict):
-        super().__init__(source, pipe=True)
-
+        
+        self.source = source
         self.requester = ctx.author
         self.channel = ctx.channel
         self.data = data
         self.uploader = data.get("uploader")
         self.uploader_url = data.get("uploader_url")
         date = data.get("upload_date")
-        self.upload_date = date[6:8] + "." + date[4:6] + "." + date[0:4]
+        self.upload_date = f"{date[6:8]}.{date[4:6]}.{date[0:4]}"
         self.title = data.get("title")
         self.thumbnail = data.get("thumbnail")
         self.description = data.get("description")
