@@ -370,6 +370,8 @@ async def on_user_update(before, after):
                 name=before.name, icon_url=before.avatar.url
             )
             embed.set_thumbnail(url=after.avatar.url)
+            embed.set_footer(text=f"ID: {after.id}")
+            await logging_channel.send(embed=embed)
             await logging_channel.send(embed=embed)
 
 
