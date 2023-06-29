@@ -8,8 +8,8 @@ name: DevSkim
 on:
   push:
     branches: [ "master" ]
-    #paths:
-    #  - '**.py'
+    paths:
+      - '**.py'
   pull_request:
     paths:
       - '**.py'
