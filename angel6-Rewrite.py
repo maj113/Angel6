@@ -372,6 +372,18 @@ async def on_user_update(before, after):
             embed.set_thumbnail(url=after.avatar.url)
             embed.set_footer(text=f"ID: {after.id}")
             await logging_channel.send(embed=embed)
+    # Needs pycord 2.4.1.dev138 or newer otherwise it can't handle the new username system
+    if before.display_name != after.display_name:
+        logging_channel = bot.get_channel(int(LOG_CHAN_ID))
+        if logging_channel:
+            embed = discord.Embed(
+                title="User display name changed", color=discord.Colour.blurple()
+            )
+            embed.set_author(
+                name=before.name, icon_url=after.avatar.url
+            )
+            embed.description = f"`{before.display_name}` -> `{after.display_name}`"
+            embed.set_footer(text=f"ID: {after.id}")
             await logging_channel.send(embed=embed)
 
 
