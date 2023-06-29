@@ -367,10 +367,9 @@ async def on_user_update(before, after):
                 title="User avatar changed", color=discord.Colour.blurple()
             )
             embed.set_author(
-                name=f"{before.name}#{before.discriminator}", icon_url=before.avatar.url
+                name=before.name, icon_url=before.avatar.url
             )
-            embed.set_thumbnail(url=after.avatar_url)
-            embed.set_footer(text=f"ID: {before.id}")
+            embed.set_thumbnail(url=after.avatar.url)
             await logging_channel.send(embed=embed)
 
 
