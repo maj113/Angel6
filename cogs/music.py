@@ -14,11 +14,13 @@ DebuggingOpts = {
     "ytdlerringore": False,
     "ytdlquiet": True,
     "LogLevel": logging.INFO,
+    "ffmpeg_ll" : "quiet"
 }
 if argv[-1] == "debug" or argv[-1] == "d":
     DebuggingOpts["ytdllogging"] = True
     DebuggingOpts["ytdlquiet"] = False
     DebuggingOpts["LogLevel"] = logging.DEBUG
+    DebuggingOpts["ffmpeg_ll"] = "debug"
 
 logging.basicConfig(
     level=DebuggingOpts["LogLevel"],
@@ -66,7 +68,7 @@ class YTDLSource(discord.FFmpegOpusAudio):
 
     FFMPEG_OPTIONS = {
         "before_options": "-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 15",
-        "options": "-loglevel quiet -vn -c:a libopus -ar 48000 -b:a 512k",
+        "options": f"-loglevel {DebuggingOpts['ffmpeg_ll']} -vn -c:a libopus -ar 48000 -b:a 512k",
     }
 
     ytdl = YoutubeDL(YTDL_OPTIONS)
