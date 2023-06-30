@@ -1387,12 +1387,13 @@ async def asbotmain():
     clsscr()
     try:
         channel1 = bot.get_channel(int(chan_id_alt))
-        if not isinstance(channel1, discord.TextChannel):
-            print("Selected channel does not exist or isn't a text channel")
-            return
     except ValueError:
         print("Error; Wrong ID provided or an unexpected exception occurred, try again")
         return
+    if not isinstance(channel1, discord.TextChannel):
+        print("Selected channel does not exist or isn't a text channel")
+        return
+
     while True:
         message = await ainput(f"[{str(channel1).strip()}] Message: ")
         if message == "show":
