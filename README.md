@@ -71,10 +71,10 @@ To set up and run Angel$IX for the first time, follow these steps:
 ## Planned Changes by 2.4.0:
 
 - [x] Fix and optimize the first time setup (`.env` file setup).
-- [ ] Add logging functionality to the bot:
+- [x] Add logging functionality to the bot:
   - [x] On message delete logging.
   - [x] On channel create/delete logging.
-  - [ ] On user AV change logging.
+  - [x] On user AV change logging.
   - [x] On adding/removing/changing permission logging.
   - [ ] ...
 
