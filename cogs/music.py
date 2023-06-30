@@ -13,7 +13,7 @@ DebuggingOpts = {
     "ytdllogging": False,
     "ytdlerringore": False,
     "ytdlquiet": True,
-    "LogLevel": logging.INFO,
+    "LogLevel": logging.WARN,
     "ffmpeg_ll" : "quiet"
 }
 if argv[-1] == "debug" or argv[-1] == "d":
