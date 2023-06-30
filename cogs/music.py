@@ -115,21 +115,14 @@ class YTDLSource(discord.FFmpegOpusAudio):
         """
 
         search = search.strip().replace("<", "").replace(">", "")
-        data = await asyncio.to_thread(cls.ytdl.extract_info, search, False, False)
+        data = await asyncio.to_thread(cls.ytdl.extract_info, search, False)
+
         if data is None:
             raise YTDLError(f"Couldn't find anything that matches `{search}`")
 
         entries = data.get("entries")
-        process_info = entries[0] if entries else data
-        webpage_url = process_info["webpage_url"]
-        processed_info = await asyncio.to_thread(
-            cls.ytdl.extract_info, webpage_url, False
-        )  # FIXME: slowdowns here... should improve till release 2.5
-        if processed_info is None:
-            raise YTDLError(f"Couldn't fetch `{webpage_url}`")
+        info = entries[0] if entries else data
 
-        entries = processed_info.get("entries")
-        info = entries[0] if entries else processed_info
         return cls(
             ctx,
             discord.FFmpegOpusAudio(info["url"], **YTDLSource.FFMPEG_OPTIONS),
