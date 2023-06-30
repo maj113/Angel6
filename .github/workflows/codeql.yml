@@ -37,7 +37,7 @@ jobs:
       fail-fast: false
       matrix:
         python_version: ["3.11", "3.12"]
-  # Add Python 3.11 to the list of versions
+  # 3.12 is failing for now, use this to track when it starts working again
 
     steps:
     - name: Checkout repository
