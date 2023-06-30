@@ -278,9 +278,7 @@ class VoiceState:
                     self.exists = False
                     return
 
-                await self.current.source.channel.send(
-                    embed=self.current.create_embed()
-                )
+                await self._ctx.send(embed=self.current.create_embed())
 
             self.now = await discord.FFmpegOpusAudio.from_probe(
                 self.current.source.stream_url, **YTDLSource.FFMPEG_OPTIONS
