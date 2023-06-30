@@ -280,8 +280,8 @@ class VoiceState:
 
                 await self._ctx.send(embed=self.current.create_embed())
 
-            self.now = await discord.FFmpegOpusAudio.from_probe(
-                self.current.source.stream_url, **YTDLSource.FFMPEG_OPTIONS
+            self.now = discord.FFmpegOpusAudio(
+                self.current.source.stream_url, **YTDLSource.FFMPEG_OPTIONS, bitrate=512
             )
             self.voice.play(self.now, after=self.play_next_song)
             self.next.clear()  
