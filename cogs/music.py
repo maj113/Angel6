@@ -110,8 +110,6 @@ class YTDLSource(discord.FFmpegOpusAudio):
             cls (class): The class object of the YTDLSource.
             ctx (commands.Context): The context object of the command.
             search (str): The search query or URL to be processed.
-            loop (asyncio.AbstractEventLoop): The event loop to be used for async operations. 
-            Defaults to None.
 
         Returns:
             A YTDLSource instance.
