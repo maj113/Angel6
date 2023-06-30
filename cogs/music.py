@@ -98,11 +98,7 @@ class YTDLSource(discord.FFmpegOpusAudio):
         return f"**{self.title}** by **{self.uploader}**"
 
     @classmethod
-    async def create_source(
-        cls,
-        ctx: commands.Context,
-        search: str,
-    ):
+    async def create_source(cls, ctx: commands.Context, search: str):
         """
         Creates a YTDLSource instance from a search query or URL.
 
