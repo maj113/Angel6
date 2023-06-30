@@ -262,7 +262,6 @@ class VoiceState:
         indicating that the current song is playing.
         """
         while True:
-            self.next.clear()  # FIXME: significant performance slowdowns here
             self.now = None
             if not self.loop:
                 # Try to get the next song within 3 minutes.
@@ -287,6 +286,7 @@ class VoiceState:
                 self.current.source.stream_url, **YTDLSource.FFMPEG_OPTIONS
             )
             self.voice.play(self.now, after=self.play_next_song)
+            self.next.clear()  
             await self.next.wait()
 
     def play_next_song(self, error=None):
