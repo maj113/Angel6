@@ -130,7 +130,7 @@ async def on_ready():
 
     # Send the message to the logging channel
     await log_channel.send(embed=embed)
-    await log_channel.send(CREDITS_IMAGE)
+    # await log_channel.send(CREDITS_IMAGE) URL dead
     if not asbotmain.is_running():
         await asbotmain.start()
 
