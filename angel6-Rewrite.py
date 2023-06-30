@@ -1,9 +1,10 @@
+# Builtins
 import os
 from random import randint
 from datetime import datetime
 from sys import argv, executable, version, exit as sysexit
 
-
+# External modules
 import discord
 import psutil
 from aioconsole import ainput
