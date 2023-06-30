@@ -1379,7 +1379,7 @@ async def asbotmain():
     Prints error messages if the input is invalid or the channel is a voice channel.
     """
 
-    chan_id_alt = await ainput("Input channel ID: ")
+    chan_id_alt = await ainput("\nInput channel ID: ")
     if chan_id_alt == "show":
         clsscr()
         await helperasbot()
