@@ -237,7 +237,8 @@ class VoiceState:
         self.audio_player = asyncio.create_task(self.audio_player_task())
 
     def __del__(self):
-        self.audio_player.cancel()
+        if self.current and self.current.source:
+            self.current.source.cleanup()
 
     @property
     def loop(self):
