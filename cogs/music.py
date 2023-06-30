@@ -275,7 +275,7 @@ class VoiceState:
                             await self.songs.get()
                         )  # NOTICE: this must not be called when looping is enabled
                 except asyncio.TimeoutError:
-                    asyncio.create_task(self.stop())
+                    await self.stop()
                     self.exists = False
                     return
 
