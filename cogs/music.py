@@ -119,7 +119,7 @@ class YTDLSource(discord.FFmpegOpusAudio):
         search = search.strip().replace("<", "").replace(">", "")
         data = await asyncio.to_thread(cls.ytdl.extract_info, search, False)
 
-        if data is None:
+        if not data:
             raise YTDLError(f"Couldn't find anything that matches `{search}`")
 
         entries = data.get("entries")
@@ -397,7 +397,7 @@ class Music(commands.Cog):
     @commands.command(name="now", aliases=["current", "playing"])
     async def _now(self, ctx: commands.Context):
         """Displays the currently playing song."""
-        if ctx.voice_state.current is None:
+        if not ctx.voice_state.current:
             await ctx.reply("Nothing is playing at the moment")
             return
         embed = ctx.voice_state.current.create_embed()
