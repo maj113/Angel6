@@ -675,7 +675,11 @@ async def serverinfo(ctx):
     )
     roles = str(len(ctx.guild.roles))
     created = f"{ctx.guild.created_at:%B %d, %Y, %I:%M %p}"
-    icon = str(ctx.guild.icon.url) or None
+    # Honestly not sure i need to do this, all servers probably have a pfp
+    try:
+        icon = ctx.guild.icon.url
+    except AttributeError:
+        icon = None
 
     embed = discord.Embed(
         title=name + " <3", description=description, color=discord.Color.blurple()
