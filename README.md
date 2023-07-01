@@ -79,11 +79,66 @@ To set up and run Angel$IX for the first time, follow these steps:
   - [ ] ...
 
 <details>
+<summary><h2>Gallery:</h2></summary>
+
+  <details>
+    <summary>Ping:</summary>
+    <img src="assets/ping.gif" width="300">
+  </details>
+  
+  <details>
+    <summary>Gifs:</summary>
+    <img src="assets/giflist-send.gif" width="400">
+  </details>
+  
+  <details>
+    <summary>Chat thru the bot:</summary>
+    <img src="assets/asbotmain.gif" width="700">
+  </details>
+  
+  <details>
+    <summary>Enable/disable Asbot extension:</summary>
+    <img src="assets/asbot.gif" width="700">
+  </details>
+  
+  <details>
+    <summary>On bootup:</summary>
+    <img src="assets/onready.png">
+  </details>
+  
+  <details>
+    <summary>Stats:</summary>
+    <img src="assets/stats.png">
+  </details>
+  
+  <details>
+    <summary>Roll:</summary>
+    <img src="assets/roll.png">
+  </details>
+  
+  <details>
+    <summary>Serverinfo:</summary>
+    <img src="assets/serverinfo.png">
+  </details>
+  
+  <details>
+    <summary>Userinfo:</summary>
+    <img src="assets/userinfo.png">
+  </details>
+  
+  <details>
+    <summary>Deleted messages logging:</summary>
+    <img src="assets/onmsg_delete.png">
+  </details>
+  
+</details>
+
+<details>
 <summary><h2>Links:</h2></summary>
 
 ### Here are some useful links related to Angel$IX or me:
 
- Join the official [Discord](https://discord.gg/Ry2HqGqT2K) server for support related to Angel$IX.
+Join the official [Discord](https://discord.gg/Ry2HqGqT2K) server for support related to Angel$IX.
 
 Follow me on [Twitter](https://twitter.com/may113_Mutiny) for the latest news and announcements. 
 
