@@ -652,7 +652,7 @@ async def userinfo(ctx, *, user: discord.Member = None):
     if len(user.roles) > 1:
         role_string = " ".join([r.mention for r in user.roles][1:])
         embed.add_field(
-            name=f"Roles [{len(user.roles)-1}]", value=role_string, inline=False
+            name=f"Roles [{len(user.roles)-1}]", value=role_string, inline=True
         )
 
     embed.set_footer(
