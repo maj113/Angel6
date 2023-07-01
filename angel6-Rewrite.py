@@ -978,7 +978,7 @@ async def stats(ctx):
     embed.add_field(name="Python Version", value=f"`{version}`", inline=False)
     embed.add_field(name="YTdl Version", value=f"`{ytver.__version__}`", inline=True)
     embed.add_field(
-        name=f"{WRAPPER_USED} Version", value=f"`{discord.__version__}`", inline=True
+        name=f"{WRAPPER_USED} Version", value=f"`{discord._version.__version__}`", inline=True
     )
     await ctx.reply(embed=embed)
 
