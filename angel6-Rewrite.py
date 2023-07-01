@@ -236,7 +236,8 @@ async def on_member_remove(member):
     )
     embed.set_thumbnail(url=member.avatar.url)
     embed.set_footer(
- 
+        text=member.guild,
+        icon_url=member.guild.icon.url if member.guild.icon else None
     )
     await channel.send(embed=embed)
 
