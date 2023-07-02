@@ -388,18 +388,6 @@ async def on_user_update(before, after):
             embed.set_footer(text=f"ID: {after.id}")
             await logging_channel.send(embed=embed)
 
-    if before.name != after.name:
-        logging_channel = bot.get_channel(int(LOG_CHAN_ID))
-        if logging_channel:
-            embed = discord.Embed(
-                title="User global name changed", color=discord.Colour.blurple()
-            )
-            embed.set_author(
-                name=before.name, icon_url=after.avatar.url
-            )
-            embed.description = f"`{before.name}` -> `{after.name}`"
-            embed.set_footer(text=f"ID: {after.id}")
-            await logging_channel.send(embed=embed)
 
 @bot.event
 async def on_guild_channel_update(before, after):
