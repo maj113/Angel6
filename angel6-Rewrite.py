@@ -390,6 +390,56 @@ async def on_user_update(before, after):
 
 
 @bot.event
+async def on_member_update(before, after):
+    """
+    Event handler for when a member's information is updated.
+
+    Parameters:
+    - before: The member object before the update.
+    - after: The member object after the update.
+    """
+
+    # Check if the nickname has changed
+    if before.nick != after.nick:
+        logging_channel = bot.get_channel(int(LOG_CHAN_ID))
+        if logging_channel:
+            embed = discord.Embed(
+                title="Member nickname changed",
+                description=f"`{before.nick}` -> `{after.nick}`",
+                color=discord.Color.blurple()
+            )
+            embed.set_author(name=before.display_name, icon_url=before.avatar.url)
+            embed.set_footer(text=f"ID: {after.id}")
+            await logging_channel.send(embed=embed)
+
+    # Check if the roles have changed
+    if before.roles != after.roles:
+        added_roles = [role.name for role in after.roles if role not in before.roles]
+        removed_roles = [role.name for role in before.roles if role not in after.roles]
+
+        logging_channel = bot.get_channel(int(LOG_CHAN_ID))
+        if logging_channel:
+            for role in added_roles:
+                embed = discord.Embed(
+                    title="Role Added",
+                    description=f"Added role: `{role}`",
+                    color=discord.Color.green()
+                )
+                embed.set_author(name=after.display_name, icon_url=after.avatar.url)
+                embed.set_footer(text=f"ID: {after.id}")
+                await logging_channel.send(embed=embed)
+
+            for role in removed_roles:
+                embed = discord.Embed(
+                    title="Role Removed",
+                    description=f"Removed role: `{role}`",
+                    color=discord.Color.red()
+                )
+                embed.set_author(name=after.display_name, icon_url=after.avatar.url)
+                embed.set_footer(text=f"ID: {after.id}")
+                await logging_channel.send(embed=embed)
+
+@bot.event
 async def on_guild_channel_update(before, after):
     """
     Logs channel updates when a guild channel is modified.
