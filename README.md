@@ -66,17 +66,19 @@ To set up and run Angel$IX for the first time, follow these steps:
 ## TO-DOs:
 
 - [ ] Add ytdl playlist support (not heavily requested/used).
-- [x] Support py-cord > 2.0.0b4 (fixed in V2.2 [RC1]).
+- [ ] Use slash commands
+- [ ] Add API search support
+- [ ] Add more APIs
+- [ ] Put logging functions into main file
+- [ ] Put warns, kicks and bans into a Json 
 
-## Planned Changes by 2.4.0:
+## Planned Changes by 2.5.0:
 
-- [x] Fix and optimize the first time setup (`.env` file setup).
-- [x] Add logging functionality to the bot:
-  - [x] On message delete logging.
-  - [x] On channel create/delete logging.
-  - [x] On user AV change logging.
-  - [x] On adding/removing/changing permission logging.
-  - [ ] ...
+- [ ] Use Cogs more
+- [ ] Add more Moderation logging
+- [ ] Log errors to a channel 
+- [ ] Verify support for Python 3.12
+- [ ] Add gifadd command and make giflist a separate json file
 
 <details>
 <summary><h2>Gallery:</h2></summary>
