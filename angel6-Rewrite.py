@@ -449,7 +449,6 @@ async def on_member_update(before, after):
                 )
                 embed.set_author(name=after.display_name, icon_url=after.avatar.url)
                 embed.set_footer(text=f"ID: {after.id}")
-
                 await logging_channel.send(embed=embed)
 
 @bot.event
