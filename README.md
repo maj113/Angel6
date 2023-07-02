@@ -76,6 +76,12 @@ To set up and run Angel$IX for the first time, follow these steps:
 
 - [ ] Use Cogs more
 - [ ] Add more Moderation logging
+      
+  - [x] Ban logging
+  - [x] Unban logging
+  - [x] Message edit logging
+  - [x] member update logging
+
 - [ ] Log errors to a channel 
 - [ ] Verify support for Python 3.12
 - [ ] Add gifadd command and make giflist a separate json file
