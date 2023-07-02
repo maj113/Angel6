@@ -270,6 +270,28 @@ async def on_message_delete(message):
     deleted.timestamp = message.created_at
     await channel.send(embed=deleted)
 
+@bot.event
+async def on_message_edit(before, after):
+    """
+    Event handler for when a message is edited.
+
+    Parameters:
+    - before: The message object before the edit.
+    - after: The message object after the edit.
+    """
+    if before.author.id == bot.user.id:
+        return
+
+    logging_channel = bot.get_channel(int(LOG_CHAN_ID))
+    if logging_channel:
+        embed = discord.Embed(
+            title=f"Message edited in {before.channel.mention}",
+            description=f"Message edited\n `{before.content}` -> `{after.content}` ",
+            color=discord.Color.blurple()
+        )
+        embed.add_field(name="Message:", value=f"[Link]({after.jump_url})", inline=False)
+        embed.set_author(name=before.author.display_name, icon_url=before.author.avatar.url)
+        await logging_channel.send(embed=embed)
 
 @bot.event
 async def on_guild_channel_create(channel):
