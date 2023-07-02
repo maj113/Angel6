@@ -492,6 +492,14 @@ async def on_guild_channel_update(before, after):
 
 @bot.event
 async def on_member_ban(guild, user):
+    """
+    Event handler for when a member is banned from the guild.
+
+    Parameters:
+    - guild: The guild the member was banned from.
+    - user: The user who was banned.
+    """
+
     logging_channel = bot.get_channel(int(LOG_CHAN_ID))
     if logging_channel:
         ban_entry = await guild.audit_logs(limit=1, action=discord.AuditLogAction.ban).flatten()
@@ -510,6 +518,13 @@ async def on_member_ban(guild, user):
 
 @bot.event
 async def on_member_unban(guild, user):
+    """
+    Event handler for when a member is unbanned from the guild.
+
+    Parameters:
+    - guild: The guild the member was unbanned from.
+    - user: The user who was unbanned.
+    """
     logging_channel = bot.get_channel(int(LOG_CHAN_ID))
     if logging_channel:
         unban_entry = await guild.audit_logs(limit=1, action=discord.AuditLogAction.unban).flatten()
