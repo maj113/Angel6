@@ -490,6 +490,40 @@ async def on_guild_channel_update(before, after):
 
             await log_channel.send(embed=embed)
 
+@bot.event
+async def on_member_ban(guild, user):
+    logging_channel = bot.get_channel(int(LOG_CHAN_ID))
+    if logging_channel:
+        ban_entry = await guild.audit_logs(limit=1, action=discord.AuditLogAction.ban).flatten()
+        ban_author = ban_entry[0].user
+
+        embed = discord.Embed(
+            title="Member Banned",
+            description=f"User: {user.mention}",
+            color=discord.Color.red()
+        )
+        embed.add_field(name="Banned by", value=ban_author.name, inline=False)
+        embed.set_footer(text=f"ID: {user.id}")
+
+        await logging_channel.send(embed=embed)
+
+
+@bot.event
+async def on_member_unban(guild, user):
+    logging_channel = bot.get_channel(int(LOG_CHAN_ID))
+    if logging_channel:
+        unban_entry = await guild.audit_logs(limit=1, action=discord.AuditLogAction.unban).flatten()
+        unban_author = unban_entry[0].user
+
+        embed = discord.Embed(
+            title="Member Unbanned",
+            description=f"User: {user.mention}",
+            color=discord.Color.green()
+        )
+        embed.add_field(name="Unbanned by", value=unban_author.name, inline=False)
+        embed.set_footer(text=f"ID: {user.id}")
+
+        await logging_channel.send(embed=embed)
 
 @bot.event
 async def on_guild_role_update(before, after):
