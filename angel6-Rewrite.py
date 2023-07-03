@@ -26,7 +26,7 @@ CREDITS_IMAGE = (
 
 intents = discord.Intents.all()
 bot = commands.Bot(
-    command_prefix="~",
+    command_prefix=commands.when_mentioned_or("~"),
     activity=discord.Game(name="Greatest bot alive"),
     intents=intents,
 )
