@@ -1537,5 +1537,4 @@ except discord.errors.LoginFailure:
     sysexit(1)
 except TypeError:
     print("Malformed Token!!!\nPlease check the DISCORD_TOKEN environment variable")
-    # gracefully exit, don't quit with error code 1
     sysexit(1)
