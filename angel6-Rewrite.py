@@ -207,14 +207,6 @@ async def on_member_join(member):
         description=description,
     )
     await member.send(embed=mbed)
-    # with open('muted.json', "r") as jsonmute:
-    #    datamute = json.load(jsonmute)
-    #    if member.id in datamute["muted"]:
-    #        for guild in bot.guilds:
-    #            guildid=(guild.id)
-    #        getguild = bot.get_guild(guildid)
-    #        mutedRole = discord.utils.get(getguild.roles, name="Muted")
-    #        await member.add_roles(mutedRole)
 
 
 @bot.event
@@ -876,11 +868,6 @@ async def mute(ctx, member: discord.Member, *, reason=None):
     except discord.errors.Forbidden:
         # If member has DMs disaled, we don't want to error out
         pass
-    # with open('muted.json', "r") as jsonmute:
-    #    datamute = json.load(jsonmute)
-    #    datamute["muted"].append(member.id)
-    # with open('muted.json', "w") as jsonmuteafter:
-    #    json.dump(datamute, jsonmuteafter)
 
 
 @bot.command()
