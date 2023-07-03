@@ -74,6 +74,7 @@ async def checkenv():
         ("JOIN_LEAVE_CHANNEL_ID", "Input join/leave channel ID "),
         ("GENERAL_CHANNEL_ID", "Input general channel ID "),
     ]
+    restart_bot = False
     for env_var_name, prompt_text in config_options:
         restart_bot = await set_env_var(env_var_name, prompt_text, argv[-1] == "reset")
     return restart_bot
