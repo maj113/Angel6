@@ -11,7 +11,7 @@
 
 ## Introduction
 
-Discord bot written in Python, works with NextCord and PyCord, does **not** use slash commands, invoked with "~" or by mentioning the bo
+Discord bot written in Python, works with NextCord and PyCord, does **not** use slash commands, invoked with "~" or by mentioning the bot
 
 **Mostly usable as of v2.2.2, with ongoing improvements.**
 
