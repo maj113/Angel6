@@ -10,3 +10,4 @@ __pycache__/
 log.txt
 .env_example
 muted.json
+taglist.json
