@@ -77,6 +77,8 @@ async def checkenv():
     restart_bot = False
     for env_var_name, prompt_text in config_options:
         restart_bot = await set_env_var(env_var_name, prompt_text, argv[-1] == "reset")
+    # We reload the environment variables so the entries are updated
+    load_dotenv()
     return restart_bot
 
 
