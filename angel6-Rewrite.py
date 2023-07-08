@@ -3,7 +3,7 @@ import os
 from random import randint
 from datetime import datetime
 from sys import argv, executable, version, exit as sysexit
-
+import json
 # External modules
 import discord
 import psutil
@@ -1329,44 +1329,113 @@ async def support(ctx, *, message: str = None):
     )
     await ctx.reply(embed=embed)
 
-
-gif_links = {
-    "violation": "https://tenor.com/view/violation-gif-24043912",
-    "germany": (
-        "https://giphy.com/gifs/fifa-Vd8wLaK3lNDNMuGaUL \n"
-        " SHUT THE FUCK UP BAHZZ VIVA LA GERMANY AAJAJJAJAJAJA"
-    ),
-}
-
-
 @bot.command()
-async def giflist(ctx):
-    """List available gifs"""
-    embed = discord.Embed(title="Available Gifs:", color=discord.Color.blurple())
-    for key in gif_links.items():
-        command = f"`~gifsend {key[0]}`"
-        embed.add_field(name=key[0], value=command, inline=False)
-    await ctx.reply(embed=embed)
+@commands.has_permissions(kick_members=True)
+async def taglist(ctx, action=None, name=None, content=None):
+    """Add, remove, edit, or peek at tags in the tags dictionary"""
+    if not os.path.exists("taglist.json"):
+        with open("taglist.json", "w") as file:
+            json.dump({}, file)
 
+    with open("taglist.json", "r") as file:
+        tags = json.load(file)
 
-@bot.command(pass_context=True, aliases=["GIF", "gifsend", "jiff"])
-async def gif(ctx, gif_type=""):
-    """Sends a gif thats in the the GIF list"""
-    if not gif_type:
-        await ctx.reply(
-            "Please provide a GIF name. Use '~giflist' to see available options."
-        )
-        return
-    gif_type = gif_type.lower()
+    embed = discord.Embed()
+    color = discord.Color.blurple()
 
-    if gif_type in gif_links:
-        await ctx.message.delete()
-        await ctx.send(gif_links[gif_type])
+    if action == "add":
+        if not name or not content:
+            await ctx.send("Please provide both the name and content for the tag.")
+            return
+
+        if name in tags:
+            embed.description = (
+                f"A tag with the name `{name}` already exists. Editing its content instead.")
+            color = discord.Color.yellow()
+        else:
+            embed.description = f"Added tag `{name}` with content: `{content}`"
+            color = discord.Color.brand_green()
+        tags[name] = content
+
+    elif action == "remove":
+        if not name:
+            await ctx.send("Please provide the name of the tag to remove.")
+            return
+
+        if name in tags:
+            del tags[name]
+            embed.description = f"Removed tag `{name}`."
+            color = discord.Color.brand_red()
+        else:
+            embed.description = f"Could not find a tag with the name `{name}`."
+
+    elif action == "edit":
+        if not name or not content:
+            await ctx.send("Please provide both the name and content for the tag to edit.")
+            return
+
+        if name in tags:
+            embed.description = f"Edited tag `{name}` with new content: `{content}`"
+        else:
+            embed.description = f"Could not find a tag with the name `{name}`."
+        tags[name] = content
+
+    elif action == "peek":
+        if not name:
+            await ctx.send("Please provide the name of the tag to peek at.")
+            return
+
+        if name in tags:
+            embed.title = f"Content of tag `{name}`:"
+            embed.description = f"`{tags[name]}`"
+            color = discord.Color.blurple()
+        else:
+            embed.description = f"Could not find a tag with the name `{name}`."
+
+    elif not action:
+        if not tags:  # Check if there are no tags in the dictionary
+            embed.title = "Taglist is empty."
+            embed.description = "There are no tags available."
+            embed.color = discord.Color.yellow()
+            await ctx.send(embed=embed)
+            return
+
+        embed.title = "Available tags:"
+        for name, content in tags.items():
+            command = f'`~tagsend "{name}"`'
+            embed.add_field(name=name, value=f"{command}", inline=False)
+
     else:
-        gif_type = discord.utils.escape_mentions(gif_type)
-        await ctx.reply(
-            f"Invalid GIF '{gif_type}'. Use '~giflist' to see available options."
-        )
+        await ctx.send("Invalid action. Please use 'add', 'remove', 'edit', or 'peek'.")
+        return
+
+    embed.color = color
+
+    with open("taglist.json", "w") as file:
+        json.dump(tags, file, indent=4)
+
+    await ctx.send(embed=embed)
+
+@bot.command(pass_context=True, aliases=["tag"])
+async def tagsend(ctx, tag_name=""):
+    """Sends content that's in the tag list"""
+    with open("taglist.json", "r") as file:
+        tags = json.load(file)
+
+    tag_name = tag_name.lower()
+    if tag_name == "list" or not tag_name:
+        await taglist(ctx)
+        return
+
+    if tag_name in tags:
+        await ctx.message.delete()
+        await ctx.send(discord.utils.escape_mentions(tags[tag_name]))
+    else:
+        tag_name = discord.utils.escape_mentions(tag_name)
+        embed = discord.Embed(description=
+            f"Invalid tag `{tag_name}`. Use `~taglist` to see available options.",
+            color=discord.Color.brand_red())
+        await ctx.reply(embed=embed)
 
 
 @bot.command(pass_context=True)
