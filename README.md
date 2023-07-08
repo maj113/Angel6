@@ -70,7 +70,8 @@ To set up and run Angel$IX for the first time, follow these steps:
 - [ ] Add API search support
 - [ ] Add more APIs
 - [ ] Put logging functions into main file
-- [ ] Put warns, kicks and bans into a Json 
+- [ ] Put warns, kicks and bans into a Json
+- [ ] Migrate error handling to on_command_error and isinstance
 
 ## Planned Changes by 2.5.0:
 
