@@ -278,7 +278,7 @@ async def on_message_edit(before, after):
         return
 
     logging_channel = bot.get_channel(int(LOG_CHAN_ID))
-    if logging_channel:
+    if logging_channel and before.content != after.content:
         embed = discord.Embed(
             title=f"Message edited in {before.channel.mention}",
             description=f"Message edited\n `{before.content}` -> `{after.content}` ",
