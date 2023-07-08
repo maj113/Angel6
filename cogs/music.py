@@ -4,7 +4,7 @@ import logging
 if os.name != 'nt':
     import uvloop
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
-    logger.warn('Using uvloop')
+    logging.warning('Using uvloop')
 from itertools import islice
 from random import shuffle
 from sys import argv
