@@ -96,8 +96,8 @@ To set up and run Angel$IX for the first time, follow these steps:
   </details>
   
   <details>
-    <summary>Gifs:</summary>
-    <img src="assets/giflist-send.gif" width="400">
+    <summary>Tags:</summary>
+    <img src="assets/tag.gif" width="400">
   </details>
   
   <details>
