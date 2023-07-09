@@ -85,7 +85,7 @@ To set up and run Angel$IX for the first time, follow these steps:
 
 - [ ] Log errors to a channel 
 - [ ] Verify support for Python 3.12
-- [ ] Add gifadd command and make giflist a separate json file
+- [x] Add gifadd command and make giflist a separate json file (renamed to tag and taglist to generalize it more)
 
 <details>
 <summary><h2>Gallery:</h2></summary>
