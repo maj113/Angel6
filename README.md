@@ -20,7 +20,7 @@ Discord bot written in Python, works with NextCord and PyCord, does **not** use 
 Angel$IX is a versatile Discord bot with the following features:
 
 - Music: Play and manage music in voice channels.
-- Fun: Enjoy random cat images, femboy wisdom/tutorial, GIFs, roll dices.
+- Fun: Enjoy random cat images, femboy wisdom/tutorial, create custom tags, roll dices.
 - Moderation: Kick, ban, mute, and warn users.
 - Utility: Show bot statistics, display server invites, get information about the server and more.
 - Misc: perform various logging functions (**experimental**), check server statistics and show bot's uptime.
@@ -85,7 +85,7 @@ To set up and run Angel$IX for the first time, follow these steps:
 
 - [ ] Log errors to a channel 
 - [ ] Verify support for Python 3.12
-- [ ] Add gifadd command and make giflist a separate json file
+- [x] Add gifadd command and make giflist a separate json file (renamed to tag and taglist to generalize it more)
 
 <details>
 <summary><h2>Gallery:</h2></summary>
@@ -96,8 +96,8 @@ To set up and run Angel$IX for the first time, follow these steps:
   </details>
   
   <details>
-    <summary>Gifs:</summary>
-    <img src="assets/giflist-send.gif" width="400">
+    <summary>Tags:</summary>
+    <img src="assets/tag.gif" width="400">
   </details>
   
   <details>
