@@ -141,6 +141,41 @@ async def on_ready():
 # NextCord doesn't support recursive
 bot.load_extension("cogs", recursive=True)
 
+@bot.event
+async def on_command_error(ctx, error):
+    """
+    Handles errors that occur during command execution.
+
+    Parameters:
+    - ctx (commands.Context): The context of the command.
+    - error (Exception): The error that occurred.
+
+    """
+    if isinstance(error, commands.MissingPermissions):
+        # Handle MissingPermissions error
+        embed = discord.Embed(
+            title="Permission Error",
+            description="You don't have the required permissions to execute this command.",
+            color=discord.Color.brand_red()
+        )
+        await ctx.reply(embed=embed)
+    elif isinstance(error, commands.CommandNotFound):
+        # Handle CommandNotFound error
+        embed = discord.Embed(
+            title="Command Not Found",
+            description="The command you entered does not exist.",
+            color=discord.Color.brand_red()
+        )
+        await ctx.reply(embed=embed)
+    else:
+        # Handle other errors
+        embed = discord.Embed(
+            title="An error occurred: ",
+            description=f"`{error}`",
+            color=discord.Color.brand_red()
+        )
+        channel = bot.get_channel(int(LOG_CHAN_ID))
+        await channel.send(embed=embed)
 
 @bot.event
 async def on_message(message):
