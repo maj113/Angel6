@@ -39,7 +39,7 @@ To set up and run Angel$IX for the first time, follow these steps:
 2. Clone the repository and navigate to the project directory.
 
 3. Install the required dependencies by running the following command:
-    > `pip install -r requirements.txt`
+    > `pip install -r requirements-linux.txt` or `pip install -r requirements-windows.txt`
     
 4. Rename the `.env_example` file to `.env` and make sure to add your `token`.
 
