@@ -19,7 +19,7 @@ DebuggingOpts = {
 if argv[-1] == "debug" or argv[-1] == "d":
     DebuggingOpts["ytdllogging"] = True
     DebuggingOpts["ytdlquiet"] = False
-    DebuggingOpts["LogLevel"] = logging.DEBUG
+    DebuggingOpts["LogLevel"] = logging.INFO
     DebuggingOpts["ffmpeg_ll"] = "debug"
 
 logging.basicConfig(
@@ -53,17 +53,29 @@ class YTDLError(Exception):
 
 class YTDLSource(discord.FFmpegOpusAudio):
     YTDL_OPTIONS = {
-        "extractaudio": True,
-        "format": "bestaudio[ext=opus]/bestaudio[ext=webm]/bestaudio/best",
-        "outtmpl": "%(extractor)s-%(id)s-%(title)s.%(ext)s",
-        "restrictfilenames": True,
+        # Never touch the disk, we only need the json data so simulate is fine
+        "simulate": True,
+        "extract_flat" : True,
+        # There are better formats however using OPUS avoids transcoding
+        "format": "bestaudio[ext=opus]/bestaudio",
         "noplaylist": True,
-        "ssl_verify": False,
+        "nocheckcertificate": True,
         "ignoreerrors": DebuggingOpts["ytdlerringore"],
         "logtostderr": DebuggingOpts["ytdllogging"],
         "quiet": DebuggingOpts["ytdlquiet"],
-        "no_warnings": True,
+        "no_warnings": False,
         "default_search": "ytsearch",
+        # Since we only process the json there's no need for dash or hls and we don't need the subs either
+        # Using "android_creator" seems to be the fastest one while still allowing all formats
+        # Since we don't handle downloading we dont need configs, webpage data or JS
+        # Comments aren't required, don't processs
+        "extractor_args": {"youtube": 
+                {"skip": ["dash", "hls", "translated_subs"],
+                "player_client": ["android_creator"],
+                "player_skip":["configs","webpage","js"],
+                "max_comments":[0]
+            }
+        },
     }
 
     FFMPEG_OPTIONS = {
@@ -79,20 +91,15 @@ class YTDLSource(discord.FFmpegOpusAudio):
         self.channel = ctx.channel
         self.data = data
         self.uploader = data.get("uploader")
+        # Might delete uploader_url since it None in a lot of cases
         self.uploader_url = data.get("uploader_url")
-        date = data.get("upload_date")
-        self.upload_date = f"{date[6:8]}.{date[4:6]}.{date[0:4]}"
         self.title = data.get("title")
         self.thumbnail = data.get("thumbnail")
-        self.description = data.get("description")
         duration = data.get("duration")
         self.duration = (
             self.parse_duration(int(duration)) if duration else "LIVE"
         )
-        self.tags = data.get("tags")
         self.url = data.get("webpage_url")
-        self.views = data.get("view_count")
-        self.likes = data.get("like_count")
         self.stream_url = data.get("url")
 
     def __str__(self):
@@ -223,10 +230,6 @@ class VoiceState:
         self._loop = False
         self.skip_votes = set()
         self.audio_player = asyncio.create_task(self.audio_player_task())
-
-    def __del__(self):
-        if self.current and self.current.source:
-            self.current.source.cleanup()
 
     @property
     def loop(self):
