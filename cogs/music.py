@@ -1,10 +1,12 @@
 import os
 import asyncio
 import logging
-if os.name != 'nt':
+
+if os.name != "nt":
     import uvloop
+
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
-    logging.warning('Using uvloop')
+    logging.warning("Using uvloop")
 from itertools import islice
 from random import shuffle
 from sys import argv
@@ -19,7 +21,7 @@ DebuggingOpts = {
     "ytdlerringore": False,
     "ytdlquiet": True,
     "LogLevel": logging.WARN,
-    "ffmpeg_ll" : "quiet"
+    "ffmpeg_ll": "quiet",
 }
 if argv[-1] == "debug" or argv[-1] == "d":
     DebuggingOpts["ytdllogging"] = True
@@ -43,6 +45,7 @@ class VoiceError(Exception):
     This exception is used to handle errors specifically related to voice operations in the bot.
     Examples include errors during voice connection, voice playback, or voice state management.
     """
+
     pass
 
 
@@ -50,9 +53,10 @@ class YTDLError(Exception):
     """Exception raised for errors related to YouTube-DL operations.
 
     This exception is used to handle errors specifically related to YouTube-DL operations in the bot.
-    Examples include errors during YouTube-DL source creation, 
+    Examples include errors during YouTube-DL source creation,
     video extraction, or download processes.
     """
+
     pass
 
 
@@ -60,7 +64,7 @@ class YTDLSource(discord.FFmpegOpusAudio):
     YTDL_OPTIONS = {
         # Never touch the disk, we only need the json data so simulate is fine
         "simulate": True,
-        "extract_flat" : True,
+        "extract_flat": True,
         # There are better formats however using OPUS avoids transcoding
         "format": "bestaudio[ext=opus]/bestaudio",
         "noplaylist": True,
@@ -74,18 +78,22 @@ class YTDLSource(discord.FFmpegOpusAudio):
         # Using "android_creator" seems to be the fastest one while still allowing all formats
         # Since we don't handle downloading we dont need configs, webpage data or JS
         # Comments aren't required, don't processs
-        "extractor_args": {"youtube": 
-                {"skip": ["dash", "hls", "translated_subs"],
+        "extractor_args": {
+            "youtube": {
+                "skip": ["dash", "hls", "translated_subs"],
                 "player_client": ["android_creator"],
-                "player_skip":["configs","webpage","js"],
-                "max_comments":[0]
+                "player_skip": ["configs", "webpage", "js"],
+                "max_comments": [0],
             }
         },
     }
 
     FFMPEG_OPTIONS = {
         "before_options": "-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 15",
-        "options": f"-loglevel {DebuggingOpts['ffmpeg_ll']} -vn -c:a libopus -ar 48000 -b:a 512k",
+        "options": (
+            f"-loglevel {DebuggingOpts['ffmpeg_ll']} -vn -c:a libopus -ar 48000 -b:a"
+            " 512k"
+        ),
     }
 
     ytdl = YoutubeDL(YTDL_OPTIONS)
@@ -101,9 +109,7 @@ class YTDLSource(discord.FFmpegOpusAudio):
         self.title = data.get("title")
         self.thumbnail = data.get("thumbnail")
         duration = data.get("duration")
-        self.duration = (
-            self.parse_duration(int(duration)) if duration else "LIVE"
-        )
+        self.duration = self.parse_duration(int(duration)) if duration else "LIVE"
         self.url = data.get("webpage_url")
         self.stream_url = data.get("url")
 
@@ -251,10 +257,10 @@ class VoiceState:
     async def audio_player_task(self):
         """Plays audio from the queued songs continuously in the background until stopped.
 
-        Dequeues the next song from the queue, 
+        Dequeues the next song from the queue,
         creates a playable audio stream from the song's source
         URL using FFmpeg, and starts playing the audio through the voice connection.
-        If looping is disabled, sends an embed message to the channel 
+        If looping is disabled, sends an embed message to the channel
         indicating that the current song is playing.
         """
         while True:
@@ -280,7 +286,7 @@ class VoiceState:
                 self.current.source.stream_url, **YTDLSource.FFMPEG_OPTIONS, bitrate=512
             )
             self.voice.play(self.now, after=self.play_next_song)
-            self.next.clear()  
+            self.next.clear()
             await self.next.wait()
 
     def play_next_song(self, error=None):
@@ -547,13 +553,11 @@ class Music(commands.Cog):
         If there are songs in the queue, this will be queued until the
         other songs finished playing.
         This command automatically searches from various sites if no URL is provided.
-        A list of these sites can be found here: 
+        A list of these sites can be found here:
         https://github.com/yt-dlp/yt-dlp/blob/master/supportedsites.md
         """
         try:
-            source_task = asyncio.create_task(
-                YTDLSource.create_source(ctx, search)
-            )
+            source_task = asyncio.create_task(YTDLSource.create_source(ctx, search))
         except YTDLError as err:
             await ctx.reply(f"An error occurred while processing this request: {err}")
         else:
