@@ -38,7 +38,7 @@ class Fun(commands.Cog):
 
         try:
             if args != "":
-                dice_to_roll, number_of_sides = parse_input(args)
+                dice_to_roll, number_of_sides = self.parse_input(args)
             else:
                 dice_to_roll = 1
                 number_of_sides = 6
@@ -78,7 +78,7 @@ class Fun(commands.Cog):
         results = []
 
         for _ in range(dice_to_roll):
-            results.append(roll_a_dice(number_of_sides))
+            results.append(self.roll_a_dice(number_of_sides))
 
         result_string = ", ".join([f"`{result}`" for result in results])
 
@@ -90,42 +90,42 @@ class Fun(commands.Cog):
 
         await ctx.reply(embed=embed)
 
-        def parse_input(parsed_input: str):
-            """
-            Parse the input to extract the number of dice to roll and the number of sides on each dice.
+    def parse_input(parsed_input: str):
+        """
+        Parse the input to extract the number of dice to roll and the number of sides on each dice.
 
-            Args:
-                parsed_input (str): The input to parse. It should be in the format 'NdM', where N is the
-                                    number of dice and M is the number of sides on each dice.
+        Args:
+            parsed_input (str): The input to parse. It should be in the format 'NdM', where N is the
+                                number of dice and M is the number of sides on each dice.
 
-            Returns:
-                tuple: A tuple containing the number of dice to roll and the number of sides on each dice.
-            """
-            split = parsed_input.split("d")
+        Returns:
+            tuple: A tuple containing the number of dice to roll and the number of sides on each dice.
+        """
+        split = parsed_input.split("d")
 
-            # Remove empty items
-            split = [x for x in split if x]
+        # Remove empty items
+        split = [x for x in split if x]
 
-            if len(split) == 1:
-                dice_to_roll = 1
-                sided_dice = int(split[0])
-            else:
-                dice_to_roll = int(split[0])
-                sided_dice = int(split[1])
+        if len(split) == 1:
+            dice_to_roll = 1
+            sided_dice = int(split[0])
+        else:
+            dice_to_roll = int(split[0])
+            sided_dice = int(split[1])
 
-            return dice_to_roll, sided_dice
+        return dice_to_roll, sided_dice
 
-        def roll_a_dice(sides: int):
-            """
-            Roll a dice with the specified number of sides.
+    def roll_a_dice(sides: int):
+        """
+        Roll a dice with the specified number of sides.
 
-            Args:
-                sides (int): The number of sides on the dice.
+        Args:
+            sides (int): The number of sides on the dice.
 
-            Returns:
-                int: The result of the dice roll, a random number between 1 and the number of sides.
-            """
-            return randint(1, sides)
+        Returns:
+            int: The result of the dice roll, a random number between 1 and the number of sides.
+        """
+        return randint(1, sides)
 
     @commands.command(pass_context=True, aliases=["fem"])  # :skull:
     async def femboy(self, ctx):
