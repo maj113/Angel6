@@ -86,7 +86,7 @@ class Logging(commands.Cog):
         """
         Event handler for when a member leaves a guild.
 
-        Sends a farewell message to the designated join/leave channel, including the member's mention,
+        Sends a farewell message to the designated join/leave channel,
         the updated total number of members, the member's avatar, and the guild's name and icon.
 
         Parameters:

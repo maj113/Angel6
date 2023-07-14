@@ -90,7 +90,7 @@ class Fun(commands.Cog):
 
         await ctx.reply(embed=embed)
 
-    def parse_input(parsed_input: str):
+    def parse_input(self, parsed_input: str):
         """
         Parse the input to extract the number of dice to roll and the number of sides on each dice.
 
@@ -115,7 +115,7 @@ class Fun(commands.Cog):
 
         return dice_to_roll, sided_dice
 
-    def roll_a_dice(sides: int):
+    def roll_a_dice(self, sides: int):
         """
         Roll a dice with the specified number of sides.
 
@@ -198,10 +198,10 @@ class Fun(commands.Cog):
     async def taglist(self, ctx, action=None, name=None, content=None):
         """Add, remove, edit, or peek at tags in the tags dictionary"""
         if not path.exists("taglist.json"):
-            with open("taglist.json", "w") as file:
+            with open("taglist.json", "w", encoding='utf-8') as file:
                 json.dump({}, file)
 
-        with open("taglist.json", "r") as file:
+        with open("taglist.json", "r", encoding='utf-8') as file:
             tags = json.load(file)
 
         embed = discord.Embed()
@@ -289,7 +289,7 @@ class Fun(commands.Cog):
     @commands.command(pass_context=True, aliases=["tag"])
     async def tagsend(self, ctx, tag_name=""):
         """Sends content that's in the tag list"""
-        with open("taglist.json", "r") as file:
+        with open("taglist.json", "r", encoding='utf-8') as file:
             tags = json.load(file)
 
         tag_name = tag_name.lower()

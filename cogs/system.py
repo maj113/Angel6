@@ -1,13 +1,13 @@
 from sys import version, argv, executable
 from datetime import datetime
 from os import getpid, execv
-from angel6 import BOT_VER
 
 import discord
 from discord.ext import commands
 from yt_dlp import version as ytver
 import psutil
 
+from angel6 import BOT_VER
 
 bot_uptime = datetime.now()
 mem_info = psutil.Process(getpid())
