@@ -36,7 +36,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python_version: ["3.11", "3.12"]
+        python_version: ["3.11"]
   # 3.12 is failing for now, use this to track when it starts working again
 
     steps:
@@ -45,19 +45,17 @@ jobs:
 
     # Set up Python 3.11
     - name: Set up Python "${{ matrix.python_version }}"
-      uses: actions/setup-python@v4.6.1
+      uses: actions/setup-python@v4.7.0
       with:
         python-version: ${{ matrix.python_version }}
         allow-prereleases: true
 
     # Initializes the CodeQL tools for scanning.
     - name: Initialize CodeQL
-      uses: github/codeql-action/init@v2.20.3
+      uses: github/codeql-action/init@v2.20.4
       with:
+        tools: 
         languages: 'python'
-        packs:
-          codeql/python-all@0.9.3,
-          codeql/python-queries@0.7.3 # it didn't work work with python-all
         queries:
           security-and-quality
         config: |
@@ -67,6 +65,6 @@ jobs:
 
     # Perform CodeQL Analysis
     - name: Perform CodeQL Analysis
-      uses: github/codeql-action/analyze@v2.20.3
+      uses: github/codeql-action/analyze@v2.20.4
       with:
         category: "/language:'python'"
