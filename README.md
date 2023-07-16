@@ -75,7 +75,7 @@ To set up and run Angel$IX for the first time, follow these steps:
 
 ## Planned Changes by 2.5.0:
 
-- [ ] Use Cogs more
+- [x] Use Cogs more
 - [x] Add more Moderation logging
       
   - [x] Ban logging
