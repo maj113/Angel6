@@ -269,9 +269,9 @@ class Fun(commands.Cog):
                 return
 
             embed.title = "Available tags:"
-            for name, content in tags.items():
-                command = f'`~tagsend "{name}"`'
-                embed.add_field(name=name, value=f"{command}", inline=False)
+            for tag_name in tags:
+                command = f'`~tagsend "{tag_name}"`'
+                embed.add_field(name=tag_name, value=f"{command}", inline=False)
 
         else:
             await ctx.send(
