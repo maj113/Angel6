@@ -281,7 +281,7 @@ class Fun(commands.Cog):
 
         embed.color = color
 
-        with open("taglist.json", "w") as file:
+        with open("taglist.json", "w", encoding='utf-8') as file:
             json.dump(tags, file, indent=4)
 
         await ctx.send(embed=embed)
