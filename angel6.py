@@ -15,10 +15,6 @@ LOG_CHAN_ID = os.getenv("LOGGING_CHANNEL_ID")
 JL_CHAN_ID = os.getenv("JOIN_LEAVE_CHANNEL_ID")
 GEN_CHAN_ID = os.getenv("GENERAL_CHANNEL_ID")
 BOT_VER = "**2.4.0-Rewrite** <https://github.com/maj113/Angel6/releases/latest>"
-CREDITS_IMAGE = (
-    "https://cdn.discordapp.com/attachments/1083114844875669604/"
-    "1083121342150361118/1676492485892.png"
-)
 
 intents = discord.Intents.all()
 bot = commands.Bot(
