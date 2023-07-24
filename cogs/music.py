@@ -46,7 +46,6 @@ class VoiceError(Exception):
     Examples include errors during voice connection, voice playback, or voice state management.
     """
 
-    pass
 
 
 class YTDLError(Exception):
@@ -57,7 +56,6 @@ class YTDLError(Exception):
     video extraction, or download processes.
     """
 
-    pass
 
 
 class YTDLSource(discord.FFmpegOpusAudio):
