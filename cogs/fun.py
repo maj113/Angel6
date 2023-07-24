@@ -286,8 +286,7 @@ class Fun(commands.Cog):
             )
             await ctx.send(embed=embed)
 
-        elif action == "edit":
-            if not name or not content:
+    async def edit_tag(self, ctx, tags, name, content):
                 await ctx.send(
                     "Please provide both the name and content for the tag to edit."
                 )
