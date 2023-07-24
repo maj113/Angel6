@@ -295,12 +295,23 @@ class Fun(commands.Cog):
         - name (str): The name of the tag to edit.
         - content (str): The new content of the tag.
         """
+        if not name or not content:
+            await ctx.send("Please provide both the name and content for the tag to edit.")
+            return
 
-            if name in tags:
-                embed.description = f"Edited tag `{name}` with new content: `{content}`"
-            else:
-                embed.description = f"Could not find a tag with the name `{name}`."
+        if name in tags:
             tags[name] = content
+            embed = discord.Embed(
+                description=f"Edited tag `{name}` with new content: `{content}`",
+                color=discord.Color.blurple(),
+            )
+            await ctx.send(embed=embed)
+        else:
+            embed = discord.Embed(
+                description=f"Could not find a tag with the name `{name}`.",
+                color=discord.Color.brand_red(),
+            )
+            await ctx.send(embed=embed)
 
         elif action == "peek":
             if not name:
