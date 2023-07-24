@@ -287,10 +287,14 @@ class Fun(commands.Cog):
             await ctx.send(embed=embed)
 
     async def edit_tag(self, ctx, tags, name, content):
-                await ctx.send(
-                    "Please provide both the name and content for the tag to edit."
-                )
-                return
+        """Edit the content of an existing tag in the tags dictionary.
+
+        Parameters:
+        - ctx (discord.ext.commands.Context): The context of the command.
+        - tags (dict): The current tags dictionary.
+        - name (str): The name of the tag to edit.
+        - content (str): The new content of the tag.
+        """
 
             if name in tags:
                 embed.description = f"Edited tag `{name}` with new content: `{content}`"
