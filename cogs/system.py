@@ -17,6 +17,7 @@ WRAPPER_USED = discord.__title__.capitalize()
 
 
 class System(commands.Cog):
+    """A class representing a system cog with various commands related to system information."""
     def __init__(self, bot):
         self.bot = bot
 
