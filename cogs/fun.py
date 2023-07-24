@@ -228,6 +228,11 @@ class Fun(commands.Cog):
                 "Invalid action. Please use 'add', 'remove', 'edit', or 'peek'."
             )
 
+        embed.color = color
+
+        with open("taglist.json", "w", encoding="utf-8") as file:
+            json.dump(tags, file, indent=4)
+
             if not name or not content:
                 await ctx.send("Please provide both the name and content for the tag.")
                 return
