@@ -340,11 +340,12 @@ class Fun(commands.Cog):
             await ctx.send(embed=embed)
 
     async def list_tags(self, ctx, tags):
-                embed.title = "Taglist is empty."
-                embed.description = "There are no tags available."
-                embed.color = discord.Color.yellow()
-                await ctx.send(embed=embed)
-                return
+        """List all available tags from the tags dictionary.
+
+        Parameters:
+        - ctx (discord.ext.commands.Context): The context of the command.
+        - tags (dict): The current tags dictionary.
+        """
 
             embed.title = "Available tags:"
             for tag_name in tags:
