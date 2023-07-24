@@ -23,7 +23,13 @@ class System(commands.Cog):
 
     @commands.command(pass_context=True)
     async def uptime(self, ctx):
-        """shows bot uptime"""
+        """Shows the bot's uptime.
+
+        This command displays how long the bot has been running since it was started.
+
+        Args:
+            ctx (discord.ext.commands.Context): The command context.
+        """
         current_time = datetime.now()
         difference = current_time - bot_uptime
         hours, remainder = divmod(int(difference.total_seconds()), 3600)
