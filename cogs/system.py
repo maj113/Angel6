@@ -45,7 +45,14 @@ class System(commands.Cog):
 
     @commands.command(pass_context=True, aliases=["info", "debug"])
     async def stats(self, ctx):
-        """Shows bot stats"""
+        """Shows the bot's statistics and system resource usage.
+
+        This command displays various statistics about the bot and the host system,
+        including CPU usage, memory usage, Python version, and more.
+
+        Args:
+            ctx (discord.ext.commands.Context): The command context.
+        """
         embed = discord.Embed(
             title="System Resource Usage and Statistics",
             description="See bot host statistics.",
