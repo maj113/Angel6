@@ -346,22 +346,21 @@ class Fun(commands.Cog):
         - ctx (discord.ext.commands.Context): The context of the command.
         - tags (dict): The current tags dictionary.
         """
-
-            embed.title = "Available tags:"
-            for tag_name in tags:
-                command = f'`~tagsend "{tag_name}"`'
-                embed.add_field(name=tag_name, value=f"{command}", inline=False)
-
-        else:
-            await ctx.send(
-                "Invalid action. Please use 'add', 'remove', 'edit', or 'peek'."
+        if not tags:  # Check if there are no tags in the dictionary
+            embed = discord.Embed(
+                title="Taglist is empty.",
+                description="There are no tags available.",
+                color=discord.Color.yellow(),
             )
+            await ctx.send(embed=embed)
             return
 
-        embed.color = color
-
-        with open("taglist.json", "w", encoding='utf-8') as file:
-            json.dump(tags, file, indent=4)
+        embed = discord.Embed(
+            title="Available tags:", color=discord.Color.blurple()
+        )
+        for tag_name in tags:
+            command = f'`~tagsend "{tag_name}"`'
+            embed.add_field(name=tag_name, value=f"{command}", inline=False)
 
         await ctx.send(embed=embed)
 
