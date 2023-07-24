@@ -242,20 +242,23 @@ class Fun(commands.Cog):
         - name (str): The name of the tag.
         - content (str): The content of the tag.
         """
-            if not name or not content:
-                await ctx.send("Please provide both the name and content for the tag.")
-                return
+        if not name or not content:
+            await ctx.send("Please provide both the name and content for the tag.")
+            return
 
-            if name in tags:
-                embed.description = (
-                    f"A tag with the name `{name}` already exists. Editing its content"
-                    " instead."
-                )
-                color = discord.Color.yellow()
-            else:
-                embed.description = f"Added tag `{name}` with content: `{content}`"
-                color = discord.Color.brand_green()
-            tags[name] = content
+        if name in tags:
+            embed = discord.Embed(
+                description=f"A tag with the name `{name}` already exists. Editing its content.",
+                color=discord.Color.yellow(),
+            )
+        else:
+            embed = discord.Embed(
+                description=f"Added tag `{name}` with content: `{content}`",
+                color=discord.Color.brand_green(),
+            )
+
+        tags[name] = content
+        await ctx.send(embed=embed)
 
         elif action == "remove":
             if not name:
