@@ -80,7 +80,13 @@ class System(commands.Cog):
     @commands.command()
     @commands.has_permissions(ban_members=True)
     async def reload(self, ctx):
-        """Reload Bot cog"""
+        """Reloads the Bot cog.
+
+        This command reloads the "cogs.music" extension, allowing for updates to take effect.
+
+        Args:
+            ctx (discord.ext.commands.Context): The command context.
+        """
         try:
             # will need to make this work with more cogs once i get that working
             self.bot.reload_extension("cogs.music")
