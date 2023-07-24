@@ -204,10 +204,10 @@ class Fun(commands.Cog):
         - content (str): The content of the tag (used in add and edit actions).
         """
         if not path.exists("taglist.json"):
-            with open("taglist.json", "w", encoding='utf-8') as file:
+            with open("taglist.json", "w", encoding="utf-8") as file:
                 json.dump({}, file)
 
-        with open("taglist.json", "r", encoding='utf-8') as file:
+        with open("taglist.json", "r", encoding="utf-8") as file:
             tags = json.load(file)
 
         embed = discord.Embed()
