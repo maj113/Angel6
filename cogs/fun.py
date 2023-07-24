@@ -214,6 +214,20 @@ class Fun(commands.Cog):
         color = discord.Color.blurple()
 
         if action == "add":
+            await self.add_tag(ctx, tags, name, content)
+        elif action == "remove":
+            await self.remove_tag(ctx, tags, name)
+        elif action == "edit":
+            await self.edit_tag(ctx, tags, name, content)
+        elif action == "peek":
+            await self.peek_tag(ctx, tags, name)
+        elif not action:
+            await self.list_tags(ctx, tags)
+        else:
+            await ctx.send(
+                "Invalid action. Please use 'add', 'remove', 'edit', or 'peek'."
+            )
+
             if not name or not content:
                 await ctx.send("Please provide both the name and content for the tag.")
                 return
