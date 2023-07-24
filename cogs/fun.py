@@ -233,6 +233,7 @@ class Fun(commands.Cog):
         with open("taglist.json", "w", encoding="utf-8") as file:
             json.dump(tags, file, indent=4)
 
+    async def add_tag(self, ctx, tags, name, content):
             if not name or not content:
                 await ctx.send("Please provide both the name and content for the tag.")
                 return
