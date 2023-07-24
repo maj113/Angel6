@@ -97,7 +97,14 @@ class System(commands.Cog):
     @commands.command(aliases=["reboot"])
     @commands.has_permissions(ban_members=True)
     async def restart(self, ctx, arg=""):
-        """restarts the bot"""
+        """Restarts the bot.
+
+        This command restarts the bot process, optionally with a specific argument.
+
+        Args:
+            ctx (discord.ext.commands.Context): The command context.
+            arg (str, optional): An additional argument to pass when restarting. Defaults to "".
+        """
         argv.append(arg)
         if arg == "debug":
             await ctx.send("Debug on!")
