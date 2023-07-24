@@ -4,6 +4,9 @@ from angel6 import LOG_CHAN_ID, JL_CHAN_ID, GEN_CHAN_ID
 
 
 class Logging(commands.Cog):
+    """
+    A class representing a logging cog with event handlers for various logging functionalities.
+    """
     def __init__(self, bot):
         self.bot = bot
 
