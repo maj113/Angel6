@@ -321,13 +321,23 @@ class Fun(commands.Cog):
         - tags (dict): The current tags dictionary.
         - name (str): The name of the tag to peek at.
         """
+        if not name:
+            await ctx.send("Please provide the name of the tag to peek at.")
+            return
 
-            if name in tags:
-                embed.title = f"Content of tag `{name}`:"
-                embed.description = f"`{tags[name]}`"
-                color = discord.Color.blurple()
-            else:
-                embed.description = f"Could not find a tag with the name `{name}`."
+        if name in tags:
+            embed = discord.Embed(
+                title=f"Content of tag `{name}`:",
+                description=f"`{tags[name]}`",
+                color=discord.Color.blurple(),
+            )
+            await ctx.send(embed=embed)
+        else:
+            embed = discord.Embed(
+                description=f"Could not find a tag with the name `{name}`.",
+                color=discord.Color.brand_red(),
+            )
+            await ctx.send(embed=embed)
 
         elif not action:
             if not tags:  # Check if there are no tags in the dictionary
