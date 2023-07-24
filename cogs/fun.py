@@ -313,10 +313,7 @@ class Fun(commands.Cog):
             )
             await ctx.send(embed=embed)
 
-        elif action == "peek":
-            if not name:
-                await ctx.send("Please provide the name of the tag to peek at.")
-                return
+    async def peek_tag(self, ctx, tags, name):
 
             if name in tags:
                 embed.title = f"Content of tag `{name}`:"
