@@ -131,4 +131,11 @@ class System(commands.Cog):
 
 
 def setup(bot):
+    """Add the System cog to the bot.
+
+    This function is called by the bot to add the System cog to its extensions.
+
+    Parameters:
+        bot (discord.ext.commands.Bot): The Discord bot instance.
+    """
     bot.add_cog(System(bot))
