@@ -261,6 +261,13 @@ class Fun(commands.Cog):
         await ctx.send(embed=embed)
 
     async def remove_tag(self, ctx, tags, name):
+        """Remove a tag from the tags dictionary.
+
+        Parameters:
+        - ctx (discord.ext.commands.Context): The context of the command.
+        - tags (dict): The current tags dictionary.
+        - name (str): The name of the tag to remove.
+        """
 
             if name in tags:
                 del tags[name]
