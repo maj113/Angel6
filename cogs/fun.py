@@ -234,6 +234,14 @@ class Fun(commands.Cog):
             json.dump(tags, file, indent=4)
 
     async def add_tag(self, ctx, tags, name, content):
+        """Add a new tag to the tags dictionary.
+
+        Parameters:
+        - ctx (discord.ext.commands.Context): The context of the command.
+        - tags (dict): The current tags dictionary.
+        - name (str): The name of the tag.
+        - content (str): The content of the tag.
+        """
             if not name or not content:
                 await ctx.send("Please provide both the name and content for the tag.")
                 return
