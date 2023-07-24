@@ -196,7 +196,13 @@ class Fun(commands.Cog):
     @commands.command()
     @commands.has_permissions(kick_members=True)
     async def taglist(self, ctx, action=None, name=None, content=None):
-        """Add, remove, edit, or peek at tags in the tags dictionary"""
+        """Add, remove, edit, or peek at tags in the tags dictionary
+
+        Parameters:
+        - action (str): The action to perform on the tags. Possible values are: "add", "remove", "edit", "peek".
+        - name (str): The name of the tag.
+        - content (str): The content of the tag (used in add and edit actions).
+        """
         if not path.exists("taglist.json"):
             with open("taglist.json", "w", encoding='utf-8') as file:
                 json.dump({}, file)
