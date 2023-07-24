@@ -339,8 +339,7 @@ class Fun(commands.Cog):
             )
             await ctx.send(embed=embed)
 
-        elif not action:
-            if not tags:  # Check if there are no tags in the dictionary
+    async def list_tags(self, ctx, tags):
                 embed.title = "Taglist is empty."
                 embed.description = "There are no tags available."
                 embed.color = discord.Color.yellow()
