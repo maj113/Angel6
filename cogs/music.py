@@ -1,12 +1,6 @@
 import os
 import asyncio
 import logging
-
-if os.name != "nt":
-    import uvloop
-
-    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
-    logging.warning("Using uvloop")
 from itertools import islice
 from random import shuffle
 from sys import argv
@@ -14,6 +8,11 @@ from sys import argv
 import discord
 from discord.ext import commands
 from yt_dlp import YoutubeDL, utils
+
+if os.name != "nt":
+    import uvloop
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+    logging.warning("Using uvloop")
 
 utils.bug_reports_message = lambda: ""
 DebuggingOpts = {
