@@ -268,13 +268,23 @@ class Fun(commands.Cog):
         - tags (dict): The current tags dictionary.
         - name (str): The name of the tag to remove.
         """
+        if not name:
+            await ctx.send("Please provide the name of the tag to remove.")
+            return
 
-            if name in tags:
-                del tags[name]
-                embed.description = f"Removed tag `{name}`."
-                color = discord.Color.brand_red()
-            else:
-                embed.description = f"Could not find a tag with the name `{name}`."
+        if name in tags:
+            del tags[name]
+            embed = discord.Embed(
+                description=f"Removed tag `{name}`.",
+                color=discord.Color.brand_red(),
+            )
+            await ctx.send(embed=embed)
+        else:
+            embed = discord.Embed(
+                description=f"Could not find a tag with the name `{name}`.",
+                color=discord.Color.brand_red(),
+            )
+            await ctx.send(embed=embed)
 
         elif action == "edit":
             if not name or not content:
