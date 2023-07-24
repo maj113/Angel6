@@ -73,19 +73,11 @@ To set up and run Angel$IX for the first time, follow these steps:
 - [ ] Put warns, kicks and bans into a Json
 - [x] Migrate error handling to on_command_error and isinstance
 
-## Planned Changes by 2.5.0:
+## Planned Changes by 2.6.0:
 
-- [x] Use Cogs more
-- [x] Add more Moderation logging
-      
-  - [x] Ban logging
-  - [x] Unban logging
-  - [x] Message edit logging
-  - [x] member update logging
-
-- [x] Log errors to a channel 
 - [ ] Verify support for Python 3.12
-- [x] Add gifadd command and make giflist a separate json file (renamed to tag and taglist to generalize it more)
+- [ ] Fix initing `YTDLSource` class
+- [ ] Verify what options in `YTDL_OPTIONS` are redundant
 
 <details>
 <summary><h2>Gallery:</h2></summary>
