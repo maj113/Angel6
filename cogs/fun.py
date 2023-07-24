@@ -314,6 +314,13 @@ class Fun(commands.Cog):
             await ctx.send(embed=embed)
 
     async def peek_tag(self, ctx, tags, name):
+        """Peek at the content of an existing tag in the tags dictionary.
+
+        Parameters:
+        - ctx (discord.ext.commands.Context): The context of the command.
+        - tags (dict): The current tags dictionary.
+        - name (str): The name of the tag to peek at.
+        """
 
             if name in tags:
                 embed.title = f"Content of tag `{name}`:"
