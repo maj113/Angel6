@@ -260,10 +260,7 @@ class Fun(commands.Cog):
         tags[name] = content
         await ctx.send(embed=embed)
 
-        elif action == "remove":
-            if not name:
-                await ctx.send("Please provide the name of the tag to remove.")
-                return
+    async def remove_tag(self, ctx, tags, name):
 
             if name in tags:
                 del tags[name]
