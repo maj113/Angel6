@@ -438,4 +438,11 @@ class Fun(commands.Cog):
 
 
 def setup(bot):
+    """Add the Fun cog to the bot.
+
+    This function is called by the bot to add the Fun cog to its extensions.
+
+    Parameters:
+        bot (discord.ext.commands.Bot): The Discord bot instance.
+    """
     bot.add_cog(Fun(bot))
