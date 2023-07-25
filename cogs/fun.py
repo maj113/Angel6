@@ -214,81 +214,153 @@ class Fun(commands.Cog):
         color = discord.Color.blurple()
 
         if action == "add":
-            if not name or not content:
-                await ctx.send("Please provide both the name and content for the tag.")
-                return
-
-            if name in tags:
-                embed.description = (
-                    f"A tag with the name `{name}` already exists. Editing its content"
-                    " instead."
-                )
-                color = discord.Color.yellow()
-            else:
-                embed.description = f"Added tag `{name}` with content: `{content}`"
-                color = discord.Color.brand_green()
-            tags[name] = content
-
+            await self.add_tag(ctx, tags, name, content)
         elif action == "remove":
-            if not name:
-                await ctx.send("Please provide the name of the tag to remove.")
-                return
-
-            if name in tags:
-                del tags[name]
-                embed.description = f"Removed tag `{name}`."
-                color = discord.Color.brand_red()
-            else:
-                embed.description = f"Could not find a tag with the name `{name}`."
-
+            await self.remove_tag(ctx, tags, name)
         elif action == "edit":
-            if not name or not content:
-                await ctx.send(
-                    "Please provide both the name and content for the tag to edit."
-                )
-                return
-
-            if name in tags:
-                embed.description = f"Edited tag `{name}` with new content: `{content}`"
-            else:
-                embed.description = f"Could not find a tag with the name `{name}`."
-            tags[name] = content
-
+            await self.edit_tag(ctx, tags, name, content)
         elif action == "peek":
-            if not name:
-                await ctx.send("Please provide the name of the tag to peek at.")
-                return
-
-            if name in tags:
-                embed.title = f"Content of tag `{name}`:"
-                embed.description = f"`{tags[name]}`"
-                color = discord.Color.blurple()
-            else:
-                embed.description = f"Could not find a tag with the name `{name}`."
-
+            await self.peek_tag(ctx, tags, name)
         elif not action:
-            if not tags:  # Check if there are no tags in the dictionary
-                embed.title = "Taglist is empty."
-                embed.description = "There are no tags available."
-                embed.color = discord.Color.yellow()
-                await ctx.send(embed=embed)
-                return
-
-            embed.title = "Available tags:"
-            for tag_name in tags:
-                command = f'`~tagsend "{tag_name}"`'
-                embed.add_field(name=tag_name, value=f"{command}", inline=False)
-
+            await self.list_tags(ctx, tags)
         else:
             await ctx.send(
                 "Invalid action. Please use 'add', 'remove', 'edit', or 'peek'."
             )
-            return
 
         embed.color = color
 
-        with open("taglist.json", "w", encoding='utf-8') as file:
+        with open("taglist.json", "w", encoding="utf-8") as file:
             json.dump(tags, file, indent=4)
+
+    async def add_tag(self, ctx, tags, name, content):
+        """Add a new tag to the tags dictionary.
+
+        Parameters:
+        - ctx (discord.ext.commands.Context): The context of the command.
+        - tags (dict): The current tags dictionary.
+        - name (str): The name of the tag.
+        - content (str): The content of the tag.
+        """
+        if not name or not content:
+            await ctx.send("Please provide both the name and content for the tag.")
+            return
+
+        if name in tags:
+            embed = discord.Embed(
+                description=f"A tag with the name `{name}` already exists. Editing its content.",
+                color=discord.Color.yellow(),
+            )
+        else:
+            embed = discord.Embed(
+                description=f"Added tag `{name}` with content: `{content}`",
+                color=discord.Color.brand_green(),
+            )
+
+        tags[name] = content
+        await ctx.send(embed=embed)
+
+    async def remove_tag(self, ctx, tags, name):
+        """Remove a tag from the tags dictionary.
+
+        Parameters:
+        - ctx (discord.ext.commands.Context): The context of the command.
+        - tags (dict): The current tags dictionary.
+        - name (str): The name of the tag to remove.
+        """
+        if not name:
+            await ctx.send("Please provide the name of the tag to remove.")
+            return
+
+        if name in tags:
+            del tags[name]
+            embed = discord.Embed(
+                description=f"Removed tag `{name}`.",
+                color=discord.Color.brand_red(),
+            )
+            await ctx.send(embed=embed)
+        else:
+            embed = discord.Embed(
+                description=f"Could not find a tag with the name `{name}`.",
+                color=discord.Color.brand_red(),
+            )
+            await ctx.send(embed=embed)
+
+    async def edit_tag(self, ctx, tags, name, content):
+        """Edit the content of an existing tag in the tags dictionary.
+
+        Parameters:
+        - ctx (discord.ext.commands.Context): The context of the command.
+        - tags (dict): The current tags dictionary.
+        - name (str): The name of the tag to edit.
+        - content (str): The new content of the tag.
+        """
+        if not name or not content:
+            await ctx.send("Please provide both the name and content for the tag to edit.")
+            return
+
+        if name in tags:
+            tags[name] = content
+            embed = discord.Embed(
+                description=f"Edited tag `{name}` with new content: `{content}`",
+                color=discord.Color.blurple(),
+            )
+            await ctx.send(embed=embed)
+        else:
+            embed = discord.Embed(
+                description=f"Could not find a tag with the name `{name}`.",
+                color=discord.Color.brand_red(),
+            )
+            await ctx.send(embed=embed)
+
+    async def peek_tag(self, ctx, tags, name):
+        """Peek at the content of an existing tag in the tags dictionary.
+
+        Parameters:
+        - ctx (discord.ext.commands.Context): The context of the command.
+        - tags (dict): The current tags dictionary.
+        - name (str): The name of the tag to peek at.
+        """
+        if not name:
+            await ctx.send("Please provide the name of the tag to peek at.")
+            return
+
+        if name in tags:
+            embed = discord.Embed(
+                title=f"Content of tag `{name}`:",
+                description=f"`{tags[name]}`",
+                color=discord.Color.blurple(),
+            )
+            await ctx.send(embed=embed)
+        else:
+            embed = discord.Embed(
+                description=f"Could not find a tag with the name `{name}`.",
+                color=discord.Color.brand_red(),
+            )
+            await ctx.send(embed=embed)
+
+    async def list_tags(self, ctx, tags):
+        """List all available tags from the tags dictionary.
+
+        Parameters:
+        - ctx (discord.ext.commands.Context): The context of the command.
+        - tags (dict): The current tags dictionary.
+        """
+        if not tags:  # Check if there are no tags in the dictionary
+            embed = discord.Embed(
+                title="Taglist is empty.",
+                description="There are no tags available.",
+                color=discord.Color.yellow(),
+            )
+            await ctx.send(embed=embed)
+            return
+
+        embed = discord.Embed(
+            title="Available tags:", color=discord.Color.blurple()
+        )
+        for tag_name in tags:
+            command = f'`~tagsend "{tag_name}"`'
+            embed.add_field(name=tag_name, value=f"{command}", inline=False)
 
         await ctx.send(embed=embed)
 
