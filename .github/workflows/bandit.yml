@@ -29,4 +29,4 @@ jobs:
       
       - name: Run Bandit
         run: |
-          bandit -r . 
+          bandit -r . -ll
