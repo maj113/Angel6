@@ -93,6 +93,19 @@ class System(commands.Cog):
             option (str): The action to perform on the cog (reload, add, stop, status).
             cog_name (str, optional): The name of the cog to perform the action on.
         """
+        if option == "status":
+            cogs_status = "\n".join(
+                f"{cog[:-3]:<15} {'✅' if f'cogs.{cog[:-3]}' in self.bot.extensions else '❌'}"
+                for cog in listdir("cogs") if cog.endswith(".py")
+            )
+            embed = discord.Embed(
+                title="Cog Status",
+                description=f"```\n{cogs_status}\n```",
+                color=discord.Color.blurple(),
+            )
+            await ctx.reply(embed=embed)
+            return
+
         try:
             # will need to make this work with more cogs once i get that working
             self.bot.reload_extension("cogs.music")
