@@ -80,7 +80,7 @@ class System(commands.Cog):
     @commands.command()
     @commands.has_permissions(ban_members=True)
     async def cog(self, ctx, option: str = None, cog_name: str = None):
-        """"Performs actions on a cog or shows cog status.
+        """Performs actions on a cog or shows cog status.
 
         Available options:
         - reload: Reloads the specified cog.
