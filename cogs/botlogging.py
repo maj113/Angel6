@@ -20,7 +20,7 @@ class Logging(commands.Cog):
         - error (Exception): The error that occurred.
 
         """
-        if isinstance(self, error, commands.MissingPermissions):
+        if isinstance(error, commands.MissingPermissions):
             # Handle MissingPermissions error
             embed = discord.Embed(
                 title="Permission Error",
