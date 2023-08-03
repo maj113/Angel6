@@ -106,6 +106,22 @@ class System(commands.Cog):
             await ctx.reply(embed=embed)
             return
 
+        if option not in ["reload", "add", "stop", "status"]:
+            embed = discord.Embed(
+                title="Invalid Option",
+                description="Please provide a valid option (reload, add, stop, status).",
+                color=discord.Color.brand_red(),
+            )
+            return
+
+        if not cog_name:
+            embed = discord.Embed(
+                title="Cog Name Missing",
+                description="Please provide the name of the cog.",
+                color=discord.Color.brand_red(),
+            )
+            return
+
         try:
             # will need to make this work with more cogs once i get that working
             self.bot.reload_extension("cogs.music")
