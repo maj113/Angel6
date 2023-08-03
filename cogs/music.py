@@ -50,7 +50,7 @@ class VoiceError(Exception):
 class YTDLError(Exception):
     """Exception raised for errors related to YouTube-DL operations.
 
-    This exception is used to handle errors specifically related to YouTube-DL operations in the bot.
+    This exception is used to handle errors specifically related to YT-DLP operations in the bot.
     Examples include errors during YouTube-DL source creation,
     video extraction, or download processes.
     """
@@ -269,9 +269,7 @@ class VoiceState:
                 # reasons.
                 try:
                     async with asyncio.timeout(180):  # 3 minutes
-                        self.current = (
-                            await self.songs.get()
-                        )  # NOTICE: this must not be called when looping is enabled
+                        self.current = self.songs.get() # NOTICE: this must not be called when looping is enabled
                 except asyncio.TimeoutError:
                     await self.stop()
                     self.exists = False
