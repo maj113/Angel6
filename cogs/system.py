@@ -112,6 +112,7 @@ class System(commands.Cog):
                 description="Please provide a valid option (reload, add, stop, status).",
                 color=discord.Color.brand_red(),
             )
+            await ctx.reply(embed=embed)
             return
 
         if not cog_name:
@@ -120,6 +121,7 @@ class System(commands.Cog):
                 description="Please provide the name of the cog.",
                 color=discord.Color.brand_red(),
             )
+            await ctx.reply(embed=embed)
             return
 
         cog_path = f"cogs/{cog_name}"
