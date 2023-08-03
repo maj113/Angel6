@@ -79,7 +79,7 @@ class System(commands.Cog):
 
     @commands.command()
     @commands.has_permissions(ban_members=True)
-    async def reload(self, ctx):
+    async def cog(self, ctx, option: str = None, cog_name: str = None):
         """Reloads the Bot cog.
 
         This command reloads the "cogs.music" extension, allowing for updates to take effect.
