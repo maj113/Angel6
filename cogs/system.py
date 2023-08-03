@@ -84,7 +84,7 @@ class System(commands.Cog):
 
         Available options:
         - reload: Reloads the specified cog.
-        - add: Loads and adds the specified cog.
+        - start: Loads and adds the specified cog.
         - stop: Unloads and stops the specified cog.
         - status: Displays the status of all cogs (enabled or not).
 
@@ -93,6 +93,7 @@ class System(commands.Cog):
             option (str): The action to perform on the cog (reload, add, stop, status).
             cog_name (str, optional): The name of the cog to perform the action on.
         """
+        embed = discord.Embed()
         if option == "status":
             cogs_status = "\n".join(
                 f"{cog[:-3]:<15} {'✅' if f'cogs.{cog[:-3]}' in self.bot.extensions else '❌'}"
