@@ -122,6 +122,22 @@ class System(commands.Cog):
             )
             return
 
+        cog_path = f"cogs/{cog_name}"
+        if option == "reload":
+            if path.exists(f"{cog_path}.py"):
+                self.bot.reload_extension(f"cogs.{cog_name}")
+                embed = discord.Embed(
+                    title="Cog Reloaded",
+                    description=f"The cog `{cog_name}` has been successfully reloaded!",
+                    color=discord.Color.brand_green(),
+                )
+            else:
+                embed = discord.Embed(
+                    title="Cog Not Found",
+                    description=f"The cog `{cog_name}` does not exist.",
+                    color=discord.Color.brand_red(),
+                )
+
         try:
             # will need to make this work with more cogs once i get that working
             self.bot.reload_extension("cogs.music")
