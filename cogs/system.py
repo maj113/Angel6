@@ -138,12 +138,21 @@ class System(commands.Cog):
                     color=discord.Color.brand_red(),
                 )
 
-        try:
-            # will need to make this work with more cogs once i get that working
-            self.bot.reload_extension("cogs.music")
-            await ctx.reply("Cogs successfully reloaded!")
-        except commands.ExtensionError as err:
-            await ctx.reply(f"An error occurred while reloading the cog: `{err}`")
+        elif option == "start":
+            try:
+                self.bot.load_extension(f"cogs.{cog_name}")
+                embed = discord.Embed(
+                    title="Cog Added",
+                    description=f"The cog `{cog_name}` has been successfully added!",
+                    color=discord.Color.brand_green(),
+                )
+            except commands.ExtensionError as err:
+                embed = discord.Embed(
+                    title="Cog Load Error",
+                    description=f"An error occurred while loading the cog: `{err}`",
+                    color=discord.Color.brand_red(),
+                )
+
 
     @commands.command(aliases=["reboot"])
     @commands.has_permissions(ban_members=True)
