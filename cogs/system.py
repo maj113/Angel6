@@ -1,6 +1,6 @@
 from sys import version, argv, executable
 from datetime import datetime
-from os import getpid, execv
+from os import getpid, execv, listdir, path
 
 import discord
 from discord.ext import commands
@@ -168,6 +168,7 @@ class System(commands.Cog):
                     color=discord.Color.brand_red(),
                 )
 
+        await ctx.reply(embed=embed)
 
     @commands.command(aliases=["reboot"])
     @commands.has_permissions(ban_members=True)
