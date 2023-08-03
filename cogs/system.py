@@ -153,6 +153,21 @@ class System(commands.Cog):
                     color=discord.Color.brand_red(),
                 )
 
+        elif option == "stop":
+            if f"cogs.{cog_name}" in self.bot.extensions:
+                self.bot.unload_extension(f"cogs.{cog_name}")
+                embed = discord.Embed(
+                    title="Cog Unloaded",
+                    description=f"The cog `{cog_name}` has been successfully unloaded!",
+                    color=discord.Color.brand_green(),
+                )
+            else:
+                embed = discord.Embed(
+                    title="Cog Not Found",
+                    description=f"The cog `{cog_name}` is not currently loaded.",
+                    color=discord.Color.brand_red(),
+                )
+
 
     @commands.command(aliases=["reboot"])
     @commands.has_permissions(ban_members=True)
