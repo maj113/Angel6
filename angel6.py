@@ -247,7 +247,7 @@ async def asbotmain():
         return
 
     while True:
-        message = await ainput(f"[{str(channel1).strip()}] Message: ")
+        message = await ainput(f"[{str(channel1)}] Message: ")
         if message == "show":
             clsscr()
             await helperasbot()
