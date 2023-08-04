@@ -185,11 +185,9 @@ async def helperasbot():
 
 @bot.command(pass_context=True)
 @commands.has_permissions(ban_members=True)
-async def asbot(ctx, *, arg=None):
+async def asbot(ctx, arg=None):
     """start or stop the asbot function"""
-    if arg not in ("start", "stop", None):
-        await ctx.reply("Invalid argument. Use `start` or `stop`.")
-    elif arg == "stop" and asbotmain.is_running():
+    if arg == "stop" and asbotmain.is_running():
         await ctx.reply("Stopped task **`asbotmain()`** successfully")
         clsscr()
         print(f"Warning: asbotmain() was stopped externally by {ctx.author} !!!")
@@ -206,6 +204,8 @@ async def asbot(ctx, *, arg=None):
                 color=discord.Color.blurple(),
             )
         )
+    elif arg not in ("start", "stop"):
+        await ctx.reply("Invalid argument. Use `start` or `stop`.")
     else:
         await ctx.reply(
             embed=discord.Embed(
