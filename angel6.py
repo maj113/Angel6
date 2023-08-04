@@ -135,7 +135,7 @@ async def on_ready():
 # NextCord doesn't support recursive
 bot.load_extension("cogs", recursive=True)
 
-
+# TODO: Handle more cases where message isn't only text
 @bot.event
 async def on_message(message):
     """
@@ -147,20 +147,14 @@ async def on_message(message):
     Parameters:
     - message: The received message object.
     """
-    if message.author.id != bot.user.id:
-        if message.attachments:
-            attachments = "\n".join(a.url for a in message.attachments)
-            msgcontent = (
-                f"{message.guild}/{message.channel}/{message.author.name}> "
-                f"{message.content}\n{attachments}"
-            )
-        else:
-            msgcontent = (
-                f"{message.guild}/{message.channel}/{message.author.name}> "
-                f"{message.content}"
-            )
-        print(msgcontent)
-        await bot.process_commands(message)
+    await bot.process_commands(message)
+    if message.author.id != bot.user.id and message.content:
+        attachments_info = "\n".join(a.url for a in message.attachments)
+        author_info = f"{message.guild}/{message.channel}/{message.author.name}"
+        msg_content = f"{author_info}> {message.content}"
+        if attachments_info:
+            msg_content += f"\n{attachments_info}"
+        print(msg_content)
 
 
 def clsscr():
@@ -185,11 +179,9 @@ async def helperasbot():
 
 @bot.command(pass_context=True)
 @commands.has_permissions(ban_members=True)
-async def asbot(ctx, *, arg=None):
+async def asbot(ctx, arg=None):
     """start or stop the asbot function"""
-    if arg not in ("start", "stop", None):
-        await ctx.reply("Invalid argument. Use `start` or `stop`.")
-    elif arg == "stop" and asbotmain.is_running():
+    if arg == "stop" and asbotmain.is_running():
         await ctx.reply("Stopped task **`asbotmain()`** successfully")
         clsscr()
         print(f"Warning: asbotmain() was stopped externally by {ctx.author} !!!")
@@ -206,6 +198,8 @@ async def asbot(ctx, *, arg=None):
                 color=discord.Color.blurple(),
             )
         )
+    elif arg not in ("start", "stop"):
+        await ctx.reply("Invalid argument. Use `start` or `stop`.")
     else:
         await ctx.reply(
             embed=discord.Embed(
@@ -247,7 +241,7 @@ async def asbotmain():
         return
 
     while True:
-        message = await ainput(f"[{str(channel1).strip()}] Message: ")
+        message = await ainput(f"[{str(channel1)}] Message: ")
         if message == "show":
             clsscr()
             await helperasbot()
