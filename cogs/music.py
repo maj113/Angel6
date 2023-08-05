@@ -15,21 +15,22 @@ if os.name != "nt":
     logging.warning("Using uvloop")
 
 utils.bug_reports_message = lambda: ""
-DebuggingOpts = {
+debugging_opts = {
     "ytdllogging": False,
     "ytdlerringore": False,
     "ytdlquiet": True,
-    "LogLevel": logging.WARN,
+    "log_level": logging.WARN,
     "ffmpeg_ll": "quiet",
 }
+
 if argv[-1] == "debug" or argv[-1] == "d":
-    DebuggingOpts["ytdllogging"] = True
-    DebuggingOpts["ytdlquiet"] = False
-    DebuggingOpts["LogLevel"] = logging.INFO
-    DebuggingOpts["ffmpeg_ll"] = "debug"
+    debugging_opts["ytdllogging"] = True
+    debugging_opts["ytdlquiet"] = False
+    debugging_opts["log_level"] = logging.INFO
+    debugging_opts["ffmpeg_ll"] = "debug"
 
 logging.basicConfig(
-    level=DebuggingOpts["LogLevel"],
+    level=debugging_opts["log_level"],
     format="%(asctime)s [%(levelname)s]: %(message)s",
     handlers=[
         logging.FileHandler("log.txt", mode="w", encoding="utf-8"),
@@ -66,9 +67,9 @@ class YTDLSource(discord.FFmpegOpusAudio):
         "format": "bestaudio[ext=opus]/bestaudio",
         "noplaylist": True,
         "nocheckcertificate": True,
-        "ignoreerrors": DebuggingOpts["ytdlerringore"],
-        "logtostderr": DebuggingOpts["ytdllogging"],
-        "quiet": DebuggingOpts["ytdlquiet"],
+        "ignoreerrors": debugging_opts["ytdlerringore"],
+        "logtostderr": debugging_opts["ytdllogging"],
+        "quiet": debugging_opts["ytdlquiet"],
         "no_warnings": False,
         "default_search": "ytsearch",
         # Since we only process the json there's no need for dash or hls and we don't need the subs either
@@ -88,7 +89,7 @@ class YTDLSource(discord.FFmpegOpusAudio):
     FFMPEG_OPTIONS = {
         "before_options": "-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 15",
         "options": (
-            f"-loglevel {DebuggingOpts['ffmpeg_ll']} -vn -c:a libopus -ar 48000 -b:a"
+            f"-loglevel {debugging_opts['ffmpeg_ll']} -vn -c:a libopus -ar 48000 -b:a"
             " 512k"
         ),
     }
