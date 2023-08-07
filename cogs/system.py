@@ -13,6 +13,7 @@ bot_uptime = datetime.now()
 mem_info = psutil.Process(getpid())
 total_mem = psutil.virtual_memory().total / float(2**20)
 mem = mem_info.memory_info()[0] / float(2**20)
+# pylint: disable=E1101
 discord_version = discord.__version__
 WRAPPER_USED = discord.__title__.capitalize()
 
