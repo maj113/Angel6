@@ -269,6 +269,7 @@ class VoiceState:
                 # the player will disconnect due to performance
                 # reasons.
                 try:
+                    # pylint: disable=E1101
                     async with asyncio.timeout(180):  # 3 minutes
                         self.current = self.songs.get() # NOTICE: this must not be called when looping is enabled
                 except asyncio.TimeoutError:
