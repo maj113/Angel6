@@ -125,6 +125,15 @@ class System(commands.Cog):
             await ctx.reply(embed=embed)
             return
 
+        if cog_name == "system" and option is not "reload":
+            error_embed = discord.Embed(
+                title="Cog Blacklisted",
+                description="The 'system' cog is blacklisted since it provides the 'cog' command.",
+                color=discord.Color.brand_red(),
+            )
+            await ctx.reply(embed=error_embed)
+            return
+
         cog_path = f"cogs/{cog_name}"
         if option == "reload":
             if path.exists(f"{cog_path}.py"):
