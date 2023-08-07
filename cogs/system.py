@@ -125,7 +125,7 @@ class System(commands.Cog):
             await ctx.reply(embed=embed)
             return
 
-        if cog_name == "system" and option is not "reload":
+        if cog_name == "system" and option != "reload":
             error_embed = discord.Embed(
                 title="Cog Blacklisted",
                 description="The 'system' cog is blacklisted since it provides the 'cog' command.",
