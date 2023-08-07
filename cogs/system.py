@@ -94,7 +94,7 @@ class System(commands.Cog):
             cog_name (str, optional): The name of the cog to perform the action on.
         """
         embed = discord.Embed()
-        if option == "status":
+        if option in ["status", None]:
             cogs_status = "\n".join(
                 f"{cog[:-3]:<15} {'✅' if f'cogs.{cog[:-3]}' in self.bot.extensions else '❌'}"
                 for cog in listdir("cogs") if cog.endswith(".py")
