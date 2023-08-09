@@ -99,20 +99,14 @@ async def on_ready():
 
     # Add information about the logging channel
     log_channel = bot.get_channel(int(LOG_CHAN_ID))
+    jl_channel = bot.get_channel(int(GEN_CHAN_ID))
+    gen_channel = bot.get_channel(int(JL_CHAN_ID))
     embed.add_field(
-        name=f"Logging Channel: {log_channel.mention}", value="", inline=False
-    )
-
-    # Add information about the join/leave channel
-    jl_channel = bot.get_channel(int(JL_CHAN_ID))
-    embed.add_field(
-        name=f"Join/Leave Channel: {jl_channel.mention}", value="", inline=False
-    )
-
-    # Add information about the general channel
-    gen_channel = bot.get_channel(int(GEN_CHAN_ID))
-    embed.add_field(
-        name=f"General Channel: {gen_channel.mention}", value="", inline=False
+        name="",
+        value=f"**Logging Channel:** {log_channel.mention}\n"
+            f"**Join/Leave Channel:** {jl_channel.mention}\n"
+            f"**General Channel:** {gen_channel.mention}",
+        inline=False
     )
 
     # Add information about the API latency
