@@ -14,7 +14,7 @@ TOKEN = os.getenv("DISCORD_TOKEN")
 LOG_CHAN_ID = os.getenv("LOGGING_CHANNEL_ID")
 JL_CHAN_ID = os.getenv("JOIN_LEAVE_CHANNEL_ID")
 GEN_CHAN_ID = os.getenv("GENERAL_CHANNEL_ID")
-BOT_VER = "**2.4.0-Rewrite** <https://github.com/maj113/Angel6/releases/latest>"
+BOT_VER = "**2.5.1** <https://github.com/maj113/Angel6/releases/latest>"
 
 intents = discord.Intents.all()
 bot = commands.Bot(
@@ -97,22 +97,16 @@ async def on_ready():
     # Add information about the bot version
     embed.add_field(name="Bot Version:", value="Angel$IX " + BOT_VER, inline=False)
 
-    # Add information about the logging channel
+    # Add information about the channels
     log_channel = bot.get_channel(int(LOG_CHAN_ID))
+    jl_channel = bot.get_channel(int(GEN_CHAN_ID))
+    gen_channel = bot.get_channel(int(JL_CHAN_ID))
     embed.add_field(
-        name=f"Logging Channel: {log_channel.mention}", value="", inline=False
-    )
-
-    # Add information about the join/leave channel
-    jl_channel = bot.get_channel(int(JL_CHAN_ID))
-    embed.add_field(
-        name=f"Join/Leave Channel: {jl_channel.mention}", value="", inline=False
-    )
-
-    # Add information about the general channel
-    gen_channel = bot.get_channel(int(GEN_CHAN_ID))
-    embed.add_field(
-        name=f"General Channel: {gen_channel.mention}", value="", inline=False
+        name="",
+        value=f"**Logging Channel:** {log_channel.mention}\n"
+            f"**Join/Leave Channel:** {jl_channel.mention}\n"
+            f"**General Channel:** {gen_channel.mention}",
+        inline=False
     )
 
     # Add information about the API latency

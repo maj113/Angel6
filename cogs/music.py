@@ -15,21 +15,22 @@ if os.name != "nt":
     logging.warning("Using uvloop")
 
 utils.bug_reports_message = lambda: ""
-DebuggingOpts = {
+debugging_opts = {
     "ytdllogging": False,
     "ytdlerringore": False,
     "ytdlquiet": True,
-    "LogLevel": logging.WARN,
+    "log_level": logging.WARN,
     "ffmpeg_ll": "quiet",
 }
+
 if argv[-1] == "debug" or argv[-1] == "d":
-    DebuggingOpts["ytdllogging"] = True
-    DebuggingOpts["ytdlquiet"] = False
-    DebuggingOpts["LogLevel"] = logging.INFO
-    DebuggingOpts["ffmpeg_ll"] = "debug"
+    debugging_opts["ytdllogging"] = True
+    debugging_opts["ytdlquiet"] = False
+    debugging_opts["log_level"] = logging.INFO
+    debugging_opts["ffmpeg_ll"] = "debug"
 
 logging.basicConfig(
-    level=DebuggingOpts["LogLevel"],
+    level=debugging_opts["log_level"],
     format="%(asctime)s [%(levelname)s]: %(message)s",
     handlers=[
         logging.FileHandler("log.txt", mode="w", encoding="utf-8"),
@@ -66,12 +67,12 @@ class YTDLSource(discord.FFmpegOpusAudio):
         "format": "bestaudio[ext=opus]/bestaudio",
         "noplaylist": True,
         "nocheckcertificate": True,
-        "ignoreerrors": DebuggingOpts["ytdlerringore"],
-        "logtostderr": DebuggingOpts["ytdllogging"],
-        "quiet": DebuggingOpts["ytdlquiet"],
+        "ignoreerrors": debugging_opts["ytdlerringore"],
+        "logtostderr": debugging_opts["ytdllogging"],
+        "quiet": debugging_opts["ytdlquiet"],
         "no_warnings": False,
         "default_search": "ytsearch",
-        # Since we only process the json there's no need for dash or hls and we don't need the subs either
+        # Since we only process the json there's no need for dash, hls or subs
         # Using "android_creator" seems to be the fastest one while still allowing all formats
         # Since we don't handle downloading we dont need configs, webpage data or JS
         # Comments aren't required, don't processs
@@ -88,7 +89,7 @@ class YTDLSource(discord.FFmpegOpusAudio):
     FFMPEG_OPTIONS = {
         "before_options": "-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 15",
         "options": (
-            f"-loglevel {DebuggingOpts['ffmpeg_ll']} -vn -c:a libopus -ar 48000 -b:a"
+            f"-loglevel {debugging_opts['ffmpeg_ll']} -vn -c:a libopus -ar 48000 -b:a"
             " 512k"
         ),
     }
@@ -268,8 +269,10 @@ class VoiceState:
                 # the player will disconnect due to performance
                 # reasons.
                 try:
+                    # pylint: disable=E1101
                     async with asyncio.timeout(180):  # 3 minutes
-                        self.current = self.songs.get() # NOTICE: this must not be called when looping is enabled
+                        # NOTICE: this must not be called when looping is enabled
+                        self.current = self.songs.get()
                 except asyncio.TimeoutError:
                     await self.stop()
                     self.exists = False
@@ -455,7 +458,7 @@ class Music(commands.Cog):
             or ctx.author.guild_permissions.manage_messages
         ):
             await ctx.message.add_reaction("⏭")
-            # Check if loop is enabled and temporarily disable it to allow the skip command to work
+            # Temporarily disable loop if enabled
             await Music.checkloop(self, ctx)
 
         elif voter.id not in ctx.voice_state.skip_votes:
@@ -557,9 +560,7 @@ class Music(commands.Cog):
             await ctx.reply(f"An error occurred while processing this request: {err}")
         else:
             if ctx.voice_state.voice and not ctx.guild.voice_client:
-                #  okay so comment time; this is how the bot will be set when its force disconnected (e.g. from discord) which leaves voice_state.voice in an unclean state
-                #  that not only messes with the fact that the bot still thinks it's connected, but also the playback is still in progress
-                #  we have to make sure playback is stopped and set voice_state.voice to None which should in theory fix the problem
+                # FIXME: improve force-disconnect handling
                 await ctx.invoke(self._stop)
                 ctx.voice_state.voice = None
                 logging.warning(
