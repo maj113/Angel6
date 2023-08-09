@@ -97,7 +97,7 @@ async def on_ready():
     # Add information about the bot version
     embed.add_field(name="Bot Version:", value="Angel$IX " + BOT_VER, inline=False)
 
-    # Add information about the logging channel
+    # Add information about the channels
     log_channel = bot.get_channel(int(LOG_CHAN_ID))
     jl_channel = bot.get_channel(int(GEN_CHAN_ID))
     gen_channel = bot.get_channel(int(JL_CHAN_ID))
