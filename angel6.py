@@ -16,6 +16,7 @@ JL_CHAN_ID = os.getenv("JOIN_LEAVE_CHANNEL_ID")
 GEN_CHAN_ID = os.getenv("GENERAL_CHANNEL_ID")
 BOT_VER = "**2.5.1** <https://github.com/maj113/Angel6/releases/latest>"
 
+class CustomHelpCommand(commands.HelpCommand):
 intents = discord.Intents.all()
 bot = commands.Bot(
     command_prefix=commands.when_mentioned_or("~"),
