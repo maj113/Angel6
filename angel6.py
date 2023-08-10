@@ -57,7 +57,7 @@ class CustomHelpCommand(commands.HelpCommand):
         if commands_list:
             embed = discord.Embed(
                 title=f"{cog.qualified_name} Help", 
-                description=cog.description, 
+                description=cog.description.split('\n')[0], 
                 color=discord.Color.blurple()
             )
             embed.add_field(name="Commands:", value="\n".join(commands_list), inline=False)
