@@ -5,6 +5,7 @@ from discord.ext import commands
 
 
 class Utility(commands.Cog):
+    """A class representing a utility cog with various utility commands."""
     def __init__(self, bot):
         self.bot = bot
 
