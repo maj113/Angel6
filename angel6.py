@@ -55,6 +55,23 @@ class CustomHelpCommand(commands.HelpCommand):
             embed.add_field(name="Commands:", value="\n".join(commands_list), inline=False)
             await self.get_destination().send(embed=embed)
 
+    async def send_command_help(self, command):
+        # Display help for a specific command
+        aliases = ", ".join([f"`{alias}`" for alias in command.aliases])
+        usage = f"{self.context.prefix}{command.qualified_name} {command.signature}"
+
+        description = f"```\n{command.help}\n```"
+        if aliases:
+            description += f"\n**Aliases:** {aliases}"
+        description += f"\n**Usage:** {usage}"
+
+        embed = discord.Embed(
+            title=f"{command.qualified_name} Help",
+            description=description,
+            color=discord.Color.blurple()
+        )
+        await self.get_destination().send(embed=embed)
+
 intents = discord.Intents.all()
 bot = commands.Bot(
     command_prefix=commands.when_mentioned_or("~"),
