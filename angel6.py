@@ -19,6 +19,7 @@ BOT_VER = "**2.5.1** <https://github.com/maj113/Angel6/releases/latest>"
 class CustomHelpCommand(commands.HelpCommand):
     """A custom help command for displaying help information."""
     async def send_bot_help(self, mapping):
+        """Send general bot help with information about cogs and commands."""
         # Display general bot help
         embed = discord.Embed(title="Bot Help", color=discord.Color.blurple())
 
