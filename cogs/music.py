@@ -548,11 +548,11 @@ class Music(commands.Cog):
     @commands.command(name="play", aliases=["p"])
     async def _play(self, ctx: commands.Context, *, search: str):
         """Plays a song.
-        If there are songs in the queue, this will be queued until the
-        other songs finished playing.
-        This command automatically searches from various sites if no URL is provided.
-        A list of these sites can be found here:
-        https://github.com/yt-dlp/yt-dlp/blob/master/supportedsites.md
+        
+        If there are songs in the queue, this will be queued until 
+        the other songs finish playing.
+        Automatically searches from various sites if no URL is provided.
+        Supported sites list: https://github.com/yt-dlp/yt-dlp/blob/master/supportedsites.md
         """
         try:
             source_task = asyncio.create_task(YTDLSource.create_source(ctx, search))
