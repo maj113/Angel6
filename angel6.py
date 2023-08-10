@@ -59,6 +59,7 @@ class CustomHelpCommand(commands.HelpCommand):
             await self.get_destination().send(embed=embed)
 
     async def send_command_help(self, command):
+        """Send help for a specific command, displaying its description, aliases, and usage."""
         # Display help for a specific command
         aliases = ", ".join([f"`{alias}`" for alias in command.aliases])
         usage = f"{self.context.prefix}{command.qualified_name} {command.signature}"
