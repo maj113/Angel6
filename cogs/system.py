@@ -1,6 +1,6 @@
 from sys import version, argv, executable
 from datetime import datetime
-from os import getpid, execv
+from os import getpid, execv, listdir, path
 
 import discord
 from discord.ext import commands
@@ -81,20 +81,108 @@ class System(commands.Cog):
 
     @commands.command()
     @commands.has_permissions(ban_members=True)
-    async def reload(self, ctx):
-        """Reloads the Bot cog.
+    async def cog(self, ctx, option: str = None, cog_name: str = None):
+        """Performs actions on a cog or shows cog status.
 
-        This command reloads the "cogs.music" extension, allowing for updates to take effect.
+        Available options:
+        - reload: Reloads the specified cog.
+        - start: Loads and adds the specified cog.
+        - stop: Unloads and stops the specified cog.
+        - status: Displays the status of all cogs (enabled or not).
 
         Args:
             ctx (discord.ext.commands.Context): The command context.
+            option (str): The action to perform on the cog (reload, add, stop, status).
+            cog_name (str, optional): The name of the cog to perform the action on.
         """
-        try:
-            # will need to make this work with more cogs once i get that working
-            self.bot.reload_extension("cogs.music")
-            await ctx.reply("Cogs successfully reloaded!")
-        except commands.ExtensionError as err:
-            await ctx.reply(f"An error occurred while reloading the cog: `{err}`")
+        embed = discord.Embed()
+        if option in ["status", None]:
+            cogs_status = "\n".join(
+                f"{cog[:-3]:<15} {'✅' if f'cogs.{cog[:-3]}' in self.bot.extensions else '❌'}"
+                for cog in listdir("cogs") if cog.endswith(".py")
+            )
+            embed = discord.Embed(
+                title="Cog Status",
+                description=f"```\n{cogs_status}\n```",
+                color=discord.Color.blurple(),
+            )
+            await ctx.reply(embed=embed)
+            return
+
+        if option not in ["reload", "add", "stop", "status"]:
+            embed = discord.Embed(
+                title="Invalid Option",
+                description="Please provide a valid option (reload, add, stop, status).",
+                color=discord.Color.brand_red(),
+            )
+            await ctx.reply(embed=embed)
+            return
+
+        if not cog_name:
+            embed = discord.Embed(
+                title="Cog Name Missing",
+                description="Please provide the name of the cog.",
+                color=discord.Color.brand_red(),
+            )
+            await ctx.reply(embed=embed)
+            return
+
+        if cog_name == "system" and option != "reload":
+            error_embed = discord.Embed(
+                title="Cog Blacklisted",
+                description="The 'system' cog is blacklisted since it provides the 'cog' command.",
+                color=discord.Color.brand_red(),
+            )
+            await ctx.reply(embed=error_embed)
+            return
+
+        cog_path = f"cogs/{cog_name}"
+        if option == "reload":
+            if path.exists(f"{cog_path}.py"):
+                self.bot.reload_extension(f"cogs.{cog_name}")
+                embed = discord.Embed(
+                    title="Cog Reloaded",
+                    description=f"The cog `{cog_name}` has been successfully reloaded!",
+                    color=discord.Color.brand_green(),
+                )
+            else:
+                embed = discord.Embed(
+                    title="Cog Not Found",
+                    description=f"The cog `{cog_name}` does not exist.",
+                    color=discord.Color.brand_red(),
+                )
+
+        elif option == "start":
+            try:
+                self.bot.load_extension(f"cogs.{cog_name}")
+                embed = discord.Embed(
+                    title="Cog Added",
+                    description=f"The cog `{cog_name}` has been successfully added!",
+                    color=discord.Color.brand_green(),
+                )
+            except commands.ExtensionError as err:
+                embed = discord.Embed(
+                    title="Cog Load Error",
+                    description=f"An error occurred while loading the cog: `{err}`",
+                    color=discord.Color.brand_red(),
+                )
+
+        elif option == "stop":
+            if f"cogs.{cog_name}" in self.bot.extensions:
+                self.bot.unload_extension(f"cogs.{cog_name}")
+                embed = discord.Embed(
+                    title="Cog Unloaded",
+                    description=f"The cog `{cog_name}` has been successfully unloaded!",
+                    color=discord.Color.brand_green(),
+                )
+            else:
+                embed = discord.Embed(
+                    title="Cog Not Found",
+                    description=f"The cog `{cog_name}` is not currently loaded.",
+                    color=discord.Color.brand_red(),
+                )
+
+        await ctx.reply(embed=embed)
 
     @commands.command(aliases=["reboot"])
     @commands.has_permissions(ban_members=True)
