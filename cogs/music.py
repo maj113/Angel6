@@ -307,6 +307,7 @@ class VoiceState:
 
 
 class Music(commands.Cog):
+    """A class representing a music cog with various music commands."""
     def __init__(self, bot: commands.Bot):
         self.bot = bot
         self.voice_states = {}
