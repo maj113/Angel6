@@ -307,7 +307,13 @@ class VoiceState:
 
 
 class Music(commands.Cog):
-    """A class representing a music cog with various music commands."""
+    """
+    A class representing a Discord bot cog focused on music functionality.
+
+    This cog provides various music commands to manage and control playback in a voice channel.
+    It includes features such as joining a voice channel, playing songs, managing the queue,
+    controlling playback (play, pause, resume, stop), voting to skip songs, and more.
+    """
     def __init__(self, bot: commands.Bot):
         self.bot = bot
         self.voice_states = {}
