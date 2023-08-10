@@ -17,6 +17,30 @@ GEN_CHAN_ID = os.getenv("GENERAL_CHANNEL_ID")
 BOT_VER = "**2.5.1** <https://github.com/maj113/Angel6/releases/latest>"
 
 class CustomHelpCommand(commands.HelpCommand):
+    async def send_bot_help(self, mapping):
+        # Display general bot help
+        embed = discord.Embed(title="Bot Help", color=discord.Color.blurple())
+
+        # Loop through cogs in the order they appear in bot.cogs
+        for cog_name, cog in self.context.bot.cogs.items():
+            commands_list = [f"`{cmd.name}`" for cmd in cog.get_commands()]
+            if commands_list:
+                cog_commands = " ".join(commands_list)
+                embed.add_field(name=f"{cog_name}:", value=f"\n- {cog_commands}", inline=False)
+
+        # Check for commands not in any cog
+        commands_not_in_cog = (
+            [f"`{cmd.name}`" for cmd in self.context.bot.commands if not cmd.cog_name]
+        )
+        if commands_not_in_cog:
+            embed.add_field(
+                name="Other Commands:", 
+                value=f"\n- {' '.join(commands_not_in_cog)}", 
+                inline=False
+            )
+
+        await self.get_destination().send(embed=embed)
+
 intents = discord.Intents.all()
 bot = commands.Bot(
     command_prefix=commands.when_mentioned_or("~"),
