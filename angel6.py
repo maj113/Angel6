@@ -44,6 +44,7 @@ class CustomHelpCommand(commands.HelpCommand):
         await self.get_destination().send(embed=embed)
 
     async def send_cog_help(self, cog):
+        """Send help for a specific cog, displaying its description and commands."""
         # Display help for a specific cog
         commands_list =( 
             [f"`{cmd.name}` - " + cmd.help.split('\n')[0] for cmd in cog.get_commands()]
