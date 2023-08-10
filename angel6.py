@@ -16,11 +16,77 @@ JL_CHAN_ID = os.getenv("JOIN_LEAVE_CHANNEL_ID")
 GEN_CHAN_ID = os.getenv("GENERAL_CHANNEL_ID")
 BOT_VER = "**2.5.1** <https://github.com/maj113/Angel6/releases/latest>"
 
+class CustomHelpCommand(commands.HelpCommand):
+    """A custom help command for displaying help information."""
+    async def send_bot_help(self, mapping):
+        """Send general bot help with information about cogs and commands."""
+        # Display general bot help
+        embed = discord.Embed(title="Bot Help", color=discord.Color.blurple())
+
+        # Loop through cogs in the order they appear in bot.cogs
+        for cog_name, cog in self.context.bot.cogs.items():
+            commands_list = [f"`{cmd.name}`" for cmd in cog.get_commands()]
+            if commands_list:
+                cog_commands = " ".join(commands_list)
+                embed.add_field(name=f"{cog_name}:", value=f"\n- {cog_commands}", inline=False)
+
+        # Check for commands not in any cog
+        commands_not_in_cog = (
+            [f"`{cmd.name}`" for cmd in self.context.bot.commands if not cmd.cog_name]
+        )
+        if commands_not_in_cog:
+            embed.add_field(
+                name="Other Commands:", 
+                value=f"\n- {' '.join(commands_not_in_cog)}", 
+                inline=False
+            )
+
+        embed.set_footer(
+            text="Type ~help command for more info on a command.\n"
+                "You can also type ~help category for more info on a category."
+        )
+
+        await self.get_destination().send(embed=embed)
+
+    async def send_cog_help(self, cog):
+        """Send help for a specific cog, displaying its description and commands."""
+        # Display help for a specific cog
+        commands_list =( 
+            [f"`{cmd.name}` - " + cmd.help.split('\n')[0] for cmd in cog.get_commands()]
+        )
+        if commands_list:
+            embed = discord.Embed(
+                title=f"{cog.qualified_name} Help", 
+                description=cog.description, 
+                color=discord.Color.blurple()
+            )
+            embed.add_field(name="Commands:", value="\n".join(commands_list), inline=False)
+            await self.get_destination().send(embed=embed)
+
+    async def send_command_help(self, command):
+        """Send help for a specific command, displaying its description, aliases, and usage."""
+        # Display help for a specific command
+        aliases = ", ".join([f"`{alias}`" for alias in command.aliases])
+        usage = f"{self.context.prefix}{command.qualified_name} {command.signature}"
+
+        description = f"```\n{command.help}\n```"
+        if aliases:
+            description += f"\n**Aliases:** {aliases}"
+        description += f"\n**Usage:** {usage}"
+
+        embed = discord.Embed(
+            title=f"{command.qualified_name} Help",
+            description=description,
+            color=discord.Color.blurple()
+        )
+        await self.get_destination().send(embed=embed)
+
 intents = discord.Intents.all()
 bot = commands.Bot(
     command_prefix=commands.when_mentioned_or("~"),
     activity=discord.Game(name="Greatest bot alive"),
     intents=intents,
+    help_command=CustomHelpCommand(),
 )
 
 

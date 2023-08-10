@@ -5,6 +5,14 @@ from angel6 import LOG_CHAN_ID
 
 
 class Moderation(commands.Cog):
+    """
+    A class representing a moderation cog with various moderation commands.
+
+    This cog provides a set of commands for moderating server activities,
+    including kicking, muting, unmuting, banning, unbanning, warning, message wiping,
+    and managing roles.
+    """
+    
     def __init__(self, bot):
         self.bot = bot
 

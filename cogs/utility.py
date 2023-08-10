@@ -5,6 +5,12 @@ from discord.ext import commands
 
 
 class Utility(commands.Cog):
+    """
+    A class representing a utility cog providing various utility commands.
+
+    This cog includes commands to fetch user information, display server information,
+    retrieve avatar images, show user invite counts, and provide bot credits and support links.
+    """
     def __init__(self, bot):
         self.bot = bot
 

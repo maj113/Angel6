@@ -8,6 +8,7 @@ from discord.ext import commands
 
 
 class Fun(commands.Cog):
+    """A class representing a fun cog with various fun commands."""
     def __init__(self, bot):
         self.bot = bot
 
