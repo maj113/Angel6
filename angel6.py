@@ -41,6 +41,20 @@ class CustomHelpCommand(commands.HelpCommand):
 
         await self.get_destination().send(embed=embed)
 
+    async def send_cog_help(self, cog):
+        # Display help for a specific cog
+        commands_list =( 
+            [f"`{cmd.name}` - " + cmd.help.split('\n')[0] for cmd in cog.get_commands()]
+        )
+        if commands_list:
+            embed = discord.Embed(
+                title=f"{cog.qualified_name} Help", 
+                description=cog.description, 
+                color=discord.Color.blurple()
+            )
+            embed.add_field(name="Commands:", value="\n".join(commands_list), inline=False)
+            await self.get_destination().send(embed=embed)
+
 intents = discord.Intents.all()
 bot = commands.Bot(
     command_prefix=commands.when_mentioned_or("~"),
