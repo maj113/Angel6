@@ -5,6 +5,7 @@ from angel6 import LOG_CHAN_ID
 
 
 class Moderation(commands.Cog):
+    """A class representing a moderation cog with various moderation commands."""
     def __init__(self, bot):
         self.bot = bot
 
