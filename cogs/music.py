@@ -307,6 +307,13 @@ class VoiceState:
 
 
 class Music(commands.Cog):
+    """
+    A class representing a Discord bot cog focused on music functionality.
+
+    This cog provides various music commands to manage and control playback in a voice channel.
+    It includes features such as joining a voice channel, playing songs, managing the queue,
+    controlling playback (play, pause, resume, stop), voting to skip songs, and more.
+    """
     def __init__(self, bot: commands.Bot):
         self.bot = bot
         self.voice_states = {}
@@ -548,11 +555,11 @@ class Music(commands.Cog):
     @commands.command(name="play", aliases=["p"])
     async def _play(self, ctx: commands.Context, *, search: str):
         """Plays a song.
-        If there are songs in the queue, this will be queued until the
-        other songs finished playing.
-        This command automatically searches from various sites if no URL is provided.
-        A list of these sites can be found here:
-        https://github.com/yt-dlp/yt-dlp/blob/master/supportedsites.md
+        
+        If there are songs in the queue, this will be queued until 
+        the other songs finish playing.
+        Automatically searches from various sites if no URL is provided.
+        Supported sites list: https://github.com/yt-dlp/yt-dlp/blob/master/supportedsites.md
         """
         try:
             source_task = asyncio.create_task(YTDLSource.create_source(ctx, search))
