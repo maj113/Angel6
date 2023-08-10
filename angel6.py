@@ -41,6 +41,11 @@ class CustomHelpCommand(commands.HelpCommand):
                 inline=False
             )
 
+        embed.set_footer(
+            text="Type ~help command for more info on a command.\n"
+                "You can also type ~help category for more info on a category."
+        )
+
         await self.get_destination().send(embed=embed)
 
     async def send_cog_help(self, cog):
