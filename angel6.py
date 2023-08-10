@@ -77,6 +77,7 @@ bot = commands.Bot(
     command_prefix=commands.when_mentioned_or("~"),
     activity=discord.Game(name="Greatest bot alive"),
     intents=intents,
+    help_command=CustomHelpCommand(),
 )
 
 
