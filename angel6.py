@@ -36,8 +36,8 @@ class CustomHelpCommand(commands.HelpCommand):
         )
         if commands_not_in_cog:
             embed.add_field(
-                name="Other Commands:", 
-                value=f"\n- {' '.join(commands_not_in_cog)}", 
+                name="Other Commands:",
+                value=f"\n- {' '.join(commands_not_in_cog)}",
                 inline=False
             )
 
@@ -51,13 +51,13 @@ class CustomHelpCommand(commands.HelpCommand):
     async def send_cog_help(self, cog):
         """Send help for a specific cog, displaying its description and commands."""
         # Display help for a specific cog
-        commands_list =( 
+        commands_list =(
             [f"`{cmd.name}` - " + cmd.help.split('\n')[0] for cmd in cog.get_commands()]
         )
         if commands_list:
             embed = discord.Embed(
-                title=f"{cog.qualified_name} Help", 
-                description=cog.description.split('\n')[0], 
+                title=f"{cog.qualified_name} Help",
+                description=cog.description.split('\n')[0],
                 color=discord.Color.blurple()
             )
             embed.add_field(name="Commands:", value="\n".join(commands_list), inline=False)
