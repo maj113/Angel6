@@ -272,7 +272,7 @@ class VoiceState:
                     # pylint: disable=E1101
                     async with asyncio.timeout(180):  # 3 minutes
                         # NOTICE: this must not be called when looping is enabled
-                        self.current = self.songs.get()
+                        self.current = await self.songs.get()
                 except asyncio.TimeoutError:
                     await self.stop()
                     self.exists = False
