@@ -112,7 +112,7 @@ class System(commands.Cog):
         if option not in ["reload", "start", "stop", "status"]:
             embed = discord.Embed(
                 title="Invalid Option",
-                description="Please provide a valid option (reload, add, stop, status).",
+                description="Please provide a valid option (reload, start, stop, status).",
                 color=discord.Color.brand_red(),
             )
             await ctx.reply(embed=embed)
