@@ -23,7 +23,7 @@ debugging_opts = {
     "ffmpeg_ll": "quiet",
 }
 
-if argv[-1] == "debug" or argv[-1] == "d":
+if "debug" in argv:
     debugging_opts["ytdllogging"] = True
     debugging_opts["ytdlquiet"] = False
     debugging_opts["log_level"] = logging.INFO
