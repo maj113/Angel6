@@ -97,6 +97,7 @@ class YTDLSource(discord.FFmpegOpusAudio):
     ytdl = YoutubeDL(YTDL_OPTIONS)
 
     def __init__(self, ctx: commands.Context, source: str, *, data: dict):
+        super().__init__(source, **YTDLSource.FFMPEG_OPTIONS)
         self.source = source
         self.requester = ctx.author
         self.channel = ctx.channel
@@ -140,11 +141,7 @@ class YTDLSource(discord.FFmpegOpusAudio):
         entries = data.get("entries")
         info = entries[0] if entries else data
 
-        return cls(
-            ctx,
-            discord.FFmpegOpusAudio(info["url"], **YTDLSource.FFMPEG_OPTIONS),
-            data=info,
-        )
+        return cls(ctx, info["url"], data=info)
 
     @staticmethod
     def parse_duration(duration: int):
