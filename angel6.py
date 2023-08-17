@@ -221,7 +221,7 @@ def clsscr():
     """
     Clears the console screen using an escape sequence.
     """
-    print("\033[H\033[J", end="", flush=True)
+    print("\033c", end="", flush=True)
 
 
 async def helperasbot():
