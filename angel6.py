@@ -92,7 +92,7 @@ bot = commands.Bot(
 
 async def set_env_var(
     env_var_name: str, prompt_text: str, force_reset_env: bool = False
-):
+) -> bool:
     """
     Sets an environment variable if it is not already set or if `force_reset_env` is True.
 
@@ -122,7 +122,7 @@ async def set_env_var(
     return False
 
 
-async def checkenv():
+async def checkenv() -> bool:
     """
     Checks the environment variables and prompts the user to set them if necessary.
 
