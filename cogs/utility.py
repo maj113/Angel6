@@ -32,7 +32,7 @@ class Utility(commands.Cog):
 
         If no user is mentioned, it retrieves the avatar of the command invoker.
         """
-        if user is None:
+        if not user:
             user = ctx.message.author
 
         embed = discord.Embed(
@@ -45,7 +45,7 @@ class Utility(commands.Cog):
     @commands.command(pass_context=True)
     async def userinfo(self, ctx, *, user: discord.Member = None):
         """Shows userinfo"""
-        if user is None:
+        if not user:
             user = ctx.author
 
         date_format = "%a, %d %b %Y %I:%M %p"
