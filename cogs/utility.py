@@ -86,42 +86,34 @@ class Utility(commands.Cog):
     @commands.command()
     async def serverinfo(self, ctx):
         """Displays server information."""
-        name = str(ctx.guild.name)
-        description = f"Official {ctx.guild.name} server"
-        owner = str(ctx.guild.owner)
-        servid = str(ctx.guild.id)
-        member_count = str(ctx.guild.member_count)
-        channels = (
-            f"Text: {len(ctx.guild.text_channels)}\nVoice:"
-            f" {len(ctx.guild.voice_channels)}"
-        )
-        roles = str(len(ctx.guild.roles))
-        created = f"{ctx.guild.created_at:%B %d, %Y, %I:%M %p}"
-        # Honestly not sure i need to do this, all servers probably have a pfp
-        try:
-            icon = ctx.guild.icon.url
-        except AttributeError:
-            icon = None
+        guild = ctx.guild
 
         embed = discord.Embed(
-            title=name + " <3", description=description, color=discord.Color.blurple()
+            title=f"{guild.name} <3",
+            description=f"Official {guild.name} server",
+            color=discord.Color.blurple()
         )
 
-        if icon:
-            embed.set_thumbnail(url=icon)
+        embed.set_thumbnail(url=guild.icon.url if guild.icon else None)
 
-        embed.add_field(name="Owner", value=owner, inline=True)
-        embed.add_field(name="Server ID", value=servid, inline=True)
-        embed.add_field(name="Channels", value=channels, inline=True)
-        embed.add_field(name="Roles", value=roles, inline=True)
-        embed.add_field(name="Member Count", value=member_count, inline=True)
-        embed.add_field(name="Created", value=created, inline=True)
-
+        embed.add_field(name="Owner", value=guild.owner, inline=True)
+        embed.add_field(name="Server ID", value=guild.id, inline=True)
+        embed.add_field(name="Member Count", value=guild.member_count, inline=True)
+        embed.add_field(
+            name="Channels",
+            value=f"Text: {len(guild.text_channels)}\nVoice: {len(guild.voice_channels)}",
+            inline=True
+        )
+        embed.add_field(name="Roles", value=len(guild.roles), inline=True)
+        embed.add_field(
+            name="Created At",
+            value=guild.created_at.strftime("%B %d, %Y, %I:%M %p"),
+            inline=True
+        )
         embed.set_footer(
             text="Thanks for being a part of our server!",
-            icon_url=ctx.author.avatar.url,
+            icon_url=ctx.author.avatar.url if ctx.author.avatar else None,
         )
-
         await ctx.reply(embed=embed)
 
     @commands.command()
