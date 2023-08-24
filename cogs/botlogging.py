@@ -135,6 +135,11 @@ class Logging(commands.Cog):
 
         deleted.add_field(name="Message", value=message.content or "*No content*")
         deleted.timestamp = message.created_at
+        # Check for attachments and add the first attachment as an image to the embed
+        if message.attachments:
+            attachment_url = message.attachments[0].url
+            deleted.set_image(url=attachment_url)
+
         await channel.send(embed=deleted)
 
     @commands.Cog.listener()
