@@ -12,21 +12,18 @@ class Logging(commands.Cog):
 
     @commands.Cog.listener()
     async def on_command_error(self, ctx, error):
-        """
-        Handles errors that occur during command execution.
-
-        Parameters:
-        - ctx (commands.Context): The context of the command.
-        - error (Exception): The error that occurred.
-
-        """
         if isinstance(error, commands.MissingPermissions):
-            # Handle MissingPermissions error
+            # Get the missing permissions from the exception
+            missing_permissions = error.missing_permissions
+
+            # Construct the error message
+            permission_names = [perm.replace('_', ' ').replace('guild', 'server').title() for perm in missing_permissions]
+            permission_names_str = ', '.join(permission_names)
+            error_message = f"You lack the following permission(s) to use this command: `{permission_names_str}`"
+
             embed = discord.Embed(
                 title="Permission Error",
-                description=(
-                    "You don't have the required permissions to execute this command."
-                ),
+                description=error_message,
                 color=discord.Color.brand_red(),
             )
             await ctx.reply(embed=embed)
