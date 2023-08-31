@@ -391,6 +391,15 @@ class Music(commands.Cog):
         return True
 
     async def cog_before_invoke(self, ctx: commands.Context):
+        """
+        Method called before a command is invoked.
+
+        This method sets the voice state for the command context.
+
+        Parameters:
+            ctx (commands.Context): The context of the command.
+
+        """
         ctx.voice_state = self.get_voice_state(ctx)
 
     async def cog_command_error(
