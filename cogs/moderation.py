@@ -199,11 +199,15 @@ class Moderation(commands.Cog):
     @commands.command(pass_context=True)
     @commands.has_permissions(ban_members=True)
     async def role(
-        self, ctx, action: str, user: discord.Member, user_role: discord.Role
+        self, ctx, action: str, user: discord.Member, user_role: discord.Role = None
     ):
         """Add or remove a role from a user."""
         if action not in ["add", "remove"]:
             await ctx.reply("Invalid action specified. Use 'add' or 'remove'.")
+            return
+
+        if not user_role:
+            await ctx.reply(f"Make sure to specify what role to {action}!")
             return
 
         if user_role >= ctx.author.top_role:
