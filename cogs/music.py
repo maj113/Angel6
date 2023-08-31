@@ -333,7 +333,7 @@ class Music(commands.Cog):
             if voice_state:
                 asyncio.create_task(voice_state.stop())
                 # TODO: Cheek if cog.unload is needed
-                logging.warning("Bot quit, flushing voice state")
+                logging.warning("Bot quit, stopping audio player")
 
     def get_voice_state(self, ctx: commands.Context):
         state = self.voice_states.get(ctx.guild.id)
