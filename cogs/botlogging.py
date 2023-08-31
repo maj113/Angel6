@@ -17,9 +17,15 @@ class Logging(commands.Cog):
             missing_permissions = error.missing_permissions
 
             # Construct the error message
-            permission_names = [perm.replace('_', ' ').replace('guild', 'server').title() for perm in missing_permissions]
+            permission_names = (
+                [perm.replace('_', ' ').replace('guild', 'server').title()
+                for perm in missing_permissions]
+            )
             permission_names_str = ', '.join(permission_names)
-            error_message = f"You lack the following permission(s) to use this command: `{permission_names_str}`"
+            error_message = (
+                f"You lack the following permission(s) to use this command: "
+                f"`{permission_names_str}`"
+            )
 
             embed = discord.Embed(
                 title="Permission Error",
