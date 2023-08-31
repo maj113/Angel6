@@ -405,6 +405,16 @@ class Music(commands.Cog):
     async def cog_command_error(
         self, ctx: commands.Context, error: commands.CommandError
     ):
+        """
+        Handle errors that occur during command execution.
+
+        This method sends an error message to the channel when a command error occurs.
+
+        Parameters:
+            ctx (commands.Context): The context of the command.
+            error (commands.CommandError): The error that occurred.
+
+        """
         await ctx.reply(f"An error occurred: {error}")
 
     async def checkloop(self, ctx, stop=False):
