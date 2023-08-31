@@ -368,6 +368,21 @@ class Music(commands.Cog):
             asyncio.create_task(state.stop())
 
     def cog_check(self, ctx: commands.Context):
+        """
+        Check whether the command can be invoked in the current context.
+
+        This method ensures that the command is not invoked in DM channels.
+
+        Parameters:
+            ctx (commands.Context): The context of the command.
+
+        Returns:
+            bool: True if the command can be invoked, False otherwise.
+
+        Raises:
+            commands.NoPrivateMessage: If the command is invoked in a DM channel.
+
+        """
         if not ctx.guild:
             raise commands.NoPrivateMessage(
                 "This command can't be used in DM channels."
