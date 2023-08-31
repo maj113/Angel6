@@ -358,6 +358,12 @@ class Music(commands.Cog):
         return state
 
     def cog_unload(self):
+        """
+        Unload method called when the cog is removed.
+
+        This method stops playback for all voice states associated with the cog.
+
+        """
         for state in self.voice_states.values():
             asyncio.create_task(state.stop())
 
