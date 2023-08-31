@@ -315,6 +315,26 @@ class Music(commands.Cog):
         self.bot = bot
         self.voice_states = {}
 
+    @commands.Cog.listener()
+    async def on_voice_state_update(self, member: discord.Member , before, after):
+        """
+        Event listener for when a member's voice state changes.
+
+        This method triggers cleanup if the bot itself leaves a voice channel.
+
+        Parameters:
+            member (discord.Member): The member whose voice state changed.
+            before: The previous voice state of the member.
+            after: The updated voice state of the member.
+        """
+        if before.channel != after.channel and not after.channel and member == self.bot.user:
+            voice_state = self.voice_states.get(member.guild.id)
+
+            if voice_state:
+                asyncio.create_task(voice_state.stop())
+                # TODO: Cheek if cog.unload is needed
+                logging.warning("Bot quit, flushing voice state")
+
     def get_voice_state(self, ctx: commands.Context):
         state = self.voice_states.get(ctx.guild.id)
         if not state or not state.exists:
