@@ -336,6 +336,20 @@ class Music(commands.Cog):
                 logging.warning("Bot quit, stopping audio player")
 
     def get_voice_state(self, ctx: commands.Context):
+        """
+        Get or create the VoiceState associated with a context.
+
+        This method retrieves the VoiceState associated with the given context.
+        If a VoiceState does not exist for the context, it creates and associates
+        a new VoiceState instance.
+
+        Parameters:
+            ctx (commands.Context): The context for which to get the VoiceState.
+
+        Returns:
+            VoiceState: The VoiceState associated with the context.
+
+        """
         state = self.voice_states.get(ctx.guild.id)
         if not state or not state.exists:
             state = VoiceState(self.bot, ctx)
