@@ -61,6 +61,7 @@ class YTDLError(Exception):
 class YTDLSource(discord.FFmpegOpusAudio):
     YTDL_OPTIONS = {
         # Never touch the disk, we only need the json data so simulate is fine
+        "verbose": debugging_opts["ytdllogging"],
         "simulate": True,
         "extract_flat": True,
         # There are better formats however using OPUS avoids transcoding
