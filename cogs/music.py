@@ -439,17 +439,16 @@ class Music(commands.Cog):
     async def _join(self, ctx: commands.Context):
         """Joins a voice channel."""
 
-        destination = ctx.author.voice.channel
-        if ctx.voice_state.voice:
-            await destination.connect(reconnect=False)
-            return
-        if ctx.voice_client and ctx.voice_client.channel != destination:
-            await ctx.reply(
-                "I'm already connected to a voice channel"
-                f" ({ctx.voice_client.channel.name})."
-            )
-            return
-        ctx.voice_state.voice = await destination.connect(reconnect=False)
+        if ctx.voice_client:
+            if ctx.voice_client.channel != ctx.author.voice.channel:
+                await ctx.reply(
+                    "I'm already connected to a different voice channel"
+                    f" ({ctx.voice_client.channel.name})."
+                )
+                return
+        else:
+            destination = ctx.author.voice.channel
+            ctx.voice_state.voice = await destination.connect()
 
     @commands.command(name="summon")
     async def _summon(
