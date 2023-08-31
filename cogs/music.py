@@ -628,24 +628,16 @@ class Music(commands.Cog):
         Automatically searches from various sites if no URL is provided.
         Supported sites list: https://github.com/yt-dlp/yt-dlp/blob/master/supportedsites.md
         """
-        try:
-            source_task = asyncio.create_task(YTDLSource.create_source(ctx, search))
-        except YTDLError as err:
-            await ctx.reply(f"An error occurred while processing this request: {err}")
-
-        if ctx.voice_state.voice and not ctx.guild.voice_client:
-            # FIXME: improve force-disconnect handling
-            await ctx.invoke(self._stop)
-            ctx.voice_state.voice = None
-            logging.warning(
-                "experimental support for unclean voice_state.voice handling, might"
-                " be unstable"
-            )
 
         if not ctx.guild.voice_client:
             await ctx.invoke(self._join)
-        await asyncio.gather(source_task)
-        source = source_task.result()
+
+        try:
+            source = await YTDLSource.create_source(ctx, search)
+        except YTDLError as err:
+            await ctx.reply(f"An error occurred while processing this request: {err}")
+            return
+
         song = Song(source)
         await ctx.voice_state.songs.put(song)
         await ctx.reply(f"Enqueued {source}")
