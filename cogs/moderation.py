@@ -36,28 +36,50 @@ class Moderation(commands.Cog):
     @commands.command()
     @commands.has_permissions(manage_messages=True)
     async def mute(self, ctx, member: discord.Member, *, reason=None):
-        """mutes a user"""
+        """Mutes a user"""
         if member == ctx.author:
-            await ctx.reply("You cannot mute yourself.")
+            embed = discord.Embed(
+                description="You cannot mute yourself!",
+                color=discord.Color.brand_red(),
+            )
+            await ctx.reply(embed=embed)
             return
+
         if member.top_role >= ctx.author.top_role:
-            await ctx.reply(f"You cannot mute {member.mention}.")
+            embed = discord.Embed(
+                title="Cannot Mute Member",
+                description=f"You cannot mute {member.mention}.",
+                color=discord.Color.brand_red(),
+            )
+            await ctx.reply(embed=embed)
             return
 
         guild = ctx.guild
         muted_role = discord.utils.get(guild.roles, name="Muted")
         if not muted_role:
             muted_role = await guild.create_role(name="Muted")
+
+            permissions = discord.PermissionOverwrite(
+                speak=False,
+                send_messages=False,
+                read_message_history=True,
+                read_messages=True,
+                create_private_threads=False,
+                create_public_threads=False,
+            )
+
             for channel in guild.channels:
-                await channel.set_permissions(
-                    muted_role,
-                    speak=False,
-                    send_messages=False,
-                    read_message_history=True,
-                    read_messages=True,
-                    create_private_threads=False,
-                    create_public_threads=False,
-                )
+                if isinstance(channel, discord.TextChannel):
+                    await channel.set_permissions(muted_role, overwrite=permissions)
+
+        if muted_role in member.roles:
+            embed = discord.Embed(
+                title="Already Muted",
+                description=f"{member.mention} is already muted.",
+                color=discord.Color.yellow(),
+            )
+            await ctx.reply(embed=embed)
+            return
 
         try:
             await member.add_roles(muted_role, reason=reason)
@@ -67,9 +89,7 @@ class Moderation(commands.Cog):
 
         embed = discord.Embed(
             title="Muted",
-            description=(
-                f"{member.mention} has been muted{' for ' + reason if reason else ''}"
-            ),
+            description=f"{member.mention} has been muted{' for ' + reason if reason else ''}",
             color=discord.Color.blurple(),
         )
         await ctx.reply(embed=embed)
@@ -77,7 +97,7 @@ class Moderation(commands.Cog):
         try:
             await member.send(f"You were muted{' for ' + reason if reason else ''}")
         except discord.errors.Forbidden:
-            # If member has DMs disaled, we don't want to error out
+            # If member has DMs disabled, we don't want to error out
             pass
 
     @commands.command()
