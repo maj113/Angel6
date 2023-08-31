@@ -27,7 +27,7 @@ if "debug" in argv:
     debugging_opts["ytdllogging"] = True
     debugging_opts["ytdlquiet"] = False
     debugging_opts["log_level"] = logging.INFO
-    debugging_opts["ffmpeg_ll"] = "debug"
+    debugging_opts["ffmpeg_ll"] = "info"
 
 logging.basicConfig(
     level=debugging_opts["log_level"],
