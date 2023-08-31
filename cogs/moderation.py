@@ -23,15 +23,18 @@ class Moderation(commands.Cog):
 
         if member == ctx.author:
             await ctx.reply("Can't kick yourself! ...baka!!")
-        elif member.top_role >= ctx.author.top_role:
+            return
+
+        if member.top_role >= ctx.author.top_role:
             await ctx.reply("Yo, you can only kick members lower than yourself lmao")
-        else:
-            await member.kick(reason=reason)
-            embed = discord.Embed(
-                title="kicked",
-                description=f"{member.mention} was kicked out for {reason}",
-            )
-            await ctx.channel.send(embed=embed)
+            return
+
+        await member.kick(reason=reason)
+        embed = discord.Embed(
+            title="kicked",
+            description=f"{member.mention} was kicked out for {reason}",
+        )
+        await ctx.send(embed=embed)
 
     @commands.command()
     @commands.has_permissions(manage_messages=True)
