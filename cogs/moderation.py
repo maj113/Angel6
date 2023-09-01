@@ -12,7 +12,7 @@ class Moderation(commands.Cog):
     including kicking, muting, unmuting, banning, unbanning, warning, message wiping,
     and managing roles.
     """
-    
+
     def __init__(self, bot):
         self.bot = bot
 
