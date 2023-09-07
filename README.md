@@ -76,9 +76,9 @@ To set up and run Angel$IX for the first time, follow these steps:
 ## Planned Changes by 2.6.0:
 
 - [ ] Verify support for Python 3.12
-- [ ] Fix initing `YTDLSource` class
-- [ ] Verify what options in `YTDL_OPTIONS` are redundant
-- [ ] Fix Pylint errors/warnings
+- [x] Fix initing `YTDLSource` class
+- [x] Verify what options in `YTDL_OPTIONS` are redundant
+- [x] Fix Pylint errors/warnings
 - [ ] De-duplicate logging code from `music.py`
 
 <details>
