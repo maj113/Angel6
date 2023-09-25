@@ -21,5 +21,5 @@ urllib3==2.0.5
 uvloop @ git+https://github.com/MagicStack/uvloop
 websockets @ git+https://github.com/python-websockets/websockets
 yarl==1.9.2
-yt-dlp==2023.7.6
+yt-dlp==2023.9.24
 requests==2.31.0
