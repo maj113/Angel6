@@ -8,7 +8,7 @@ certifi==2023.11.17
 cffi==1.16.0
 charset-normalizer @ git+https://github.com/Ousret/charset_normalizer
 frozenlist==1.4.0
-idna==3.4
+idna==3.6
 multidict==6.0.4
 mutagen @ git+https://github.com/quodlibet/mutagen
 py-cord @ git+https://github.com/Pycord-Development/pycord
