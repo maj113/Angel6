@@ -292,16 +292,16 @@ async def asbotmain():
         return
     clsscr()
     try:
-        channel1 = bot.get_channel(int(chan_id_alt))
+        channel = bot.get_channel(int(chan_id_alt))
     except ValueError:
         print("Error; Wrong ID provided or an unexpected exception occurred, try again")
         return
-    if not isinstance(channel1, discord.TextChannel):
+    if not isinstance(channel, discord.TextChannel):
         print("Selected channel does not exist or isn't a text channel")
         return
 
     while True:
-        message = await ainput(f"[{str(channel1)}] Message: ")
+        message = await ainput(f"[{str(channel)}] Message: ")
         if message == "show":
             clsscr()
             await helperasbot()
@@ -312,10 +312,10 @@ async def asbotmain():
             print("Stopped task")
             break
         try:
-            await channel1.send(message)
+            await channel.send(message)
         except discord.errors.HTTPException:
             # This is a Unicode "U+2800/Braille Pattern Blank" character
-            await channel1.send("⠀")
+            await channel.send("⠀")
 
 
 try:

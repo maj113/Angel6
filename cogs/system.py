@@ -11,8 +11,7 @@ from angel6 import BOT_VER
 
 bot_uptime = datetime.now()
 mem_info = psutil.Process(getpid())
-total_mem = psutil.virtual_memory().total / float(2**20)
-mem = mem_info.memory_info()[0] / float(2**20)
+
 # pylint: disable=E1101
 discord_version = discord.__version__
 WRAPPER_USED = discord.__title__.capitalize()
@@ -55,6 +54,9 @@ class System(commands.Cog):
         Args:
             ctx (discord.ext.commands.Context): The command context.
         """
+        total_mem = psutil.virtual_memory().total / float(2**20)
+        mem = mem_info.memory_info()[0] / float(2**20)
+
         embed = discord.Embed(
             title="System Resource Usage and Statistics",
             description="See bot host statistics.",
